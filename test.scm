@@ -1,2 +1,0 @@
-(failure (lambda ()
-          x))

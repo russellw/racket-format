@@ -24,7 +24,16 @@
    ((eof-object? (peek-char))
     (peek-char))
    ((peek? "#")
-   	(string->symbol(identifier)))
+   (let((s(identifier)))
+   	(case s
+   		(("#")
+	   		(list->vector(read)))
+	   	(("#f")
+	   		#f)
+	   	(("#t")
+	   		#t)
+	   	(else
+		   	(string->symbol s)))))
    ((peek? "'")
     (read-char)
     (list 'quote (read*)))

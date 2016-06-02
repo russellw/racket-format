@@ -1,2 +1,2 @@
-(let ((failure (lambda ()
-                (match-next v g+s . rest)))))
+(failure (lambda ()
+          (match-next v g+s . rest)))

@@ -250,7 +250,7 @@
 
  (define (width x)
  (or (hash-ref widths x #f))
-   (let ((w (max-line-width (with-output-to-string (lambda() block x 0)))))
+   (let ((w (max-line-width (with-output-to-string (lambda() (block x 0))))))
     (hash-set! widths x w)
     w))
 

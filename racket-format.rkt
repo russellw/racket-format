@@ -49,5 +49,6 @@
    (with-output-to-file file
                         (lambda ()
                          (display s))
+                         #:exists 'replace
     #:mode                    'binary)
    (display s)))

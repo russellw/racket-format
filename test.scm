@@ -1,4 +1,2 @@
-(syntax-rules (=>)
- (x
-  (let ((failure (lambda ()
-                  (match-next v g+s . rest)))))))
+(let ((failure (lambda ()
+                (match-next v g+s . rest)))))

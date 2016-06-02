@@ -1,9 +1,5 @@
 (define-syntax match-next
  (syntax-rules (=>)
-  ;; no more clauses, the match failed
-  ((match-next v g+s)
-   (error 'match "no matching pattern"))
-
   ;; named failure continuation
   ((match-next v g+s (pat (=> failure) . body) . rest)
    (let ((failure (lambda ()

@@ -1,7 +1,9 @@
 #lang racket
 (provide collect)
+(provide receive)
 (provide frag)
 (provide defun?)
+(provide debug)
 (provide transform)
 (provide car?)
 (provide cadr?)
@@ -165,11 +167,11 @@
    xs)
   ((p (car xs))
    (receive (a b)
-   (takef xs p)
+   (splitf-at xs p)
     (cons a (frag p b))))
   (else
    (receive (a b)
-   (dropf xs p)
+   (splitf-at xs(negate p))
     (cons a (frag p b))))))
 
 (define (improper-list? x)

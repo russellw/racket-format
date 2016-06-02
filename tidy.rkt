@@ -26,7 +26,7 @@
  (set! x
        (map-rec y x
         (if (list? y)
-         (append* (for ((zs (frag defun? y)))
+         (append* (for/list ((zs (frag defun? y)))
                        (if (defun? (car zs))
                         (sort zs value<?)
                         zs)))
@@ -36,7 +36,7 @@
  (set! x
        (map-rec y x
         (if (list? y)
-         (append* (for ((zs (frag (curry car? 'define-syntax) y)))
+         (append* (for/list ((zs (frag (curry car? 'define-syntax) y)))
                        (if (car? 'define-syntax (car zs))
                         (sort zs value<?)
                         zs)))

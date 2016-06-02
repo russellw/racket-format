@@ -23,6 +23,8 @@
   (cond
    ((eof-object? (peek-char))
     (peek-char))
+   ((peek? "#")
+   	(string->symbol(identifier)))
    ((peek? "'")
     (read-char)
     (list 'quote (read*)))
@@ -68,7 +70,7 @@
     (read))))
 
  (define (special-initial? c)
-  (string-contains? "!$%&*/:<=>?^_~" (make-string 1 c)))
+  (string-contains? "!#$%&*/:<=>?^_~" (make-string 1 c)))
 
  (define (special-subsequent? c)
   (string-contains? "+-.@" (make-string 1 c)))

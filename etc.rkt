@@ -1,7 +1,5 @@
 #lang racket
 (provide collect)
-(provide inc-trace-level!)
-(provide dec-trace-level!)
 (provide trace)
 (provide receive)
 (provide frag)

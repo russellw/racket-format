@@ -147,9 +147,6 @@
  (and (pair? y)
       (eqv? x (car y))))
 
-(define (curry f . xs)
- (lambda ys
-  (apply f (append xs ys))))
 
 (define (defun? x)
  (and (car? 'define x)

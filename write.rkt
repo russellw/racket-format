@@ -241,7 +241,7 @@
              (eq? y blank-symbol)))
        (not (any-rec? y x
              (eq? y comment-symbol)))
-       (not (string-contains?  (with-output-to-string (curry block x 0))"\n"   ))))
+       (not (string-contains?  (with-output-to-string (lambda() (block x 0)))"\n"   ))))
 
  (define (max-line-width s)
   (if (string=? s"")
@@ -250,7 +250,7 @@
 
  (define (width x)
  (or (hash-ref widths x #f))
-   (let ((w (max-line-width (with-output-to-string (curry block x 0)))))
+   (let ((w (max-line-width (with-output-to-string (lambda() block x 0)))))
     (hash-set! widths x w)
     w))
 

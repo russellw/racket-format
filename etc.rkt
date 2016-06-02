@@ -1,5 +1,8 @@
 #lang racket
 (provide collect)
+(provide inc-trace-level!)
+(provide dec-trace-level!)
+(provide trace)
 (provide receive)
 (provide frag)
 (provide defun?)
@@ -101,7 +104,7 @@
    (let ((g f))
     (set! f
           (lambda args
-           (define r)
+           (define r #f)
 
            ; Trace call
            (indent trace-level (current-error-port))
@@ -109,9 +112,9 @@
            (newline (current-error-port))
 
            ; Call
-           (inc! trace-level)
+           (inc-trace-level!)
            (set! r (apply g args))
-           (dec! trace-level)
+           (dec-trace-level!)
 
            ; Trace result
            (indent trace-level (current-error-port))
@@ -157,7 +160,8 @@
  (and (car? 'define x)
       (length? 2 x)
       (atom? (cadr x))))
-
+(define(inc-trace-level!)(inc! trace-level))
+(define(dec-trace-level!)(dec! trace-level))
 (define (frag p xs)
  (cond
   ((atom? xs)

@@ -253,7 +253,12 @@
    (let ((w (max-line-width (with-output-to-string (lambda() (block x 0))))))
     (hash-set! widths x w)
     w))
-
+(when(eq?(car xs)'|#lang|)
+(display(car xs))
+(display " ")
+(display(cadr xs))
+(newline)
+(set! xs(cddr xs)))
  (for(( x xs))
   (block x 0)
   (newline)))

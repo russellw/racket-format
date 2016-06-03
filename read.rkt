@@ -14,9 +14,10 @@
   (or (char-alphabetic? c)
       (special-initial? c)))
 
- (define (peek? s)
-  (and (not (eof-object? (peek-char)))
-       (char=? (peek-char) (string-ref s 0))))
+ (define (peek? s(skip 0))
+ 	(define c (peek-char(current-input-port)skip))
+  (and (not (eof-object? c))
+       (char=? c (string-ref s 0))))
 
  (define (read*)
   (whitespace)
@@ -24,16 +25,20 @@
    ((eof-object? (peek-char))
     (peek-char))
    ((peek? "#")
-   (let((s(identifier)))
-   	(case s
-   		(("#")
-	   		(list->vector(read)))
-	   	(("#f")
-	   		#f)
-	   	(("#t")
-	   		#t)
-	   	(else
-		   	(string->symbol s)))))
+   	(cond
+   		((peek? ":" 1)
+   			(read))
+   		(else
+		   (let((s(identifier)))
+		   	(case s
+		   		(("#")
+	  		 		(list->vector(read)))
+			   	(("#f""#F")
+			   		#f)
+	  		 	(("#t""#T")
+	   				#t)
+			   	(else
+				   	(string->symbol s)))))))
    ((peek? "'")
     (read-char)
     (list 'quote (read*)))

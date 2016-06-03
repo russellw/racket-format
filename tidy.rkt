@@ -1,8 +1,7 @@
 #lang racket
- (require "etc.rkt")
- (require "read.rkt")
- (provide tidy)
-
+(require "etc.rkt")
+(require "read.rkt")
+(provide tidy)
 (define (tidy x)
  ; Space at start of comment
  (set! x
@@ -27,9 +26,9 @@
        (map-rec y x
         (if (list? y)
          (append* (for/list ((zs (frag defun? y)))
-                       (if (defun? (car zs))
-                        (sort zs value<?)
-                        zs)))
+                            (if (defun? (car zs))
+                             (sort zs value<?)
+                             zs)))
          y)))
 
  ; Sort macros
@@ -37,9 +36,9 @@
        (map-rec y x
         (if (list? y)
          (append* (for/list ((zs (frag (curry car? 'define-syntax) y)))
-                       (if (car? 'define-syntax (car zs))
-                        (sort zs value<?)
-                        zs)))
+                            (if (car? 'define-syntax (car zs))
+                             (sort zs value<?)
+                             zs)))
          y)))
 
  ; Sort memq
@@ -178,7 +177,7 @@
         (transform zs y
          (values (list (car zs))
                  (if (car? blank-symbol zs)
-                  (dropf zs(curry eq? blank-symbol) )
+                  (dropf zs (curry eq? blank-symbol))
                   (cdr zs))))))
 
  ; Remove trailing blanks

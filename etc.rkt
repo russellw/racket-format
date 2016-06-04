@@ -1,6 +1,7 @@
 #lang racket
 (provide collect)
 (provide trace)
+(provide if-trace)
 (provide receive)
 (provide frag)
 (provide defun?)
@@ -41,6 +42,25 @@
     (if x
      (append x (loop))
      '())))))
+
+
+(define-syntax (if-trace stx)
+ (syntax-case stx ()
+  ((_ x true false)
+  	#`(let((c x)(r #f))
+    (indent trace-level (current-error-port))
+    (display #,(syntax-source stx) (current-error-port))
+    (display ":" (current-error-port))
+    (display #,(syntax-line stx) (current-error-port))
+    (display ": " (current-error-port))
+    (write 'x (current-error-port))
+    (display ": " (current-error-port))
+    (write c (current-error-port))
+    (newline (current-error-port))
+           (inc-trace-level!)
+           (set! r (if c true false))
+           (dec-trace-level!)
+           r))))
 
 (define-syntax (debug stx)
  (syntax-case stx ()

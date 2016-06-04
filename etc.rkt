@@ -42,11 +42,15 @@
      (append x (loop))
      '())))))
 
-(define-syntax debug
- (syntax-rules ()
+(define-syntax (debug stx)
+ (syntax-case stx ()
   ((_ x)
-   (let ((r x))
+   #`(let ((r x))
     (indent trace-level (current-error-port))
+    (display #,(syntax-source stx) (current-error-port))
+    (display ":" (current-error-port))
+    (display #,(syntax-line stx) (current-error-port))
+    (display ": " (current-error-port))
     (write 'x (current-error-port))
     (display ": " (current-error-port))
     (write r (current-error-port))

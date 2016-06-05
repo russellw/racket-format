@@ -140,16 +140,6 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; blank line after macro
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (car? 'define-syntax (car zs))
-                          (not (cadr? blank-symbol zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
-
  ; blank line after record
  (set! x
        (map-rec y x

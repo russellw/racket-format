@@ -16,6 +16,14 @@
          ",")
         ((unquote-splicing)
          ",@")
+         ((syntax)
+         "#'")
+         ((quasisyntax)
+         "#`")
+         ((unsyntax)
+         "#,")
+         ((unsyntax-splicing)
+         "#,@")
         (else
          #f))))
 

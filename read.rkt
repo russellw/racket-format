@@ -26,6 +26,22 @@
    (peek-char))
   ((peek? "#")
    (cond
+    ((peek? "'" 1)
+	   (read-char)
+	   (read-char)
+	   (list 'syntax (read*)))
+    ((peek? "`" 1)
+	   (read-char)
+	   (read-char)
+	   (list 'quasisyntax (read*)))
+    ((peek? "," 1)
+	   (read-char)
+	   (read-char)
+   (if (peek? "@")
+    (begin
+     (read-char)
+     (list 'unsyntax-splicing (read*)))
+    (list 'unsyntax (read*))))
     ((peek? ":" 1)
      (read))
     (else

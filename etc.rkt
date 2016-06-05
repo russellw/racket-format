@@ -20,7 +20,7 @@
                                   (r #f))
                              (if c
                               (begin
-                               (eprintf "~a~a:~a: ~s: ~a\n"
+                               (eprintf "~a~a:~a: ~s -> ~a\n"
                                         (make-string trace-level #\space)
                                         #,(syntax-source stx)
                                         #,(syntax-line stx)
@@ -39,7 +39,7 @@
  (syntax-case stx
               ()
               ((_ x) #`(let ((r x))
-                        (eprintf "~a~a:~a: ~s: ~a\n"
+                        (eprintf "~a~a:~a: ~s -> ~a\n"
                                  (make-string trace-level #\space)
                                  #,(syntax-source stx)
                                  #,(syntax-line stx)
@@ -52,7 +52,7 @@
               ()
               ((_ x true false) #`(let ((c x)
                                         (r #f))
-                                   (eprintf "~a~a:~a: ~s: ~a\n"
+                                   (eprintf "~a~a:~a: ~s -> ~a\n"
                                             (make-string trace-level #\space)
                                             #,(syntax-source stx)
                                             #,(syntax-line stx)
@@ -69,47 +69,47 @@
 (define-syntax (unless-trace stx)
  (syntax-case stx
               ()
-              ((_ x body ...) #`(let ((c x)
-                                      (r #f))
-                                 (eprintf "~a~a:~a: ~s: ~a\n"
-                                          (make-string trace-level #\space)
-                                          #,(syntax-source stx)
-                                          #,(syntax-line stx)
-                                          'x
-                                          c)
-                                 (inc-trace-level!)
-                                 (set! r
-                                       (unless c
-                                        body
-                                        ...))
-                                 (dec-trace-level!)
-                                 r))))
+              ((_ x b ...) #`(let ((c x)
+                                   (r #f))
+                              (eprintf "~a~a:~a: ~s -> ~a\n"
+                                       (make-string trace-level #\space)
+                                       #,(syntax-source stx)
+                                       #,(syntax-line stx)
+                                       'x
+                                       c)
+                              (inc-trace-level!)
+                              (set! r
+                                    (unless c
+                                     b
+                                     ...))
+                              (dec-trace-level!)
+                              r))))
 
 (define-syntax (when-trace stx)
  (syntax-case stx
               ()
-              ((_ x body ...) #`(let ((c x)
-                                      (r #f))
-                                 (eprintf "~a~a:~a: ~s: ~a\n"
-                                          (make-string trace-level #\space)
-                                          #,(syntax-source stx)
-                                          #,(syntax-line stx)
-                                          'x
-                                          c)
-                                 (inc-trace-level!)
-                                 (set! r
-                                       (when c
-                                        body
-                                        ...))
-                                 (dec-trace-level!)
-                                 r))))
+              ((_ x b ...) #`(let ((c x)
+                                   (r #f))
+                              (eprintf "~a~a:~a: ~s -> ~a\n"
+                                       (make-string trace-level #\space)
+                                       #,(syntax-source stx)
+                                       #,(syntax-line stx)
+                                       'x
+                                       c)
+                              (inc-trace-level!)
+                              (set! r
+                                    (when c
+                                     b
+                                     ...))
+                              (dec-trace-level!)
+                              r))))
 
 (define-syntax any-rec?
  (syntax-rules ()
-  ((_ x xs body ...)
+  ((_ x xs b ...)
    (let loop ((x xs))
     (or (begin
-         body
+         b
          ...)
         (and (pair? x)
              (or (loop (car x))
@@ -117,11 +117,11 @@
 
 (define-syntax collect
  (syntax-rules ()
-  ((_ body ...)
+  ((_ b ...)
    (let loop ()
     (define x
             (let ()
-             body
+             b
              ...))
     (if x
      (append x (loop))
@@ -136,13 +136,13 @@
 
 (define-syntax for*
  (syntax-rules ()
-  ((_ x xs ys body ...)
+  ((_ x xs ys b ...)
    (let loop ((xs ys))
     (if (atom? xs)
      xs
      (let ((x (car xs)))
       (cons (begin
-             body
+             b
              ...)
             (loop (cdr xs)))))))))
 
@@ -155,24 +155,24 @@
 
 (define-syntax map-rec
  (syntax-rules ()
-  ((_ x xs body ...)
+  ((_ x xs b ...)
    (let loop ((x xs))
     (when (pair? x)
      (set! x (cons (loop (car x)) (loop (cdr x)))))
     (begin
-     body
+     b
      ...)))))
 
 (define-syntax receive
  (syntax-rules ()
-  ((receive formals
-    expression
-    body
+  ((receive args
+    x
+    b
     ...)
    (call-with-values (lambda ()
-                      expression)
-                     (lambda formals
-                      body
+                      x)
+                     (lambda args
+                      b
                       ...)))))
 
 (define-syntax trace
@@ -204,13 +204,13 @@
 
 (define-syntax transform
  (syntax-rules ()
-  ((_ xs ys body ...)
+  ((_ xs ys b ...)
    (let loop ((xs ys))
     (if (atom? xs)
      xs
      (receive (xs ys)
       (begin
-       body
+       b
        ...)
       (append xs (loop ys))))))))
 

@@ -5,20 +5,19 @@
   stx
   (else)
   ((_ (else b ...)) #`(let ((r #f))
-                       (begin
-                        (indent trace-level (current-error-port))
-                        (display #,(syntax-source stx) (current-error-port))
-                        (display ":" (current-error-port))
-                        (display #,(syntax-line stx) (current-error-port))
-                        (display ": else" (current-error-port))
-                        (newline (current-error-port))
-                        (inc-trace-level!)
-                        (set! r
-                              (let ()
-                               b
-                               ...))
-                        (dec-trace-level!)
-                        r)))
+                       (indent trace-level (current-error-port))
+                       (display #,(syntax-source stx) (current-error-port))
+                       (display ":" (current-error-port))
+                       (display #,(syntax-line stx) (current-error-port))
+                       (display ": else" (current-error-port))
+                       (newline (current-error-port))
+                       (inc-trace-level!)
+                       (set! r
+                             (let ()
+                              b
+                              ...))
+                       (dec-trace-level!)
+                       r))
   ((_ (x b ...) rest ...)
    #`(let ((c x)
            (r #f))

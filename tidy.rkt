@@ -29,7 +29,6 @@
  (set! x
   (map-rec y x
    (if (and (car? comment-symbol y)
-            (length? 2 (cadr y))
             (char-alphabetic? (string-ref (cadr y) 1)))
     (list comment-symbol
           (string-append "; " (substring (cadr y) 1 (string-length (cadr y)))))

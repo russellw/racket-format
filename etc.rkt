@@ -1,5 +1,130 @@
 #lang racket
 (provide (all-defined-out))
+(define-syntax (cond-trace stx)
+ (syntax-case
+  stx
+  (else)
+  ((_ (else b ...)) #`(let ((r #f))
+                       (begin
+                        (indent trace-level (current-error-port))
+                        (display #,(syntax-source stx) (current-error-port))
+                        (display ":" (current-error-port))
+                        (display #,(syntax-line stx) (current-error-port))
+                        (display ": else" (current-error-port))
+                        (newline (current-error-port))
+                        (inc-trace-level!)
+                        (set! r
+                              (let ()
+                               b
+                               ...))
+                        (dec-trace-level!)
+                        r)))
+  ((_ (x b ...) rest ...)
+   #`(let ((c x)
+           (r #f))
+      (if c
+       (begin
+        (indent trace-level (current-error-port))
+        (display #,(syntax-source stx) (current-error-port))
+        (display ":" (current-error-port))
+        (display #,(syntax-line stx) (current-error-port))
+        (display ": " (current-error-port))
+        (write 'x (current-error-port))
+        (display ": " (current-error-port))
+        (write c (current-error-port))
+        (newline (current-error-port))
+        (inc-trace-level!)
+        (set! r
+              (let ()
+               b
+               ...))
+        (dec-trace-level!)
+        r)
+       (cond-trace rest ...))))))
+
+(define-syntax (debug stx)
+ (syntax-case stx
+              ()
+              ((_ x) #`(let ((r x))
+                        (indent trace-level (current-error-port))
+                        (display #,(syntax-source stx) (current-error-port))
+                        (display ":" (current-error-port))
+                        (display #,(syntax-line stx) (current-error-port))
+                        (display ": " (current-error-port))
+                        (write 'x (current-error-port))
+                        (display ": " (current-error-port))
+                        (write r (current-error-port))
+                        (newline (current-error-port))
+                        r))))
+
+(define-syntax (if-trace stx)
+ (syntax-case
+  stx
+  ()
+  ((_ x true false) #`(let ((c x)
+                            (r #f))
+                       (indent trace-level (current-error-port))
+                       (display #,(syntax-source stx) (current-error-port))
+                       (display ":" (current-error-port))
+                       (display #,(syntax-line stx) (current-error-port))
+                       (display ": " (current-error-port))
+                       (write 'x (current-error-port))
+                       (display ": " (current-error-port))
+                       (write c (current-error-port))
+                       (newline (current-error-port))
+                       (inc-trace-level!)
+                       (set! r
+                             (if c
+                              true
+                              false))
+                       (dec-trace-level!)
+                       r))))
+
+(define-syntax (unless-trace stx)
+ (syntax-case
+  stx
+  ()
+  ((_ x body ...) #`(let ((c x)
+                          (r #f))
+                     (indent trace-level (current-error-port))
+                     (display #,(syntax-source stx) (current-error-port))
+                     (display ":" (current-error-port))
+                     (display #,(syntax-line stx) (current-error-port))
+                     (display ": " (current-error-port))
+                     (write 'x (current-error-port))
+                     (display ": " (current-error-port))
+                     (write c (current-error-port))
+                     (newline (current-error-port))
+                     (inc-trace-level!)
+                     (set! r
+                           (unless c
+                            body
+                            ...))
+                     (dec-trace-level!)
+                     r))))
+
+(define-syntax (when-trace stx)
+ (syntax-case
+  stx
+  ()
+  ((_ x body ...) #`(let ((c x)
+                          (r #f))
+                     (indent trace-level (current-error-port))
+                     (display #,(syntax-source stx) (current-error-port))
+                     (display ":" (current-error-port))
+                     (display #,(syntax-line stx) (current-error-port))
+                     (display ": " (current-error-port))
+                     (write 'x (current-error-port))
+                     (display ": " (current-error-port))
+                     (write c (current-error-port))
+                     (newline (current-error-port))
+                     (inc-trace-level!)
+                     (set! r
+                           (when c
+                            body
+                            ...))
+                     (dec-trace-level!)
+                     r))))
 
 (define-syntax any-rec?
  (syntax-rules ()
@@ -17,115 +142,12 @@
   ((_ body ...)
    (let loop ()
     (define x
-            (let()
+            (let ()
              body
              ...))
     (if x
      (append x (loop))
      '())))))
-
-(define-syntax (cond-trace stx)
-	(syntax-case stx (else)
-		((_ (else b ...))
-	  	#`(let((r #f))
-				(begin
-			    (indent trace-level (current-error-port))
-			    (display #,(syntax-source stx) (current-error-port))
-			    (display ":" (current-error-port))
-			    (display #,(syntax-line stx) (current-error-port))
-			    (display ": else" (current-error-port))
-			    (newline (current-error-port))
-           (inc-trace-level!)
-					(set! r(let ()
-						 b ...))
-           (dec-trace-level!)
-						r)))
-		((_ (x b ...) rest ...)
-	  	#`(let((c x)(r #f))
-					(if c
-						(begin
-					    (indent trace-level (current-error-port))
-					    (display #,(syntax-source stx) (current-error-port))
-					    (display ":" (current-error-port))
-					    (display #,(syntax-line stx) (current-error-port))
-					    (display ": " (current-error-port))
-					    (write 'x (current-error-port))
-					    (display ": " (current-error-port))
-					    (write c (current-error-port))
-					    (newline (current-error-port))
-           (inc-trace-level!)
-							(set! r(let () b ...))
-           (dec-trace-level!)
-							r)
-						(cond-trace rest ...))))))
-
-(define-syntax (if-trace stx)
- (syntax-case stx ()
-  ((_ x true false)
-  	#`(let((c x)(r #f))
-    (indent trace-level (current-error-port))
-    (display #,(syntax-source stx) (current-error-port))
-    (display ":" (current-error-port))
-    (display #,(syntax-line stx) (current-error-port))
-    (display ": " (current-error-port))
-    (write 'x (current-error-port))
-    (display ": " (current-error-port))
-    (write c (current-error-port))
-    (newline (current-error-port))
-           (inc-trace-level!)
-           (set! r (if c true false))
-           (dec-trace-level!)
-           r))))
-
-(define-syntax (when-trace stx)
- (syntax-case stx ()
-  ((_ x body ...)
-  	#`(let((c x)(r #f))
-			(indent trace-level (current-error-port))
-			(display #,(syntax-source stx) (current-error-port))
-			(display ":" (current-error-port))
-			(display #,(syntax-line stx) (current-error-port))
-			(display ": " (current-error-port))
-			(write 'x (current-error-port))
-			(display ": " (current-error-port))
-			(write c (current-error-port))
-			(newline (current-error-port))
-			(inc-trace-level!)
-			(set! r (when c body ...))
-			(dec-trace-level!)
-			r))))
-
-(define-syntax (unless-trace stx)
- (syntax-case stx ()
-  ((_ x body ...)
-  	#`(let((c x)(r #f))
-			(indent trace-level (current-error-port))
-			(display #,(syntax-source stx) (current-error-port))
-			(display ":" (current-error-port))
-			(display #,(syntax-line stx) (current-error-port))
-			(display ": " (current-error-port))
-			(write 'x (current-error-port))
-			(display ": " (current-error-port))
-			(write c (current-error-port))
-			(newline (current-error-port))
-			(inc-trace-level!)
-			(set! r (unless c body ...))
-			(dec-trace-level!)
-			r))))
-(define-syntax (debug stx)
- (syntax-case stx ()
-  ((_ x)
-   #`(let ((r x))
-    (indent trace-level (current-error-port))
-    (display #,(syntax-source stx) (current-error-port))
-    (display ":" (current-error-port))
-    (display #,(syntax-line stx) (current-error-port))
-    (display ": " (current-error-port))
-    (write 'x (current-error-port))
-    (display ": " (current-error-port))
-    (write r (current-error-port))
-    (newline (current-error-port))
-    r))))
 
 (define-syntax dec!
  (syntax-rules ()
@@ -141,6 +163,7 @@
             body
             ...)
            xs))))
+
 (define-syntax for*
  (syntax-rules ()
   ((_ x xs ys body ...)
@@ -170,6 +193,18 @@
      body
      ...)))))
 
+(define-syntax receive
+ (syntax-rules ()
+  ((receive formals
+    expression
+    body
+    ...)
+   (call-with-values (lambda ()
+                      expression)
+                     (lambda formals
+                      body
+                      ...)))))
+
 (define-syntax trace
  (syntax-rules ()
   ((_ f)
@@ -196,11 +231,7 @@
 
            ; Result
            r))))))
-(define-syntax receive
-  (syntax-rules ()
-    ((receive formals expression body ...)
-     (call-with-values (lambda () expression)
-                       (lambda formals body ...)))))
+
 (define-syntax transform
  (syntax-rules ()
   ((_ xs ys body ...)
@@ -213,6 +244,9 @@
        ...)
       (append xs (loop ys))))))))
 
+(define (atom? x)
+ (not (pair? x)))
+
 (define (cadr? x y)
  (and (pair? y)
       (pair? (cdr y))
@@ -222,6 +256,8 @@
  (and (pair? y)
       (eqv? x (car y))))
 
+(define (dec-trace-level!)
+ (dec! trace-level))
 
 (define (defun? x)
  (and (car? 'define x)
@@ -232,19 +268,18 @@
  (and (car? 'define x)
       (length? 2 x)
       (atom? (cadr x))))
-(define(inc-trace-level!)(inc! trace-level))
-(define(dec-trace-level!)(dec! trace-level))
+
 (define (frag p xs)
  (cond
   ((atom? xs)
    xs)
   ((p (car xs))
    (receive (a b)
-   (splitf-at xs p)
+    (splitf-at xs p)
     (cons a (frag p b))))
   (else
    (receive (a b)
-   (splitf-at xs(negate p))
+    (splitf-at xs (negate p))
     (cons a (frag p b))))))
 
 (define (improper-list? x)
@@ -256,12 +291,11 @@
   (else
    (improper-list? (cdr x)))))
 
-(define(atom? x)(not(pair? x)))
+(define (inc-trace-level!)
+ (inc! trace-level))
 
-
-(define (indent n  (port (current-output-port)))
- (for (( i n))
-  (display " " port)))
+(define (indent n (port (current-output-port)))
+ (for ((i n)) (display " " port)))
 
 (define (length? n x)
  (if (list? x)

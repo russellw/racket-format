@@ -156,14 +156,6 @@
   ((_ x delta)
    (set! x (- x delta)))))
 
-(define-syntax filt
- (syntax-rules ()
-  ((_ x xs body ...)
-   (filter (lambda (x)
-            body
-            ...)
-           xs))))
-
 (define-syntax for*
  (syntax-rules ()
   ((_ x xs ys body ...)

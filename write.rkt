@@ -114,8 +114,7 @@
    ; 2 special args
    ((and
      (length? 3 x)
-     (memq (car x)
-           '(any-rec? do-list do-times filt for map-rec module transform)))
+     (memq (car x) '(any-rec? do-list do-times for map-rec module transform)))
     (display "(")
     (write (car x))
     (display " ")

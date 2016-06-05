@@ -10,19 +10,19 @@
        (case (car x)
         ((quasiquote)
          "`")
+        ((quasisyntax)
+         "#`")
         ((quote)
          "'")
+        ((syntax)
+         "#'")
         ((unquote)
          ",")
         ((unquote-splicing)
          ",@")
-         ((syntax)
-         "#'")
-         ((quasisyntax)
-         "#`")
-         ((unsyntax)
+        ((unsyntax)
          "#,")
-         ((unsyntax-splicing)
+        ((unsyntax-splicing)
          "#,@")
         (else
          #f))))
@@ -55,7 +55,8 @@
 
  (define (block x col)
   (cond
-   ((eq? blank-symbol x)#f)
+   ((eq? blank-symbol x)
+    #f)
    ((not (list? x))
     (inline x))
    ((null? x)
@@ -91,7 +92,7 @@
    ((and (length? 2 x)
          (or (defun? x)
              (memq (car x)
-                   (quote
+                   (quote 
                           (define-record-printer define-record-type
                            define-syntax
                            defstruct

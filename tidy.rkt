@@ -15,6 +15,12 @@
   (else
    (list< (cdr xs) (cdr ys)))))
 
+(define (name x)
+ (set! x (cadr x))
+ (if (pair? x)
+  (car x)
+  x))
+
 (define (symbol<? x y)
  (string<? (symbol->string x) (symbol->string y)))
 
@@ -43,19 +49,11 @@
         (if (list? y)
          (append* (for/list ((fragment (fragments defun? y)))
                             (if (defun? (car fragment))
-                             (sort fragment value<?)
+                             (sort fragment
+                                   (lambda (x y)
+                                    (symbol<? (name x) (name y))))
                              fragment)))
          y)))
-
- ; sort macros
- (set! x
-  (map-rec y x
-   (if (list? y)
-    (append* (for/list ((fragment (fragments (curry car? 'define-syntax) y)))
-                       (if (car? 'define-syntax (car fragment))
-                        (sort fragment value<?)
-                        fragment)))
-    y)))
 
  ; sort memq
  (set! x

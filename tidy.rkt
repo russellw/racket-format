@@ -2,6 +2,22 @@
 (require "etc.rkt")
 (require "read.rkt")
 (provide tidy)
+(define (list< xs ys)
+ (cond
+  ((eq? xs ys)
+   #f)
+  ((null? xs)
+   #t)
+  ((value<? (car xs) (car ys))
+   #t)
+  ((value<? (car ys) (car xs))
+   #f)
+  (else
+   (list< (cdr xs) (cdr ys)))))
+
+(define (symbol<? x y)
+ (string<? (symbol->string x) (symbol->string y)))
+
 (define (tidy x)
  ; Space at start of comment
  (set! x
@@ -41,6 +57,15 @@
                              zs)))
          y)))
 
+ ; Sort memq
+ (set! x
+       (map-rec y x
+        (if (and (car? 'memq y)
+                 (length? 3 y)
+                 (car? 'quote (caddr y)))
+         (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))
+         y)))
+
  ; Sort requires
  (set! x
        (map-rec y x
@@ -49,15 +74,6 @@
                             (if (car? 'require (car zs))
                              (sort zs value<?)
                              zs)))
-         y)))
-
- ; Sort memq
- (set! x
-       (map-rec y x
-        (if (and (car? 'memq y)
-                 (length? 3 y)
-                 (car? 'quote (caddr y)))
-         (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))
          y)))
 
  ; Blank line after import
@@ -202,3 +218,43 @@
 
  ; Result
  x)
+
+(define (typeof x)
+ (cond
+  ((boolean? x)
+   'boolean)
+  ((char? x)
+   'char)
+  ((null? x)
+   'null)
+  ((number? x)
+   'number)
+  ((pair? x)
+   'pair)
+  ((port? x)
+   'port)
+  ((procedure? x)
+   'procedure)
+  ((string? x)
+   'string)
+  ((symbol? x)
+   'symbol)
+  ((vector? x)
+   'vector)
+  (else
+   #f)))
+
+(define (value<? x y)
+ (if (eq? (typeof x) (typeof y))
+  (cond
+   ((char? x)
+    (char<? x y))
+   ((number? x)
+    (< x y))
+   ((pair? x)
+    (list< x y))
+   ((string? x)
+    (string<? x y))
+   ((symbol? x)
+    (symbol<? x y)))
+  (symbol<? (typeof x) (typeof y))))

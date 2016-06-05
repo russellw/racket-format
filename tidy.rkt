@@ -41,21 +41,21 @@
  (set! x
        (map-rec y x
         (if (list? y)
-         (append* (for/list ((zs (fragments defun? y)))
-                            (if (defun? (car zs))
-                             (sort zs value<?)
-                             zs)))
+         (append* (for/list ((fragment (fragments defun? y)))
+                            (if (defun? (car fragment))
+                             (sort fragment value<?)
+                             fragment)))
          y)))
 
  ; Sort macros
  (set! x
-       (map-rec y x
-        (if (list? y)
-         (append* (for/list ((zs (fragments (curry car? 'define-syntax) y)))
-                            (if (car? 'define-syntax (car zs))
-                             (sort zs value<?)
-                             zs)))
-         y)))
+  (map-rec y x
+   (if (list? y)
+    (append* (for/list ((fragment (fragments (curry car? 'define-syntax) y)))
+                       (if (car? 'define-syntax (car fragment))
+                        (sort fragment value<?)
+                        fragment)))
+    y)))
 
  ; Sort memq
  (set! x
@@ -70,10 +70,10 @@
  (set! x
        (map-rec y x
         (if (list? y)
-         (append* (for/list ((zs (fragments (curry car? 'require) y)))
-                            (if (car? 'require (car zs))
-                             (sort zs value<?)
-                             zs)))
+         (append* (for/list ((fragment (fragments (curry car? 'require) y)))
+                            (if (car? 'require (car fragment))
+                             (sort fragment value<?)
+                             fragment)))
          y)))
 
  ; Blank line after import

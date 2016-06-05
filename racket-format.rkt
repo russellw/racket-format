@@ -34,7 +34,7 @@
                    (set! end-options #t)
                    #f)
                   (else
-                   (eprintf  "~a: unknown option\n" s)
+                   (eprintf "~a: unknown option\n" s)
                    (exit 1))))
                 (vector->list (current-command-line-arguments))))
 

@@ -19,7 +19,14 @@
  (and (not (eof-object? c))
       (char=? c (string-ref s 0))))
 
-(define (read*)
+(define (read/comments)
+ (collect
+  (define x (read1))
+  (if (eof-object? x)
+   #f
+   (list x))))
+
+(define (read1)
  (whitespace)
  (cond
   ((eof-object? (peek-char))
@@ -29,19 +36,19 @@
     ((peek? "'" 1)
      (read-char)
      (read-char)
-     (list 'syntax (read*)))
+     (list 'syntax (read1)))
     ((peek? "`" 1)
      (read-char)
      (read-char)
-     (list 'quasisyntax (read*)))
+     (list 'quasisyntax (read1)))
     ((peek? "," 1)
      (read-char)
      (read-char)
      (if (peek? "@")
       (begin
        (read-char)
-       (list 'unsyntax-splicing (read*)))
-      (list 'unsyntax (read*))))
+       (list 'unsyntax-splicing (read1)))
+      (list 'unsyntax (read1))))
     ((peek? ":" 1)
      (read))
     ((peek? "\\" 1)
@@ -59,7 +66,7 @@
         (string->symbol s)))))))
   ((peek? "'")
    (read-char)
-   (list 'quote (read*)))
+   (list 'quote (read1)))
   ((peek? "(")
    (read-char)
    (let loop ()
@@ -85,28 +92,21 @@
          x)
         (cons (string->symbol s) (loop)))))
      (else
-      (cons (read*) (loop))))))
+      (cons (read1) (loop))))))
   ((peek? ",")
    (read-char)
    (if (peek? "@")
     (begin
      (read-char)
-     (list 'unquote-splicing (read*)))
-    (list 'unquote (read*))))
+     (list 'unquote-splicing (read1)))
+    (list 'unquote (read1))))
   ((peek? ";")
    (list comment-symbol (read-line)))
   ((peek? "`")
    (read-char)
-   (list 'quasiquote (read*)))
+   (list 'quasiquote (read1)))
   (else
    (read))))
-
-(define (read/comments)
- (collect
-  (define x (read*))
-  (if (eof-object? x)
-   #f
-   (list x))))
 
 (define (special-initial? c)
  (string-contains? "!#$%&*/:<=>?^_~" (make-string 1 c)))

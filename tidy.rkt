@@ -140,51 +140,6 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; blank line after record
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (car? 'define-record-type (car zs))
-                          (not (cadr? blank-symbol zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (not (car? 'define-record-printer (car zs)))
-                          (not (car? comment-symbol (car zs)))
-                          (pair? (cdr zs))
-                          (car? 'define-record-printer (cadr zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (car? 'define-record-printer (car zs))
-                          (not (cadr? blank-symbol zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (car? 'define (car zs))
-                          (pair? (cdr zs))
-                          (car? 'defstruct (cadr zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
- (set! x
-       (map-rec y x
-        (transform zs y
-         (values (if (and (car? 'defstruct (car zs))
-                          (not (cadr? blank-symbol zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
-
  ; blank line after function
  (set! x
        (map-rec y x

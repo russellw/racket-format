@@ -90,13 +90,7 @@
    (clauses (cddr x) (add1 col)))
   ((and (length? 2 x)
         (or (defun? x)
-            (memq (car x)
-                  (quote 
-                         (define-record-printer define-record-type
-                          define-syntax
-                          defstruct
-                          lambda
-                          receive)))))
+            (memq (car x) '(define-syntax lambda receive))))
    (display "(")
    (write (car x))
    (display " ")

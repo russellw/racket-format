@@ -47,7 +47,7 @@
 
  (define (block x col)
   (cond
-   ((eq? blank-symbol x))
+   ((eq? blank-symbol x)#f)
    ((not (list? x))
     (inline x))
    ((null? x)
@@ -83,7 +83,7 @@
    ((and (length? 2 x)
          (or (defun? x)
              (memq (car x)
-                   (quote 
+                   (quote
                           (define-record-printer define-record-type
                            define-syntax
                            defstruct
@@ -131,7 +131,7 @@
    ; Let
    ((and (length? 3 x)
          (memq (car x) '(let let* letrec letrec*))
-         (pair? (cadr x)))
+         (list? (cadr x)))
     (display "(")
     (write (car x))
     (display " (")

@@ -183,23 +183,23 @@
           (lambda args
            (define r #f)
 
-           ; Trace call
+           ; trace call
            (indent trace-level (current-error-port))
            (write (cons 'f args) (current-error-port))
            (newline (current-error-port))
 
-           ; Call
+           ; call
            (inc-trace-level!)
            (set! r (apply g args))
            (dec-trace-level!)
 
-           ; Trace result
+           ; trace result
            (indent trace-level (current-error-port))
            (display "-> " (current-error-port))
            (write r (current-error-port))
            (newline (current-error-port))
 
-           ; Result
+           ; result
            r))))))
 
 (define-syntax transform

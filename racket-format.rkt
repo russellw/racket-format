@@ -4,7 +4,7 @@
 (require "tidy.rkt")
 (require "write.rkt")
 
-; Options
+; options
 (define end-options #f)
 (define inplace #f)
 (define files
@@ -38,7 +38,7 @@
                    (exit 1))))
                 (vector->list (current-command-line-arguments))))
 
-; Format
+; format
 (for ((file files)) (define xs (with-input-from-file file read/comments))
  (set! xs (tidy xs))
  (define s

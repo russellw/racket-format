@@ -134,7 +134,7 @@
    (inline (cadddr x))
    (args (cddddr x) (add1 col)))
 
-  ; Let
+  ; let
   ((and (length? 3 x)
         (memq (car x) '(let let* letrec letrec*))
         (list? (cadr x)))
@@ -153,13 +153,13 @@
    (bindings (caddr x) (+ col 1 (width (car x)) 1 (width (cadr x)) 2))
    (args (cdddr x) (add1 col)))
 
-  ; Args inline
+  ; args inline
   ((and (not (memq (car x) '(and or)))
         (andmap inline? x)
         (< (+ col 1 (length x) (apply + (map width x))) 80))
    (inline x))
 
-  ; Args aligned with first
+  ; args aligned with first
   ((and (length? 2 x)
         (inline? (car x))
         (andmap (lambda (y)
@@ -173,7 +173,7 @@
    (block (cadr x) col)
    (args (cddr x) col))
 
-  ; First arg inline anyway
+  ; first arg inline anyway
   ((and (length? 2 x)
         (memq (car x) '(define set!)))
    (display "(")
@@ -183,7 +183,7 @@
    (inline (cadr x))
    (args (cddr x) col))
 
-  ; Args unaligned
+  ; args unaligned
   (else
    (display "(")
    (inc! col)

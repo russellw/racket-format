@@ -19,7 +19,7 @@
  (string<? (symbol->string x) (symbol->string y)))
 
 (define (tidy x)
- ; Space at start of comment
+ ; space at start of comment
  (set! x
   (map-rec y x
    (if (and (car? comment-symbol y)
@@ -29,7 +29,7 @@
           (string-append "; " (substring (cadr y) 1 (string-length (cadr y)))))
     y)))
 
- ; Sort cases
+ ; sort cases
  (set! x
        (map-rec y x
         (if (and (car? 'case y)
@@ -37,7 +37,7 @@
          (list* (car y) (cadr y) (sort (cddr y) value<?))
          y)))
 
- ; Sort functions
+ ; sort functions
  (set! x
        (map-rec y x
         (if (list? y)
@@ -47,7 +47,7 @@
                              fragment)))
          y)))
 
- ; Sort macros
+ ; sort macros
  (set! x
   (map-rec y x
    (if (list? y)
@@ -57,7 +57,7 @@
                         fragment)))
     y)))
 
- ; Sort memq
+ ; sort memq
  (set! x
        (map-rec y x
         (if (and (car? 'memq y)
@@ -66,7 +66,7 @@
          (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))
          y)))
 
- ; Sort requires
+ ; sort requires
  (set! x
        (map-rec y x
         (if (list? y)
@@ -76,7 +76,7 @@
                              fragment)))
          y)))
 
- ; Blank line after import
+ ; blank line after import
  (set! x
        (map-rec y x
         (transform zs y
@@ -87,7 +87,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line after use
+ ; blank line after use
  (set! x
        (map-rec y x
         (transform zs y
@@ -98,7 +98,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line before include
+ ; blank line before include
  (set! x
        (map-rec y x
         (transform zs y
@@ -110,7 +110,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line after include
+ ; blank line after include
  (set! x
        (map-rec y x
         (transform zs y
@@ -121,7 +121,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line before comment
+ ; blank line before comment
  (set! x
        (map-rec y x
         (transform zs y
@@ -132,7 +132,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line after macro
+ ; blank line after macro
  (set! x
        (map-rec y x
         (transform zs y
@@ -142,7 +142,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line after record
+ ; blank line after record
  (set! x
        (map-rec y x
         (transform zs y
@@ -187,7 +187,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Blank line after function
+ ; blank line after function
  (set! x
        (map-rec y x
         (transform zs y
@@ -197,7 +197,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Remove multiple blanks
+ ; remove multiple blanks
  (set! x
        (map-rec y x
         (transform zs y
@@ -206,7 +206,7 @@
                   (dropf zs (curry eq? blank-symbol))
                   (cdr zs))))))
 
- ; Remove trailing blanks
+ ; remove trailing blanks
  (set! x
        (map-rec y x
         (transform zs y
@@ -216,7 +216,7 @@
                   (list (car zs)))
                  (cdr zs)))))
 
- ; Result
+ ; result
  x)
 
 (define (typeof x)

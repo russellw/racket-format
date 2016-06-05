@@ -73,12 +73,12 @@
        (if (string=? s ".")
         (let ((x (read)))
          (while (not (peek? ")"))
-                (whitespace)
-                (cond
-                 ((eof-object? (peek-char))
-                  (error "expected ')'"))
-                 ((peek? ";")
-                  (read-line))))
+          (whitespace)
+          (cond
+           ((eof-object? (peek-char))
+            (error "expected ')'"))
+           ((peek? ";")
+            (read-line))))
          (read-char)
          x)
         (cons (string->symbol s) (loop)))))

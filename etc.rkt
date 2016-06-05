@@ -152,7 +152,7 @@
 (define-syntax dec!
  (syntax-rules ()
   ((_ x)
-   (set! x (- x 1)))
+   (dec! x 1))
   ((_ x delta)
    (set! x (- x delta)))))
 
@@ -171,7 +171,7 @@
 (define-syntax inc!
  (syntax-rules ()
   ((_ x)
-   (set! x (+ x 1)))
+   (inc! x 1))
   ((_ x delta)
    (set! x (+ x delta)))))
 

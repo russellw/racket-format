@@ -2,7 +2,7 @@
 (require "etc.rkt")
 (require "read.rkt")
 (provide tidy)
-(define (list< xs ys)
+(define (list<? xs ys)
  (cond
   ((eq? xs ys)
    #f)
@@ -13,7 +13,7 @@
   ((value<? (car ys) (car xs))
    #f)
   (else
-   (list< (cdr xs) (cdr ys)))))
+   (list<? (cdr xs) (cdr ys)))))
 
 (define (name x)
  (set! x (cadr x))
@@ -199,7 +199,7 @@
    ((number? x)
     (< x y))
    ((pair? x)
-    (list< x y))
+    (list<? x y))
    ((string? x)
     (string<? x y))
    ((symbol? x)

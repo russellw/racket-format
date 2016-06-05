@@ -1,9 +1,9 @@
 #lang racket
 (require (planet dyoo/while-loop:1:=1))
 (require "etc.rkt")
-(provide read/comments)
-(provide comment-symbol)
 (provide blank-symbol)
+(provide comment-symbol)
+(provide read/comments)
 (define (identifier)
  (list->string (collect
                 (if (subsequent? (peek-char))

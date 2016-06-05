@@ -29,7 +29,7 @@
           (string-append "; " (substring (cadr y) 1 (string-length (cadr y)))))
     y)))
 
- ; sort cases
+ ; sort case
  (set! x
        (map-rec y x
         (if (and (car? 'case y)
@@ -64,6 +64,16 @@
                  (length? 3 y)
                  (car? 'quote (caddr y)))
          (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))
+         y)))
+
+ ; sort provides
+ (set! x
+       (map-rec y x
+        (if (list? y)
+         (append* (for/list ((fragment (fragments (curry car? 'provide) y)))
+                            (if (car? 'provide (car fragment))
+                             (sort fragment value<?)
+                             fragment)))
          y)))
 
  ; sort requires

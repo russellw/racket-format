@@ -44,6 +44,8 @@
       (list 'unsyntax (read*))))
     ((peek? ":" 1)
      (read))
+    ((peek? "\\" 1)
+     (read))
     (else
      (let ((s (identifier)))
       (case s

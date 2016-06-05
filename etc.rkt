@@ -106,24 +106,22 @@
  (syntax-case
   stx
   ()
-  ((_ x body ...) #`(let ((c x)
-                          (r #f))
-                     (indent trace-level (current-error-port))
-                     (display #,(syntax-source stx) (current-error-port))
-                     (display ":" (current-error-port))
-                     (display #,(syntax-line stx) (current-error-port))
-                     (display ": " (current-error-port))
-                     (write 'x (current-error-port))
-                     (display ": " (current-error-port))
-                     (write c (current-error-port))
-                     (newline (current-error-port))
-                     (inc-trace-level!)
-                     (set! r
-                           (when c
-                            body
-                            ...))
-                     (dec-trace-level!)
-                     r))))
+  ((_ x body ...)
+   #`(let ((c x)
+           (r #f))
+      (eprintf "~a~a:~a: ~s: ~a\n"
+      (make-string trace-level #\space)
+               #,(syntax-source stx)
+               #,(syntax-line stx)
+               'x
+               c)
+      (inc-trace-level!)
+      (set! r
+            (when c
+             body
+             ...))
+      (dec-trace-level!)
+      r))))
 
 (define-syntax any-rec?
  (syntax-rules ()

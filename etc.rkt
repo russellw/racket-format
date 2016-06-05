@@ -239,18 +239,18 @@
       (length? 2 x)
       (atom? (cadr x))))
 
-(define (frag p xs)
+(define (fragments p xs)
  (cond
   ((atom? xs)
    xs)
   ((p (car xs))
    (receive (a b)
     (splitf-at xs p)
-    (cons a (frag p b))))
+    (cons a (fragments p b))))
   (else
    (receive (a b)
     (splitf-at xs (negate p))
-    (cons a (frag p b))))))
+    (cons a (fragments p b))))))
 
 (define (improper-list? x)
  (cond

@@ -41,6 +41,16 @@
                              zs)))
          y)))
 
+ ; Sort requires
+ (set! x
+       (map-rec y x
+        (if (list? y)
+         (append* (for/list ((zs (frag (curry car? 'require) y)))
+                            (if (car? 'require (car zs))
+                             (sort zs value<?)
+                             zs)))
+         y)))
+
  ; Sort memq
  (set! x
        (map-rec y x

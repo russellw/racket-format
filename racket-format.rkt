@@ -1,9 +1,5 @@
 #lang racket
-
-; Include macros first
 (require "etc.rkt")
-
-; Include everything else
 (require "read.rkt")
 (require "tidy.rkt")
 (require "write.rkt")

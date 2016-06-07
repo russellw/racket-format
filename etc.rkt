@@ -85,7 +85,7 @@
  (syntax-case stx
               ()
               ((_ x) #`(let ((r x))
-                        (eprintf "~a~a:~a: ~s -> ~a\n"
+                        (eprintf "~a~a:~a: ~s -> ~s\n"
                                  (make-string trace-level #\space)
                                  #,(syntax-source stx)
                                  #,(syntax-line stx)

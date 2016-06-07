@@ -37,7 +37,8 @@
 		  			"\n"
 		  			(make-string col #\space)
 					  (block x col)))
-				")"))))
+				")"))
+				))
 
 (define (bindings xs col)
 	 (when (car? blank-symbol xs)
@@ -172,28 +173,25 @@
    		"("
    (inline (car x))
     " "
-   (inc! col (+ 1 (width (car x)) 1))
-   (block (cadr x) col)
-   (args (cddr x) col)))
+   (block (cadr x) (+ col 1 (width (car x)) 1))
+   (args (cddr x) (+ col 1 (width (car x)) 1))))
 
   ; first arg inline anyway
   ((and (length? 2 x)
         (memq (car x) '(define set!)))
   	(list
    		"("
-   (inc! col)
    (inline (car x))
     " "
    (inline (cadr x))
-   (args (cddr x) col)))
+   (args (cddr x) (add1 col))))
 
   ; args unaligned
   (else
   	(list
    		"("
-   (inc! col)
-   (block (car x) col)
-   (args (cdr x) col)))
+   (block (car x) (add1 col))
+   (args (cdr x) (add1 col))))
    ))))
 
 (define (clauses xs col)

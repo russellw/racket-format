@@ -49,7 +49,5 @@
                        (lambda ()
                         (display s))
                        #:exists
-                       'replace
-                       #:mode
-                       'binary)
+                       'replace)
   (display s)))

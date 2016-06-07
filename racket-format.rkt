@@ -2,7 +2,7 @@
 (require "etc.rkt")
 (require "read.rkt")
 (require "tidy.rkt")
-(require "write.rkt")
+(require "format.rkt")
 
 ; options
 (define end-options #f)
@@ -39,11 +39,10 @@
                 (vector->list (current-command-line-arguments))))
 
 ; format
-(for ((file files)) (define xs (with-input-from-file file read/comments))
+(for ((file files)) (define xs (with-input-from-file file read-code))
  (set! xs (tidy xs))
  (define s
-         (with-output-to-string (lambda ()
-                                 (write/comments xs))))
+                                 (format-code xs))
  (if inplace
   (with-output-to-file file
                        (lambda ()

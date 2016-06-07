@@ -159,14 +159,6 @@
                                    (dec-trace-level!)
                                    r))))
 
-(define (improper-list? x)
- (cond
-  ((null? x)
-   #f)
-  ((atom? x)
-   #t)
-  (else
-   (improper-list? (cdr x)))))
 
 (define-syntax inc!
  (syntax-rules ()

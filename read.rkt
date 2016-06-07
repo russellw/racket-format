@@ -3,7 +3,7 @@
 (require "etc.rkt")
 (provide blank-symbol)
 (provide comment-symbol)
-(provide read/comments)
+(provide read-code)
 (define (identifier)
  (list->string (collect
                 (if (subsequent? (peek-char))
@@ -19,7 +19,7 @@
  (and (not (eof-object? c))
       (char=? c (string-ref s 0))))
 
-(define (read/comments)
+(define (read-code)
  (collect
   (define x (read1))
   (if (eof-object? x)

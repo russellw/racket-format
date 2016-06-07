@@ -97,7 +97,7 @@
    (inline (cadr x))
    (args (cddr x) (add1 col)))
   ((and (length? 2 x)
-        (memq (car x) '(do-until if unless when while)))
+        (memq (car x) '(if unless when while)))
    (display "(")
    (write (car x))
    (display " ")

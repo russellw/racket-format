@@ -171,9 +171,7 @@
  (for ((i n)) (display " " port)))
 
 (define (length? n x)
- (if (list? x)
-  (<= n (length x))
-  (<= n (string-length x))))
+ (<= n (length x)))
 
 (define-syntax map-rec
  (syntax-rules ()

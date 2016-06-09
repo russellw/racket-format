@@ -262,6 +262,6 @@
   (string-append*
   (cons(car xs)
   	(flatten
-(add-between(map(lambda(x)(block x 0))(cdr xs))"\n")
+(map(lambda(x)(list(block x 0)"\n"))(cdr xs))
 ))))
 (define widths (make-hash))

@@ -18,12 +18,19 @@
  (and (not (eof-object? c))
       (char=? c (string-ref s 0))))
 
+(define(lang)
+ (whitespace)
+	(if(equal?(peek-string 5 0)"#lang")
+(string-append	(read-line)"\n")
+	""))
+
 (define (read-code)
+(cons(lang)
  (collect
   (define x (read1))
   (if (eof-object? x)
    #f
-   (list x))))
+   (list x)))))
 
 (define (read1)
  (whitespace)

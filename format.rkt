@@ -260,7 +260,8 @@
 
 (define (format-code xs)
   (string-append*
+  (cons(car xs)
   	(flatten
-(add-between(map(lambda(x)(block x 0))xs)"\n")
-)))
+(add-between(map(lambda(x)(block x 0))(cdr xs))"\n")
+))))
 (define widths (make-hash))

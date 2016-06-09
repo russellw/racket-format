@@ -39,13 +39,9 @@
                 (vector->list (current-command-line-arguments))))
 
 ; format
-(for ((file files)) (define xs (with-input-from-file file read-module))
+(for ((path files)) (define xs (with-input-from-file path read-module))
  (set! xs (tidy xs))
  (define s (format-module xs))
  (if inplace
-  (with-output-to-file file
-                       (lambda ()
-                        (display s))
-                       #:exists
-                       'replace)
+  (display-to-file s path #:exists 'replace)
   (display s)))

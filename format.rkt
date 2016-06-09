@@ -259,6 +259,8 @@
   w))
 
 (define (format-code xs)
-(add-between(map(lambda(x)(block x 0))xs)"\n"))
-
+  (string-append*
+  	(flatten
+(add-between(map(lambda(x)(block x 0))xs)"\n")
+)))
 (define widths (make-hash))

@@ -47,6 +47,7 @@
   (string-append*
   	(flatten
   		(list
+  		(add-between
 		  	(for/list ((x xs))
 				  (if (atom? x)
 				  	(~s x)
@@ -56,12 +57,9 @@
 					    " "
 					    (block (cadr x) (+ col 1 (width (car x)) 1))
 					    ")")))
-				(if(pair?(cdr xs))
-					(list
-						"\n"
-						(make-string col #\space)
-)
-					'())
+					    (list
+		  			"\n"
+		  			(make-string col #\space)))
 				")"))))
 
 (define (block x col)

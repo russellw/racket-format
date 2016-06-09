@@ -92,18 +92,6 @@
       (length? 2 x)
       (atom? (cadr x))))
 
-(define-syntax for*
- (syntax-rules ()
-  ((_ x xs ys b ...)
-   (let loop ((xs ys))
-    (if (atom? xs)
-     xs
-     (let ((x (car xs)))
-      (cons (begin
-             b
-             ...)
-            (loop (cdr xs)))))))))
-
 (define (fragments p xs)
  (cond
   ((atom? xs)

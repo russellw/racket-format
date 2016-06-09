@@ -28,7 +28,7 @@
                   ((or (string-prefix? s "--v")
                        (string-prefix? s "-V")
                        (string-prefix? s "-v"))
-                   (displayln "racket-format version 1")
+                   (displayln "racket-format version 0")
                    (exit 0))
                   ((string=? s "--")
                    (set! end-options #t)

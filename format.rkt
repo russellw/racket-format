@@ -3,7 +3,7 @@
 (require "etc.rkt")
 (require "tidy.rkt")
 (require "read.rkt")
-(provide format-code)
+(provide format-module)
 (define (abbrev-prefix x)
  (and (list? x)
       (= (length x) 2)
@@ -258,7 +258,7 @@
   (hash-set! widths x w)
   w))
 
-(define (format-code xs)
+(define (format-module xs)
   (string-append*
   (cons(car xs)
   	(flatten

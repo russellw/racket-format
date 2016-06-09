@@ -2,7 +2,7 @@
 (require (planet dyoo/while-loop:1:=1))
 (require "etc.rkt")
 (provide comment-symbol)
-(provide read-code)
+(provide read-module)
 (define (identifier)
  (list->string (collect
                 (if (subsequent? (peek-char))
@@ -24,7 +24,7 @@
 (string-append	(read-line)"\n")
 	""))
 
-(define (read-code)
+(define (read-module)
 (cons(lang)
  (collect
   (define x (read1))

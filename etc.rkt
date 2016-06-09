@@ -159,7 +159,6 @@
                                    (dec-trace-level!)
                                    r))))
 
-
 (define-syntax inc!
  (syntax-rules ()
   ((_ x)

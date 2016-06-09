@@ -4,10 +4,7 @@
 (provide comment-symbol)
 (provide read-module)
 (define (identifier)
- (list->string (collect
-                (if (subsequent? (peek-char))
-                 (list (read-char))
-                 #f))))
+ (list->string (while/list (subsequent? (peek-char)) (read-char))))
 
 (define (initial? c)
  (or (char-alphabetic? c)

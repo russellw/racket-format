@@ -17,11 +17,11 @@
 (define (cadr? x y)
  (and (pair? y)
       (pair? (cdr y))
-      (eqv? x (cadr y))))
+      (equal? x (cadr y))))
 
 (define (car? x y)
  (and (pair? y)
-      (eqv? x (car y))))
+      (equal? x (car y))))
 
 (define-syntax collect
  (syntax-rules ()

@@ -145,7 +145,7 @@
               ()
               ((_ x true false) #`(let ((c x)
                                         (r #f))
-                                   (eprintf "~a~a:~a: ~s -> ~a\n"
+                                   (eprintf "~a~a:~a: ~s -> ~s\n"
                                             (make-string trace-level #\space)
                                             #,(syntax-source stx)
                                             #,(syntax-line stx)
@@ -242,7 +242,7 @@
               ()
               ((_ x b ...) #`(let ((c x)
                                    (r #f))
-                              (eprintf "~a~a:~a: ~s -> ~a\n"
+                              (eprintf "~a~a:~a: ~s -> ~s\n"
                                        (make-string trace-level #\space)
                                        #,(syntax-source stx)
                                        #,(syntax-line stx)
@@ -261,7 +261,7 @@
               ()
               ((_ x b ...) #`(let ((c x)
                                    (r #f))
-                              (eprintf "~a~a:~a: ~s -> ~a\n"
+                              (eprintf "~a~a:~a: ~s -> ~s\n"
                                        (make-string trace-level #\space)
                                        #,(syntax-source stx)
                                        #,(syntax-line stx)

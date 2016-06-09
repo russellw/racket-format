@@ -138,8 +138,7 @@
     ; args aligned with first
     ((and (length? 2 x)
           (inline? (car x))
-          (for/and ((y (cdr x))) (< (+ col 1 (width (car x)) 1 (width y)) 80))
-          (cdr x))
+          (for/and ((y (cdr x))) (< (+ col 1 (width (car x)) 1 (width y)) 80)))
      (list "("
            (inline (car x))
            " "

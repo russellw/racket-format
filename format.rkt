@@ -256,10 +256,18 @@
   (hash-set! widths x w)
   w))
 
+  (define(trim-lines s)
+  (string-join
+(for/list((s   (string-split s "\n")))
+	(string-trim s #:left? #f))
+	"\n"
+	#:after-last "\n"))
+
 (define (format-module xs)
+(trim-lines
   (string-append*
   (cons(car xs)
   	(flatten
 (map(lambda(x)(list(block x 0)"\n"))(cdr xs))
-))))
+)))))
 (define widths (make-hash))

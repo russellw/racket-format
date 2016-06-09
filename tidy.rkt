@@ -205,4 +205,5 @@
    ((symbol? x)
     (symbol<? x y)))
   (symbol<? (typeof x) (typeof y))))
+
 (define blank-symbol (gensym))

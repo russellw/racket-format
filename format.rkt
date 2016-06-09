@@ -214,7 +214,7 @@
    ((atom? clause)
    (list
     (make-string col #\space)
-    (~a clause)))
+    (~s clause)))
    (else
    (list
     (make-string col #\space)
@@ -237,7 +237,7 @@
     (add-between(map inline x)" ")
     ")"))
   (else
-   (~a x))))))
+   (~s x))))))
 
 (define (inline? x)
  (and (not (any-rec? y x

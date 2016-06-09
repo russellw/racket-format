@@ -1,8 +1,8 @@
 #lang racket
 (require "etc.rkt")
+(require "format.rkt")
 (require "read.rkt")
 (require "tidy.rkt")
-(require "format.rkt")
 
 ; options
 (define end-options #f)
@@ -41,8 +41,7 @@
 ; format
 (for ((file files)) (define xs (with-input-from-file file read-module))
  (set! xs (tidy xs))
- (define s
-                                 (format-module xs))
+ (define s (format-module xs))
  (if inplace
   (with-output-to-file file
                        (lambda ()

@@ -25,10 +25,10 @@
 (define (symbol<? x y)
  (string<? (symbol->string x) (symbol->string y)))
 
-(define (tidy x)
+(define (tidy m)
  ; space at start of comment
- (set! x
-  (map-rec y x
+ (set! m
+  (map-rec y m
    (if (and (car? comment-symbol y)
             (char-alphabetic? (string-ref (cadr y) 1)))
     (list comment-symbol
@@ -36,19 +36,19 @@
     y)))
 
  ; sort
- (set! x
-  (map-rec y x
-   (if (atom? y)
-    y
+ (set! m
+  (map-rec x m
+   (if (atom? x)
+    x
     (begin
      ; case
-     (when (and (car? 'case y)
-                (length? 2 y))
-      (set! y (list* (car y) (cadr y) (sort (cddr y) value<?))))
+     (when (and (car? 'case x)
+                (length? 2 x))
+      (set! x (list* (car x) (cadr x) (sort (cddr x) value<?))))
 
      ; functions
-     (set! y
-           (append* (for/list ((fragment (fragments defun? y)))
+     (set! x
+           (append* (for/list ((fragment (fragments defun? x)))
                               (if (defun? (car fragment))
                                (sort fragment
                                      (lambda (a b)
@@ -56,33 +56,33 @@
                                fragment))))
 
      ; memq
-     (when (and (car? 'memq y)
-                (length? 3 y)
-                (car? 'quote (caddr y)))
-      (set! y
-       (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))))
+     (when (and (car? 'memq x)
+                (length? 3 x)
+                (car? 'quote (caddr x)))
+      (set! x
+       (list (car x) (cadr x) (list 'quote (sort (cadr (caddr x)) value<?)))))
 
      ; provides
-     (set! y
-           (append* (for/list ((fragment (fragments (curry car? 'provide) y)))
+     (set! x
+           (append* (for/list ((fragment (fragments (curry car? 'provide) x)))
                               (if (car? 'provide (car fragment))
                                (sort fragment value<?)
                                fragment))))
 
      ; requires
-     (set! y
-           (append* (for/list ((fragment (fragments (curry car? 'require) y)))
+     (set! x
+           (append* (for/list ((fragment (fragments (curry car? 'require) x)))
                               (if (car? 'require (car fragment))
                                (sort fragment value<?)
                                fragment))))
 
      ; sorted
-     y))))
+     x))))
 
  ; blank line after import
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (car? 'import (car zs))
                           (pair? (cdr zs))
                           (not (car? 'import (cadr zs))))
@@ -91,9 +91,9 @@
                  (cdr zs)))))
 
  ; blank line after use
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (car? 'use (car zs))
                           (pair? (cdr zs))
                           (not (car? 'use (cadr zs))))
@@ -102,9 +102,9 @@
                  (cdr zs)))))
 
  ; blank line before include
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (not (car? 'include (car zs)))
                           (not (car? comment-symbol (car zs)))
                           (pair? (cdr zs))
@@ -114,9 +114,9 @@
                  (cdr zs)))))
 
  ; blank line after include
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (car? 'include (car zs))
                           (pair? (cdr zs))
                           (not (car? 'include (cadr zs))))
@@ -125,9 +125,9 @@
                  (cdr zs)))))
 
  ; blank line before comment
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (not (car? comment-symbol (car zs)))
                           (pair? (cdr zs))
                           (car? comment-symbol (cadr zs)))
@@ -136,9 +136,9 @@
                  (cdr zs)))))
 
  ; blank line after function
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (defun? (car zs))
                           (not (cadr? blank-symbol zs)))
                   (list (car zs) blank-symbol)
@@ -146,18 +146,18 @@
                  (cdr zs)))))
 
  ; remove multiple blanks
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (list (car zs))
                  (if (car? blank-symbol zs)
                   (dropf zs (curry eq? blank-symbol))
                   (cdr zs))))))
 
  ; remove trailing blanks
- (set! x
-       (map-rec y x
-        (transform zs y
+ (set! m
+       (map-rec x m
+        (transform zs x
          (values (if (and (car? blank-symbol zs)
                           (null? (cdr zs)))
                   '()
@@ -165,7 +165,7 @@
                  (cdr zs)))))
 
  ; result
- x)
+ m)
 
 (define (typeof x)
  (cond

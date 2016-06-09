@@ -179,11 +179,11 @@
                                  (args (cdr clause) (add1 col)))))))
          ")"))))
 
-(define (format-module xs)
- (trim-lines (string-append* (cons (car xs)
+(define (format-module m)
+ (trim-lines (string-append* (cons (car m)
                                    (flatten (map (lambda (x)
                                                   (list (block x 0) "\n"))
-                                                 (cdr xs)))))))
+                                                 (cdr m)))))))
 
 (define (inline x)
  (string-append* (flatten (cond

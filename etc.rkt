@@ -35,17 +35,6 @@
      (append r (loop))
      '())))))
 
-(define-syntax collect-for
- (syntax-rules ()
-  ((_ x xs1 b ...)
-   (let loop ((xs xs1))
-    (if (null? xs)
-     '()
-     (append (let ((x (car xs)))
-              b
-              ...)
-             (loop (cdr xs))))))))
-
 (define-syntax (cond-trace stx)
  (syntax-case
   stx

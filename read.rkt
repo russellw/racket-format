@@ -1,7 +1,6 @@
 #lang racket
 (require (planet dyoo/while-loop:1:=1))
 (require "etc.rkt")
-(provide blank-symbol)
 (provide comment-symbol)
 (provide read-code)
 (define (identifier)
@@ -125,5 +124,4 @@
   (read-char)
   (whitespace)))
 
-(define blank-symbol (gensym))
 (define comment-symbol (gensym))

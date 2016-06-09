@@ -23,18 +23,6 @@
  (and (pair? y)
       (equal? x (car y))))
 
-(define-syntax collect
- (syntax-rules ()
-  ((_ b ...)
-   (let loop ()
-    (define r
-            (let ()
-             b
-             ...))
-    (if r
-     (append r (loop))
-     '())))))
-
 (define-syntax (cond-trace stx)
  (syntax-case
   stx

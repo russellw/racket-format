@@ -23,11 +23,11 @@
 
 (define (read-module)
  (cons (lang)
-       (collect
+       (let loop ()
         (define x (read1))
         (if (eof-object? x)
-         #f
-         (list x)))))
+         '()
+         (cons x (loop))))))
 
 (define (read1)
  (whitespace)

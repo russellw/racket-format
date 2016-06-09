@@ -35,54 +35,49 @@
           (string-append "; " (substring (cadr y) 1 (string-length (cadr y)))))
     y)))
 
- ; sort case
+ ; sort
  (set! x
-       (map-rec y x
-        (if (and (car? 'case y)
-                 (length? 2 y))
-         (list* (car y) (cadr y) (sort (cddr y) value<?))
-         y)))
+  (map-rec y x
+   (if (atom? y)
+    y
+    (begin
+     ; case
+     (when (and (car? 'case y)
+                (length? 2 y))
+      (set! y (list* (car y) (cadr y) (sort (cddr y) value<?))))
 
- ; sort functions
- (set! x
-       (map-rec y x
-        (if (list? y)
-         (append* (for/list ((fragment (fragments defun? y)))
-                            (if (defun? (car fragment))
-                             (sort fragment
-                                   (lambda (x y)
-                                    (symbol<? (name x) (name y))))
-                             fragment)))
-         y)))
+     ; functions
+     (set! y
+           (append* (for/list ((fragment (fragments defun? y)))
+                              (if (defun? (car fragment))
+                               (sort fragment
+                                     (lambda (a b)
+                                      (symbol<? (name a) (name b))))
+                               fragment))))
 
- ; sort memq
- (set! x
-       (map-rec y x
-        (if (and (car? 'memq y)
-                 (length? 3 y)
-                 (car? 'quote (caddr y)))
-         (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))
-         y)))
+     ; memq
+     (when (and (car? 'memq y)
+                (length? 3 y)
+                (car? 'quote (caddr y)))
+      (set! y
+       (list (car y) (cadr y) (list 'quote (sort (cadr (caddr y)) value<?)))))
 
- ; sort provides
- (set! x
-       (map-rec y x
-        (if (list? y)
-         (append* (for/list ((fragment (fragments (curry car? 'provide) y)))
-                            (if (car? 'provide (car fragment))
-                             (sort fragment value<?)
-                             fragment)))
-         y)))
+     ; provides
+     (set! y
+           (append* (for/list ((fragment (fragments (curry car? 'provide) y)))
+                              (if (car? 'provide (car fragment))
+                               (sort fragment value<?)
+                               fragment))))
 
- ; sort requires
- (set! x
-       (map-rec y x
-        (if (list? y)
-         (append* (for/list ((fragment (fragments (curry car? 'require) y)))
-                            (if (car? 'require (car fragment))
-                             (sort fragment value<?)
-                             fragment)))
-         y)))
+     ; requires
+     (set! y
+           (append* (for/list ((fragment (fragments (curry car? 'require) y)))
+                              (if (car? 'require (car fragment))
+                               (sort fragment value<?)
+                               fragment))))
+
+     ; sorted
+     y))))
 
  ; blank line after import
  (set! x

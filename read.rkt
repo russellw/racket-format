@@ -13,24 +13,24 @@
  (or (char-alphabetic? c)
      (special-initial? c)))
 
+(define (lang)
+ (whitespace)
+ (if (equal? (peek-string 5 0) "#lang")
+  (string-append (read-line) "\n")
+  ""))
+
 (define (peek? s (skip 0))
  (define c (peek-char (current-input-port) skip))
  (and (not (eof-object? c))
       (char=? c (string-ref s 0))))
 
-(define(lang)
- (whitespace)
-	(if(equal?(peek-string 5 0)"#lang")
-(string-append	(read-line)"\n")
-	""))
-
 (define (read-module)
-(cons(lang)
- (collect
-  (define x (read1))
-  (if (eof-object? x)
-   #f
-   (list x)))))
+ (cons (lang)
+       (collect
+        (define x (read1))
+        (if (eof-object? x)
+         #f
+         (list x)))))
 
 (define (read1)
  (whitespace)

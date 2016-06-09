@@ -22,9 +22,6 @@
   (car x)
   x))
 
-(define (symbol<? x y)
- (string<? (symbol->string x) (symbol->string y)))
-
 (define (tidy m)
  ; space at start of comment
  (set! m

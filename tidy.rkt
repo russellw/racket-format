@@ -63,7 +63,7 @@
     ; case
     (when (and (car? 'case x)
                (length? 2 x))
-     (set! x (list* (car x) (cadr x) (sort (cddr x) value<?))))
+     (set! x `(,(car x) ,(cadr x) ,@(sort (cddr x) value<?))))
 
     ; functions
     (set! x

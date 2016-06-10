@@ -78,8 +78,7 @@
     (when (and (car? 'memq x)
                (length? 3 x)
                (car? 'quote (caddr x)))
-     (set! x
-      (list (car x) (cadr x) (list 'quote (sort (cadr (caddr x)) value<?)))))
+     (set! x `(,(car x) ,(cadr x) ',(sort (cadr (caddr x)) value<?))))
 
     ; provides
     (set! x

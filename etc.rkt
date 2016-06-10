@@ -27,17 +27,15 @@
  (syntax-case
   stx
   (else)
-  ((_ (else b ...)) #`(let ((r #f))
+  ((_ (else b ...)) #`(let ()
                        (eprintf "~a~a:~a: else\n"
                                 (make-string (trace-level) #\space)
                                 #,(syntax-source stx)
                                 #,(syntax-line stx))
-                       (set! r
-                             (parameterize ((trace-level (add1 (trace-level))))
-                                           (let ()
-                                            b
-                                            ...)))
-                       r))
+                       (parameterize ((trace-level (add1 (trace-level))))
+                                     (let ()
+                                      b
+                                      ...))))
   ((_ (x b ...) rest ...)
    #`(let ((c x)
            (r #f))
@@ -85,20 +83,17 @@
  (syntax-case
   stx
   ()
-  ((_ x true false) #`(let ((c x)
-                            (r #f))
+  ((_ x true false) #`(let ((c x))
                        (eprintf "~a~a:~a: ~s -> ~s\n"
                                 (make-string (trace-level) #\space)
                                 #,(syntax-source stx)
                                 #,(syntax-line stx)
                                 'x
                                 c)
-                       (set! r
-                             (parameterize ((trace-level (add1 (trace-level))))
-                                           (if c
-                                            true
-                                            false)))
-                       r))))
+                       (parameterize ((trace-level (add1 (trace-level))))
+                                     (if c
+                                      true
+                                      false))))))
 
 (define (length? n x)
  (<= n (length x)))
@@ -155,39 +150,33 @@
  (syntax-case
   stx
   ()
-  ((_ x b ...) #`(let ((c x)
-                       (r #f))
+  ((_ x b ...) #`(let ((c x))
                   (eprintf "~a~a:~a: ~s -> ~s\n"
                            (make-string (trace-level) #\space)
                            #,(syntax-source stx)
                            #,(syntax-line stx)
                            'x
                            c)
-                  (set! r
-                        (parameterize ((trace-level (add1 (trace-level))))
-                                      (unless c
-                                       b
-                                       ...)))
-                  r))))
+                  (parameterize ((trace-level (add1 (trace-level))))
+                                (unless c
+                                 b
+                                 ...))))))
 
 (define-syntax (when-trace stx)
  (syntax-case
   stx
   ()
-  ((_ x b ...) #`(let ((c x)
-                       (r #f))
+  ((_ x b ...) #`(let ((c x))
                   (eprintf "~a~a:~a: ~s -> ~s\n"
                            (make-string (trace-level) #\space)
                            #,(syntax-source stx)
                            #,(syntax-line stx)
                            'x
                            c)
-                  (set! r
-                        (parameterize ((trace-level (add1 (trace-level))))
-                                      (when c
-                                       b
-                                       ...)))
-                  r))))
+                  (parameterize ((trace-level (add1 (trace-level))))
+                                (when c
+                                 b
+                                 ...))))))
 
 (define-syntax while/list
  (syntax-rules ()

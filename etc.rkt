@@ -142,13 +142,14 @@
 
 (define-syntax map-rec
  (syntax-rules ()
-  ((_ x xs b ...)
-   (let loop ((x xs))
-    (when (pair? x)
-     (set! x (cons (loop (car x)) (loop (cdr x)))))
-    (begin
-     b
-     ...)))))
+  ((_ x x1 b ...)
+   (let loop ((x x1))
+    (if (atom? x)
+     x
+     (begin
+      (set! x (for/list ((y x)) (loop y)))
+      b
+      ...))))))
 
 (define-syntax receive
  (syntax-rules ()

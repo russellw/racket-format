@@ -122,6 +122,17 @@
      (char-numeric? c)
      (special-subsequent? c)))
 
+(define-syntax while/list
+ (syntax-rules ()
+  ((_ c b ...)
+   (let loop ()
+    (if c
+     (cons (let ()
+            b
+            ...)
+           (loop))
+     '())))))
+
 (define (whitespace)
  (when (and (not (eof-object? (peek-char)))
             (char-whitespace? (peek-char)))

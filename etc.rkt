@@ -74,14 +74,3 @@
        b
        ...)
       (append xs (loop ys))))))))
-
-(define-syntax while/list
- (syntax-rules ()
-  ((_ c b ...)
-   (let loop ()
-    (if c
-     (cons (let ()
-            b
-            ...)
-           (loop))
-     '())))))

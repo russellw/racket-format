@@ -140,7 +140,7 @@
 (define (length? n x)
  (<= n (length x)))
 
-(define-syntax map-rec
+(define-syntax map-lists
  (syntax-rules ()
   ((_ x x1 b ...)
    (let loop ((x x1))

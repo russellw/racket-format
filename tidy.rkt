@@ -25,7 +25,7 @@
 (define (tidy m)
  ; space at start of comment
  (set! m
-  (map-rec y m
+  (map-lists y m
    (if (and (car? comment-symbol y)
             (char-alphabetic? (string-ref (cadr y) 1)))
     (list comment-symbol
@@ -34,7 +34,7 @@
 
  ; sort
  (set! m
-  (map-rec x m
+  (map-lists x m
    (if (atom? x)
     x
     (begin
@@ -78,7 +78,7 @@
 
  ; blank line after import
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (car? 'import (car zs))
                           (pair? (cdr zs))
@@ -89,7 +89,7 @@
 
  ; blank line after use
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (car? 'use (car zs))
                           (pair? (cdr zs))
@@ -100,7 +100,7 @@
 
  ; blank line before include
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (not (car? 'include (car zs)))
                           (not (car? comment-symbol (car zs)))
@@ -112,7 +112,7 @@
 
  ; blank line after include
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (car? 'include (car zs))
                           (pair? (cdr zs))
@@ -123,7 +123,7 @@
 
  ; blank line before comment
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (not (car? comment-symbol (car zs)))
                           (pair? (cdr zs))
@@ -134,7 +134,7 @@
 
  ; blank line after function
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (defun? (car zs))
                           (not (cadr? blank-symbol zs)))
@@ -144,7 +144,7 @@
 
  ; remove multiple blanks
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (list (car zs))
                  (if (car? blank-symbol zs)
@@ -153,7 +153,7 @@
 
  ; remove trailing blanks
  (set! m
-       (map-rec x m
+       (map-lists x m
         (transform zs x
          (values (if (and (car? blank-symbol zs)
                           (null? (cdr zs)))

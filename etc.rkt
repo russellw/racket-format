@@ -51,17 +51,6 @@
 (define (length? n x)
  (<= n (length x)))
 
-(define-syntax map-lists
- (syntax-rules ()
-  ((_ x x1 b ...)
-   (let loop ((x x1))
-    (if (atom? x)
-     x
-     (begin
-      (set! x (for/list ((y x)) (loop y)))
-      b
-      ...))))))
-
 (define-syntax receive
  (syntax-rules ()
   ((receive args

@@ -29,6 +29,17 @@
   (else
    (list<? (cdr xs) (cdr ys)))))
 
+(define-syntax map-lists
+ (syntax-rules ()
+  ((_ x x1 b ...)
+   (let loop ((x x1))
+    (if (atom? x)
+     x
+     (begin
+      (set! x (for/list ((y x)) (loop y)))
+      b
+      ...))))))
+
 (define (name x)
  (set! x (cadr x))
  (if (pair? x)

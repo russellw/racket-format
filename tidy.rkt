@@ -3,6 +3,19 @@
 (require "read.rkt")
 (provide blank-symbol)
 (provide tidy)
+(define (fragments p xs)
+ (cond
+  ((null? xs)
+   xs)
+  ((p (car xs))
+   (receive (a b)
+    (splitf-at xs p)
+    (cons a (fragments p b))))
+  (else
+   (receive (a b)
+    (splitf-at xs (negate p))
+    (cons a (fragments p b))))))
+
 (define (list<? xs ys)
  (cond
   ((eq? xs ys)

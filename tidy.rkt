@@ -135,20 +135,6 @@
                        (else
                         #f)))))
 
- ; blank lines before comments
- (set! m
-       (map-lists x m
-        (add-betweenf x
-                      (lambda (v w)
-                       (cond
-                        ((eq? v blank-symbol)
-                         #f)
-                        ((and (not (car? comment-symbol v))
-                              (car? comment-symbol w))
-                         blank-symbol)
-                        (else
-                         #f))))))
-
  ; blank lines around functions
  (set! m
        (map-lists x m
@@ -161,6 +147,20 @@
                          #f)
                         ((or (defun? v)
                              (defun? w))
+                         blank-symbol)
+                        (else
+                         #f))))))
+
+ ; blank lines before comments
+ (set! m
+       (map-lists x m
+        (add-betweenf x
+                      (lambda (v w)
+                       (cond
+                        ((eq? v blank-symbol)
+                         #f)
+                        ((and (not (car? comment-symbol v))
+                              (car? comment-symbol w))
                          blank-symbol)
                         (else
                          #f))))))

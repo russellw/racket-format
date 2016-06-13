@@ -70,6 +70,17 @@
   (_
    #f)))
 
+(define (sort-case v)
+ (match v
+  ((list (list c ...) b ...)
+   (cons (sort c value<?) b))
+  (_
+   v)))
+
+(define (sort-cases lst)
+ (set! lst (map sort-case lst))
+ (sort lst value<?))
+
 (define (tidy m)
  ; space at start of comment
  (set! m
@@ -92,7 +103,7 @@
            ((list 'case v lst ...)
             `(case ,v
               (unquote-splicing
-               (sort lst value<?))))
+               (sort-cases lst))))
            (_
             x)))
 

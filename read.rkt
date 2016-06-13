@@ -51,9 +51,9 @@
       (case s
        (("#")
         (list->vector (read)))
-       (("#f" "#F")
+       (("#F" "#f")
         #f)
-       (("#t" "#T")
+       (("#T" "#t")
         #t)
        (else
         (string->symbol s)))))))

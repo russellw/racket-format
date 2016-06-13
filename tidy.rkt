@@ -49,15 +49,14 @@
 (define (tidy m)
  ; space at start of comment
  (set! m
-  (map-lists y m
-   (match y
-    ((list (== comment-symbol) s)
-     #:when
-     (char-alphabetic? (string-ref s 1))
-     `(,comment-symbol
-       ,(string-append "; " (substring s 1 (string-length s)))))
-    (_
-     y))))
+       (map-lists y m
+        (match y
+         ((list (== comment-symbol) s)
+          #:when
+          (char-alphabetic? (string-ref s 1))
+          `(,comment-symbol ,(string-append "; " (substring s 1))))
+         (_
+          y))))
 
  ; sort
  (set! m

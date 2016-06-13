@@ -51,11 +51,11 @@
  (set! m
   (map-lists y m
    (match y
-    (`(,(== comment-symbol) ,s)
+    ((list (== comment-symbol) s)
      #:when
      (char-alphabetic? (string-ref s 1))
      `(,comment-symbol
-       ,(string-append "; " (substring (cadr y) 1 (string-length (cadr y))))))
+       ,(string-append "; " (substring s 1 (string-length s)))))
     (_
      y))))
 
@@ -64,9 +64,14 @@
   (map-lists x m
    (begin
     ; case
-    (when (and (car? 'case x)
-               (length? 2 x))
-     (set! x `(,(car x) ,(cadr x) ,@(sort (cddr x) value<?))))
+    (set! x
+          (match x
+           ((list 'case v lst ...)
+            `(case ,v
+              (unquote-splicing
+               (sort lst value<?))))
+           (_
+            x)))
 
     ; functions
     (set! x

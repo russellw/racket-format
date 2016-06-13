@@ -1,8 +1,10 @@
 #lang racket
+
 (require (planet dyoo/while-loop))
 (require "etc.rkt")
 (provide comment-symbol)
 (provide read-module)
+
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char)) (read-char))))
 

@@ -1,5 +1,7 @@
 #lang racket
+
 (provide (all-defined-out))
+
 (define-syntax any-rec?
  (syntax-rules ()
   ((_ x xs b ...)

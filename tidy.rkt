@@ -1,8 +1,22 @@
 #lang racket
+
 (require "etc.rkt")
 (require "read.rkt")
 (provide blank-symbol)
 (provide tidy)
+
+(define (add-betweenf lst proc)
+ (cond
+  ((null? lst)
+   lst)
+  ((null? (cdr lst))
+   lst)
+  (else
+   (let ((v (proc (car lst) (cadr lst))))
+    (if v
+     (list* (car lst) v (add-betweenf (cdr lst) proc))
+     (list* (car lst) (add-betweenf (cdr lst) proc)))))))
+
 (define (fragments p xs)
  (cond
   ((null? xs)
@@ -45,6 +59,15 @@
  (if (pair? x)
   (car x)
   x))
+
+(define (prelude? v)
+ (match v
+  ((list 'provide w)
+   #t)
+  ((list 'require w)
+   #t)
+  (_
+   #f)))
 
 (define (tidy m)
  ; space at start of comment
@@ -100,48 +123,17 @@
 
  ; blank line after import
  (set! m
-       (map-lists x m
-        (transform zs x
-         (values (if (and (car? 'import (car zs))
-                          (pair? (cdr zs))
-                          (not (car? 'import (cadr zs))))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
-
- ; blank line after use
- (set! m
-       (map-lists x m
-        (transform zs x
-         (values (if (and (car? 'use (car zs))
-                          (pair? (cdr zs))
-                          (not (car? 'use (cadr zs))))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
-
- ; blank line before include
- (set! m
-       (map-lists x m
-        (transform zs x
-         (values (if (and (not (car? 'include (car zs)))
-                          (not (car? comment-symbol (car zs)))
-                          (pair? (cdr zs))
-                          (car? 'include (cadr zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
-
- ; blank line after include
- (set! m
-       (map-lists x m
-        (transform zs x
-         (values (if (and (car? 'include (car zs))
-                          (pair? (cdr zs))
-                          (not (car? 'include (cadr zs))))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
+       (add-betweenf m
+                     (lambda (v w)
+                      (cond
+                       ((eq? v blank-symbol)
+                        #f)
+                       ((eq? w blank-symbol)
+                        #f)
+                       ((xor (prelude? v) (prelude? w))
+                        blank-symbol)
+                       (else
+                        #f)))))
 
  ; blank line before comment
  (set! m

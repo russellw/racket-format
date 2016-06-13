@@ -54,10 +54,11 @@
       ...))))))
 
 (define (name x)
- (set! x (cadr x))
- (if (pair? x)
-  (car x)
-  x))
+ (match x
+  ((list def (list id args ...) b ...)
+   id)
+  ((list def id b ...)
+   id)))
 
 (define (prelude? v)
  (match v

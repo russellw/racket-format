@@ -46,9 +46,13 @@
    #f)))
 
 (define (defvar? x)
- (and (car? 'define x)
-      (length? 2 x)
-      (atom? (cadr x))))
+ (match x
+  ((list 'define name ...)
+   #:when
+   (atom? name)
+   #t)
+  (_
+   #f)))
 
 (define (length? n x)
  (<= n (length x)))

@@ -63,9 +63,9 @@
      '())
     ((atom? x)
      (inline x))
-    ((null? x)
-     (inline x))
     ((car? comment-symbol x)
+     (cadr x))
+    ((car? lang-symbol x)
      (cadr x))
     ((and (abbrev-prefix x)
           (list? (cadr x))
@@ -185,10 +185,9 @@
          ")"))))
 
 (define (format-module m)
- (trim-lines (string-append* (cons (car m)
-                                   (flatten (map (lambda (x)
-                                                  (list (block x 0) "\n"))
-                                                 (cdr m)))))))
+ (trim-lines (string-append* (flatten (map (lambda (x)
+                                            (list (block x 0) "\n"))
+                                           m)))))
 
 (define (inline x)
  (string-append* (flatten (cond

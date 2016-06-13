@@ -3,6 +3,7 @@
 (require (planet dyoo/while-loop))
 (require "etc.rkt")
 (provide comment-symbol)
+(provide lang-symbol)
 (provide read-module)
 
 (define (identifier)
@@ -30,6 +31,8 @@
    (peek-char))
   ((peek? "#")
    (cond
+    ((equal? (peek-string 5 0) "#lang")
+     `(,lang-symbol ,(read-line)))
     ((peek? "'" 1)
      (read-char)
      (read-char)
@@ -106,12 +109,11 @@
    (read))))
 
 (define (read-module)
- (cons (lang)
-       (let loop ()
-        (define x (read*))
-        (if (eof-object? x)
-         '()
-         (cons x (loop))))))
+ (let loop ()
+  (define x (read*))
+  (if (eof-object? x)
+   '()
+   (cons x (loop)))))
 
 (define (special-initial? c)
  (string-contains? "!#$%&*/:<=>?^_~" (make-string 1 c)))
@@ -142,3 +144,4 @@
   (whitespace)))
 
 (define comment-symbol (gensym))
+(define lang-symbol (gensym))

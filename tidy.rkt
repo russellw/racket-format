@@ -165,16 +165,6 @@
                         (else
                          #f))))))
 
- ; remove trailing blanks
- (set! m
-       (map-lists x m
-        (transform zs x
-         (values (if (and (car? blank-symbol zs)
-                          (null? (cdr zs)))
-                  '()
-                  (list (car zs)))
-                 (cdr zs)))))
-
  ; result
  m)
 

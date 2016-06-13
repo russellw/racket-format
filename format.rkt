@@ -1,8 +1,7 @@
 #lang racket
-(require (planet dyoo/while-loop:1:=1))
-(require "etc.rkt")
-(require "read.rkt")
-(require "tidy.rkt")
+
+(require (planet dyoo/while-loop:1:=1) "etc.rkt" "read.rkt" "tidy.rkt")
+
 (provide format-module)
 
 (define (abbrev-prefix x)

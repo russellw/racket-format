@@ -91,7 +91,10 @@
            (clauses (cddr x) (add1 col))))
     ((and (length? 2 x)
           (or (defun? x)
-              (memq (car x) '(define-syntax lambda receive))))
+              (memq (car x)
+                    (quote
+                           (define-syntax lambda
+                            receive)))))
      (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
     ((and (length? 2 x)
           (memq (car x) '(if unless when while)))

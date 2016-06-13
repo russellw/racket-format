@@ -121,7 +121,7 @@
     ; sorted
     x)))
 
- ; blank line around prelude
+ ; blank lines around prelude
  (set! m
        (add-betweenf m
                      (lambda (v w)
@@ -135,7 +135,7 @@
                        (else
                         #f)))))
 
- ; blank line before comment
+ ; blank lines before comments
  (set! m
        (map-lists x m
         (add-betweenf x
@@ -149,15 +149,21 @@
                         (else
                          #f))))))
 
- ; blank line after function
+ ; blank lines around functions
  (set! m
        (map-lists x m
-        (transform zs x
-         (values (if (and (defun? (car zs))
-                          (not (cadr? blank-symbol zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
+        (add-betweenf x
+                      (lambda (v w)
+                       (cond
+                        ((eq? v blank-symbol)
+                         #f)
+                        ((eq? w blank-symbol)
+                         #f)
+                        ((or (defun? v)
+                             (defun? w))
+                         blank-symbol)
+                        (else
+                         #f))))))
 
  ; remove multiple blanks
  (set! m

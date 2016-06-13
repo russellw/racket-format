@@ -81,12 +81,6 @@
                                      (symbol<? (name a) (name b))))
                               fragment))))
 
-    ; memq
-    (when (and (car? 'memq x)
-               (length? 3 x)
-               (car? 'quote (caddr x)))
-     (set! x `(,(car x) ,(cadr x) ',(sort (cadr (caddr x)) value<?))))
-
     ; provides
     (set! x
           (append* (for/list ((fragment (fragments (curry car? 'provide) x)))

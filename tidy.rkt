@@ -121,7 +121,7 @@
     ; sorted
     x)))
 
- ; blank line after import
+ ; blank line around prelude
  (set! m
        (add-betweenf m
                      (lambda (v w)
@@ -138,13 +138,16 @@
  ; blank line before comment
  (set! m
        (map-lists x m
-        (transform zs x
-         (values (if (and (not (car? comment-symbol (car zs)))
-                          (pair? (cdr zs))
-                          (car? comment-symbol (cadr zs)))
-                  (list (car zs) blank-symbol)
-                  (list (car zs)))
-                 (cdr zs)))))
+        (add-betweenf x
+                      (lambda (v w)
+                       (cond
+                        ((eq? v blank-symbol)
+                         #f)
+                        ((and (not (car? comment-symbol v))
+                              (car? comment-symbol w))
+                         blank-symbol)
+                        (else
+                         #f))))))
 
  ; blank line after function
  (set! m

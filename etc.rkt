@@ -37,11 +37,13 @@
       r))))
 
 (define (defun? x)
- (or (and (car? 'define x)
-          (length? 2 x)
-          (pair? (cadr x)))
-     (and (car? 'define-syntax x)
-          (length? 2 x))))
+ (match x
+  ((list 'define (list w ...) b ...)
+   #t)
+  ((list 'define-syntax b ...)
+   #t)
+  (_
+   #f)))
 
 (define (defvar? x)
  (and (car? 'define x)

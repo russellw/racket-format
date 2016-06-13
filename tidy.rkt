@@ -165,15 +165,6 @@
                         (else
                          #f))))))
 
- ; remove multiple blanks
- (set! m
-       (map-lists x m
-        (transform zs x
-         (values (list (car zs))
-                 (if (car? blank-symbol zs)
-                  (dropf zs (curry eq? blank-symbol))
-                  (cdr zs))))))
-
  ; remove trailing blanks
  (set! m
        (map-lists x m

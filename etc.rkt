@@ -70,15 +70,3 @@
                      (lambda args
                       b
                       ...)))))
-
-(define-syntax transform
- (syntax-rules ()
-  ((_ xs ys b ...)
-   (let loop ((xs ys))
-    (if (atom? xs)
-     xs
-     (receive (xs ys)
-      (begin
-       b
-       ...)
-      (append xs (loop ys))))))))

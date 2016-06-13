@@ -50,11 +50,14 @@
  ; space at start of comment
  (set! m
   (map-lists y m
-   (if (and (car? comment-symbol y)
-            (char-alphabetic? (string-ref (cadr y) 1)))
-    (list comment-symbol
-          (string-append "; " (substring (cadr y) 1 (string-length (cadr y)))))
-    y)))
+   (match y
+    (`(,(== comment-symbol) ,s)
+     #:when
+     (char-alphabetic? (string-ref s 1))
+     `(,comment-symbol
+       ,(string-append "; " (substring (cadr y) 1 (string-length (cadr y))))))
+    (_
+     y))))
 
  ; sort
  (set! m

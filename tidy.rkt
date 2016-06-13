@@ -1,5 +1,4 @@
 #lang racket
-
 (require "etc.rkt")
 (require "read.rkt")
 (provide blank-symbol)
@@ -62,9 +61,11 @@
 
 (define (prelude? v)
  (match v
-  ((list 'provide w)
+  ((list (== lang-symbol) s)
    #t)
   ((list 'require w)
+   #t)
+  ((list 'provide w)
    #t)
   (_
    #f)))

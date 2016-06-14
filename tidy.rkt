@@ -18,7 +18,7 @@
 
 (define-syntax for/sublists
  (syntax-rules ()
-  ((_ x x1 b ...)
+  ((_ ((x x1)) b ...)
    (let loop ((x x1))
     (if (atom? x)
      x
@@ -87,7 +87,7 @@
 (define (tidy m)
  ; space at start of comment
  (set! m
-       (for/sublists y m
+       (for/sublists ((y m))
         (match y
          ((list (== comment-symbol) s)
           #:when
@@ -98,7 +98,7 @@
 
  ; sort
  (set! m
-  (for/sublists x m
+  (for/sublists ((x m))
    (begin
     ; case
     (set! x
@@ -152,7 +152,7 @@
 
  ; blank lines around functions
  (set! m
-       (for/sublists x m
+       (for/sublists ((x m))
         (add-betweenf x
                       (lambda (v w)
                        (cond
@@ -168,7 +168,7 @@
 
  ; blank lines before comments
  (set! m
-       (for/sublists x m
+       (for/sublists ((x m))
         (add-betweenf x
                       (lambda (v w)
                        (cond

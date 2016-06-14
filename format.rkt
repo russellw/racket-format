@@ -99,6 +99,8 @@
      (list "(for (" (bindings a (+ col 6)) (args b (+ col 1))))
     ((list 'for/list a b ...)
      (list "(for/list (" (bindings a (+ col 11)) (args b (+ col 1))))
+    ((list 'for/sublists a b ...)
+     (list "(for/sublists (" (bindings a (+ col 15)) (args b (+ col 1))))
     ((list 'if a b ...)
      (list "(if " (expr a (+ col 4)) (args b (+ col 1))))
     ((list 'lambda a b ...)
@@ -119,7 +121,7 @@
      (cond
       ; 2 special args
       ((and (length? 3 x)
-            (memq (car x) '(any-rec? for/sublists)))
+            (memq (car x) '(any-rec?)))
        (list "("
              (~a (car x))
              " "

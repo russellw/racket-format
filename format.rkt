@@ -104,9 +104,7 @@
    s)
 
   ; abbrev prefix
-  (_
-   #:when
-   (abbrev-prefix x)
+  ((? abbrev-prefix _)
    (list (abbrev-prefix x)
          (expr (cadr x) (+ col (string-length (abbrev-prefix x))))))
 

@@ -195,27 +195,19 @@
  (trim-lines (string-append* (flatten (drop-right (args m 0) 1)))))
 
 (define (inline x)
- (cond
-  ((car? quasiquote-symbol x)
-   (list "`" (inline (cadr x))))
-  ((car? quasisyntax-symbol x)
-   (list "#`" (inline (cadr x))))
-  ((car? quote-symbol x)
-   (list "'" (inline (cadr x))))
-  ((car? syntax-symbol x)
-   (list "#'" (inline (cadr x))))
-  ((car? unquote-splicing-symbol x)
-   (list ",@" (inline (cadr x))))
-  ((car? unquote-symbol x)
-   (list "," (inline (cadr x))))
-  ((car? unsyntax-splicing-symbol x)
-   (list "#,@" (inline (cadr x))))
-  ((car? unsyntax-symbol x)
-   (list "#," (inline (cadr x))))
-  ((list? x)
-   (list "(" (add-between (map inline x) " ") ")"))
-  (else
-   (~s x))))
+ (match x
+  ; atom
+  ((? atom? _)
+   (~s x))
+
+  ; abbrev prefix
+  ((? abbrev-prefix (list _ w))
+   (define s (abbrev-prefix x))
+   (list s (inline w)))
+
+  ; else
+  (_
+   (list "(" (add-between (map inline x) " ") ")"))))
 
 (define (inline? x)
  (and (not (any-rec? y x

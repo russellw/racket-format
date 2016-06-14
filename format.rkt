@@ -55,7 +55,7 @@
  (string-append*
   (flatten
    (match x
-    ; atoms
+    ; atom
     ((== blank-symbol)
      '())
     (_
@@ -63,30 +63,31 @@
      (atom? x)
      (~s x))
 
-    ; syntax sugar
+    ; text
     ((list (== comment-symbol) s)
      s)
     ((list (== lang-symbol) s)
      s)
+
+    ; prefix
+    ((list (== quote-symbol) w)
+     (list "'" (expr w (+ col 1))))
+    ((list (== quasiquote-symbol) w)
+     (list "`" (expr w (+ col 1))))
+    ((list (== quasisyntax-symbol) w)
+     (list "#`" (expr w (+ col 2))))
+    ((list (== syntax-symbol) w)
+     (list "#'" (expr w (+ col 2))))
+    ((list (== unquote-symbol) w)
+     (list "," (expr w (+ col 1))))
+    ((list (== unquote-splicing-symbol) w)
+     (list ",@" (expr w (+ col 2))))
+    ((list (== unsyntax-symbol) w)
+     (list "#," (expr w (+ col 2))))
+    ((list (== unsyntax-splicing-symbol) w)
+     (list "#,@" (expr w (+ col 3))))
     (_
      (cond
-      ((car? quote-symbol x)
-       (list "'" (expr (cadr x) (+ col 1))))
-      ((car? quasiquote-symbol x)
-       (list "`" (expr (cadr x) (+ col 1))))
-      ((car? quasisyntax-symbol x)
-       (list "#`" (expr (cadr x) (+ col 2))))
-      ((car? syntax-symbol x)
-       (list "#'" (expr (cadr x) (+ col 2))))
-      ((car? unquote-symbol x)
-       (list "," (expr (cadr x) (+ col 1))))
-      ((car? unquote-splicing-symbol x)
-       (list ",@" (expr (cadr x) (+ col 2))))
-      ((car? unsyntax-symbol x)
-       (list "#," (expr (cadr x) (+ col 2))))
-      ((car? unsyntax-splicing-symbol x)
-       (list "#,@" (expr (cadr x) (+ col 3))))
-
       ; 0 special args
       ((memq (car x)
              '(begin

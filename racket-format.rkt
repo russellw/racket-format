@@ -1,11 +1,5 @@
 #lang racket
-(require "etc.rkt")
-
-(require "format.rkt")
-
-(require "read.rkt")
-
-(require "tidy.rkt")
+(require "etc.rkt" "format.rkt" "read.rkt" "tidy.rkt")
 
 ; options
 (define end-options #f)

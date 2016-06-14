@@ -1,13 +1,9 @@
 #lang racket
-(require (planet dyoo/while-loop))
-
-(require "etc.rkt")
-
-(provide comment-symbol)
-
-(provide lang-symbol)
+(require (planet dyoo/while-loop) "etc.rkt")
 
 (provide read-module
+         comment-symbol
+         lang-symbol
          quasiquote-symbol
          quasisyntax-symbol
          quote-symbol

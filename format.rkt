@@ -3,6 +3,27 @@
 
 (provide format-module)
 
+(define (abbrev-prefix v)
+ (match v
+  ((list (== quasiquote-symbol) _)
+   "`")
+  ((list (== quasisyntax-symbol) _)
+   "#`")
+  ((list (== quote-symbol) _)
+   "'")
+  ((list (== syntax-symbol) _)
+   "#'")
+  ((list (== unquote-splicing-symbol) _)
+   ",@")
+  ((list (== unquote-symbol) _)
+   ",")
+  ((list (== unsyntax-splicing-symbol) _)
+   "#,@")
+  ((list (== unsyntax-symbol) _)
+   "#,")
+  (_
+   #f)))
+
 (define (args lst col)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
@@ -84,23 +105,12 @@
   ((list (== lang-symbol) s)
    s)
 
-  ; prefix
-  ((list (== quasiquote-symbol) w)
-   (list "`" (expr w (+ col 1))))
-  ((list (== quasisyntax-symbol) w)
-   (list "#`" (expr w (+ col 2))))
-  ((list (== quote-symbol) w)
-   (list "'" (expr w (+ col 1))))
-  ((list (== syntax-symbol) w)
-   (list "#'" (expr w (+ col 2))))
-  ((list (== unquote-splicing-symbol) w)
-   (list ",@" (expr w (+ col 2))))
-  ((list (== unquote-symbol) w)
-   (list "," (expr w (+ col 1))))
-  ((list (== unsyntax-splicing-symbol) w)
-   (list "#,@" (expr w (+ col 3))))
-  ((list (== unsyntax-symbol) w)
-   (list "#," (expr w (+ col 2))))
+  ; abbrev prefix
+  (_
+   #:when
+   (abbrev-prefix x)
+   (list (abbrev-prefix x)
+         (expr (cadr x) (+ col (string-length (abbrev-prefix x))))))
 
   ; special form
   ((list 'begin b ...)

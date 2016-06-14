@@ -8,48 +8,45 @@
  (when (car? blank-symbol xs)
   (set! xs (cdr xs)))
  (string-append*
-  (flatten
-   (list
-    (for/list ((x xs)) (list* "\n" (make-string col #\space) (expr x col)))
-    ")"))))
+  (flatten (list (for/list ((x xs))
+                  (list* "\n" (make-string col #\space) (expr x col)))
+                 ")"))))
 
 (define (bindings xs col)
  (when (car? blank-symbol xs)
   (set! xs (cdr xs)))
  (string-append*
   (flatten
-   (list
-    (add-between (for/list ((x xs))
-                           (if (atom? x)
-                            (~s x)
-                            (list "("
-                                  (inline (car x))
-                                  " "
-                                  (expr (cadr x) (+ col 1 (width (car x)) 1))
-                                  ")")))
-                 (list "\n" (make-string col #\space)))
-    ")"))))
+   (list (add-between (for/list ((x xs))
+                       (if (atom? x)
+                        (~s x)
+                        (list "("
+                              (inline (car x))
+                              " "
+                              (expr (cadr x) (+ col 1 (width (car x)) 1))
+                              ")")))
+                      (list "\n" (make-string col #\space)))
+         ")"))))
 
 (define (clauses xs col)
  (when (car? blank-symbol xs)
   (set! xs (cdr xs)))
  (string-append*
-  (flatten
-   (list (for/list ((clause xs))
-                   (list "\n"
-                         (cond
-                          ((eq? blank-symbol clause)
-                           '())
-                          ((car? comment-symbol clause)
-                           (list (make-string col #\space) (cadr clause)))
-                          ((atom? clause)
-                           (list (make-string col #\space) (~s clause)))
-                          (else
-                           (list (make-string col #\space)
-                                 "("
-                                 (expr (car clause) (add1 col))
-                                 (args (cdr clause) (add1 col)))))))
-         ")"))))
+  (flatten (list (for/list ((clause xs))
+                  (list "\n"
+                        (cond
+                         ((eq? blank-symbol clause)
+                          '())
+                         ((car? comment-symbol clause)
+                          (list (make-string col #\space) (cadr clause)))
+                         ((atom? clause)
+                          (list (make-string col #\space) (~s clause)))
+                         (else
+                          (list (make-string col #\space)
+                                "("
+                                (expr (car clause) (add1 col))
+                                (args (cdr clause) (add1 col)))))))
+                 ")"))))
 
 (define (expr x col)
  (string-append*
@@ -98,6 +95,8 @@
      (list "(define " (inline a) (args b (+ col 1))))
     ((list 'define-syntax a b ...)
      (list "(define-syntax " (inline a) (args b (+ col 1))))
+    ((list 'for/list a b ...)
+     (list "(for/list (" (bindings a (+ col 11)) (args b (+ col 1))))
     ((list 'if a b ...)
      (list "(if " (expr a (+ col 4)) (args b (+ col 1))))
     ((list 'lambda a b ...)
@@ -218,7 +217,8 @@
   (apply max (map string-length (string-split s "\n")))))
 
 (define (trim-lines s)
- (string-join (for/list ((s (string-split s "\n"))) (string-trim s #:left? #f))
+ (string-join (for/list ((s (string-split s "\n")))
+               (string-trim s #:left? #f))
               "\n"
               #:after-last
               "\n"))

@@ -49,7 +49,9 @@
     (if (atom? x)
      x
      (begin
-      (set! x (for/list ((y x)) (loop y)))
+      (set! x
+            (for/list ((y x))
+             (loop y)))
       b
       ...))))))
 
@@ -111,25 +113,25 @@
     ; functions
     (set! x
           (append* (for/list ((fragment (fragments defun? x)))
-                             (if (defun? (car fragment))
-                              (sort fragment
-                                    (lambda (a b)
-                                     (symbol<? (name a) (name b))))
-                              fragment))))
+                    (if (defun? (car fragment))
+                     (sort fragment
+                           (lambda (a b)
+                            (symbol<? (name a) (name b))))
+                     fragment))))
 
     ; provides
     (set! x
           (append* (for/list ((fragment (fragments (curry car? 'provide) x)))
-                             (if (car? 'provide (car fragment))
-                              (sort fragment value<?)
-                              fragment))))
+                    (if (car? 'provide (car fragment))
+                     (sort fragment value<?)
+                     fragment))))
 
     ; requires
     (set! x
           (append* (for/list ((fragment (fragments (curry car? 'require) x)))
-                             (if (car? 'require (car fragment))
-                              (sort fragment value<?)
-                              fragment))))
+                    (if (car? 'require (car fragment))
+                     (sort fragment value<?)
+                     fragment))))
 
     ; sorted
     x)))

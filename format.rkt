@@ -27,8 +27,6 @@
          ")"))))
 
 (define (clauses xs col)
- (when (car? blank-symbol xs)
-  (set! xs (cdr xs)))
  (string-append*
   (flatten (list (for/list ((clause xs))
                   (list "\n"
@@ -50,6 +48,7 @@
  (string-append*
   (flatten
    (match x
+
     ; atom
     ((== blank-symbol)
      '())
@@ -125,6 +124,7 @@
      (list "(while " (expr a (+ col 7)) (args b (+ col 1))))
     (_
      (cond
+
       ; 2 special args
       ((and (length? 3 x)
             (memq (car x) '(any-rec?)))

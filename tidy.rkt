@@ -1,5 +1,4 @@
 #lang racket
-
 (require "etc.rkt")
 
 (require "read.rkt")

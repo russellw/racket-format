@@ -1,5 +1,4 @@
 #lang racket
-
 (require (planet dyoo/while-loop:1:=1) "etc.rkt" "read.rkt")
 
 (provide format-module)
@@ -65,8 +64,6 @@
   ((list 'provide b ...)
    #t)
   ((list 'require b ...)
-   #t)
-  ((list (== lang-symbol) b ...)
    #t)
   (_
    #f)))

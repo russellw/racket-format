@@ -98,6 +98,8 @@
      (list "(define " (inline a) (args b (+ col 1))))
     ((list 'define-syntax a b ...)
      (list "(define-syntax " (inline a) (args b (+ col 1))))
+    ((list 'if a b ...)
+     (list "(if " (expr a (+ col 4)) (args b (+ col 1))))
     ((list 'lambda a b ...)
      (list "(lambda " (inline a) (args b (+ col 1))))
     ((list 'match a b ...)
@@ -105,13 +107,12 @@
     ((list 'receive a b ...)
      (list "(receive " (inline a) (args b (+ col 1))))
     ((list 'syntax-rules a b ...)
-     (list "(syntax-rules " (expr a (+ col 12)) (clauses b (+ col 1))))
+     (list "(syntax-rules " (expr a (+ col 14)) (clauses b (+ col 1))))
     (_
      (cond
       ((and (length? 2 x)
             (memq (car x)
-                  '(if unless
-                    when
+                  '(unless when
                     while)))
        (list "("
              (~a (car x))

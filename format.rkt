@@ -73,7 +73,7 @@
                 '(case match
                   syntax-rules)))
      (list "("
-           (inline (car x))
+           (~a (car x))
            " "
            (block (cadr x) (+ col 1 (width (car x)) 1))
            (clauses (cddr x) (add1 col))))

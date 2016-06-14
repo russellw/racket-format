@@ -10,7 +10,7 @@
  (string-append*
   (flatten
    (list
-    (for/list ((x xs)) (list* "\n" (make-string col #\space) (block x col)))
+    (for/list ((x xs)) (list* "\n" (make-string col #\space) (expr x col)))
     ")"))))
 
 (define (bindings xs col)
@@ -25,12 +25,33 @@
                             (list "("
                                   (inline (car x))
                                   " "
-                                  (block (cadr x) (+ col 1 (width (car x)) 1))
+                                  (expr (cadr x) (+ col 1 (width (car x)) 1))
                                   ")")))
                  (list "\n" (make-string col #\space)))
     ")"))))
 
-(define (block x col)
+(define (clauses xs col)
+ (when (car? blank-symbol xs)
+  (set! xs (cdr xs)))
+ (string-append*
+  (flatten
+   (list (for/list ((clause xs))
+                   (list "\n"
+                         (cond
+                          ((eq? blank-symbol clause)
+                           '())
+                          ((car? comment-symbol clause)
+                           (list (make-string col #\space) (cadr clause)))
+                          ((atom? clause)
+                           (list (make-string col #\space) (~s clause)))
+                          (else
+                           (list (make-string col #\space)
+                                 "("
+                                 (expr (car clause) (add1 col))
+                                 (args (cdr clause) (add1 col)))))))
+         ")"))))
+
+(define (expr x col)
  (string-append*
   (flatten
    (match x
@@ -45,21 +66,21 @@
       ((car? lang-symbol x)
        (cadr x))
       ((car? quote-symbol x)
-       (list "'" (block (cadr x) (+ col 1))))
+       (list "'" (expr (cadr x) (+ col 1))))
       ((car? quasiquote-symbol x)
-       (list "`" (block (cadr x) (+ col 1))))
+       (list "`" (expr (cadr x) (+ col 1))))
       ((car? quasisyntax-symbol x)
-       (list "#`" (block (cadr x) (+ col 2))))
+       (list "#`" (expr (cadr x) (+ col 2))))
       ((car? syntax-symbol x)
-       (list "#'" (block (cadr x) (+ col 2))))
+       (list "#'" (expr (cadr x) (+ col 2))))
       ((car? unquote-symbol x)
-       (list "," (block (cadr x) (+ col 1))))
+       (list "," (expr (cadr x) (+ col 1))))
       ((car? unquote-splicing-symbol x)
-       (list ",@" (block (cadr x) (+ col 2))))
+       (list ",@" (expr (cadr x) (+ col 2))))
       ((car? unsyntax-symbol x)
-       (list "#," (block (cadr x) (+ col 2))))
+       (list "#," (expr (cadr x) (+ col 2))))
       ((car? unsyntax-splicing-symbol x)
-       (list "#,@" (block (cadr x) (+ col 3))))
+       (list "#,@" (expr (cadr x) (+ col 3))))
 
       ; 0 special args
       ((memq (car x)
@@ -77,7 +98,7 @@
        (list "("
              (~a (car x))
              " "
-             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (expr (cadr x) (+ col 1 (width (car x)) 1))
              (clauses (cddr x) (add1 col))))
       ((and (length? 2 x)
             (or (defun? x)
@@ -94,7 +115,7 @@
        (list "("
              (~a (car x))
              " "
-             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (expr (cadr x) (+ col 1 (width (car x)) 1))
              (args (cddr x) (add1 col))))
 
       ; 2 special args
@@ -144,7 +165,7 @@
        (list "("
              (inline (car x))
              " "
-             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (expr (cadr x) (+ col 1 (width (car x)) 1))
              (args (cddr x) (+ col 1 (width (car x)) 1))))
 
       ; first arg inline anyway
@@ -158,32 +179,11 @@
 
       ; args unaligned
       (else
-       (list "(" (block (car x) (add1 col)) (args (cdr x) (add1 col))))))))))
-
-(define (clauses xs col)
- (when (car? blank-symbol xs)
-  (set! xs (cdr xs)))
- (string-append*
-  (flatten
-   (list (for/list ((clause xs))
-                   (list "\n"
-                         (cond
-                          ((eq? blank-symbol clause)
-                           '())
-                          ((car? comment-symbol clause)
-                           (list (make-string col #\space) (cadr clause)))
-                          ((atom? clause)
-                           (list (make-string col #\space) (~s clause)))
-                          (else
-                           (list (make-string col #\space)
-                                 "("
-                                 (block (car clause) (add1 col))
-                                 (args (cdr clause) (add1 col)))))))
-         ")"))))
+       (list "(" (expr (car x) (add1 col)) (args (cdr x) (add1 col))))))))))
 
 (define (format-module m)
  (trim-lines (string-append* (flatten (map (lambda (x)
-                                            (list (block x 0) "\n"))
+                                            (list (expr x 0) "\n"))
                                            m)))))
 
 (define (inline x)
@@ -214,7 +214,7 @@
             (eq? y blank-symbol)))
       (not (any-rec? y x
             (eq? y comment-symbol)))
-      (not (string-contains? (block x 0) "\n"))))
+      (not (string-contains? (expr x 0) "\n"))))
 
 (define (max-line-width s)
  (if (string=? s "")
@@ -229,7 +229,7 @@
 
 (define (width x)
  (or (hash-ref widths x #f))
- (let ((w (max-line-width (block x 0))))
+ (let ((w (max-line-width (expr x 0))))
   (hash-set! widths x w)
   w))
 

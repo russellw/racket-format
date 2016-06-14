@@ -4,8 +4,6 @@
 
 (require "read.rkt")
 
-(provide blank-symbol)
-
 (provide tidy)
 
 (define-syntax for/sublists
@@ -164,5 +162,3 @@
    ((symbol? x)
     (symbol<? x y)))
   (symbol<? (typeof x) (typeof y))))
-
-(define blank-symbol (gensym))

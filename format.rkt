@@ -1,6 +1,6 @@
 #lang racket
 
-(require (planet dyoo/while-loop:1:=1) "etc.rkt" "read.rkt" "tidy.rkt")
+(require (planet dyoo/while-loop:1:=1) "etc.rkt" "read.rkt")
 
 (provide format-module)
 
@@ -239,4 +239,5 @@
   (hash-set! widths x w)
   w))
 
+(define blank-symbol (gensym))
 (define widths (make-hash))

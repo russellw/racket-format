@@ -37,7 +37,7 @@
     ((eq? blank-symbol x)
      '())
     ((atom? x)
-     (inline x))
+     (~s x))
     ((car? comment-symbol x)
      (cadr x))
     ((car? lang-symbol x)

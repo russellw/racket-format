@@ -90,11 +90,10 @@
     ; special form
     ((list 'begin b ...)
      (list "(begin" (args b (+ col 1))))
+    ((list 'cond b ...)
+     (list "(cond" (clauses b (+ col 1))))
     (_
      (cond
-      ((memq (car x) '(cond))
-       (list "(" (~a (car x)) (clauses (cdr x) (add1 col))))
-
       ; 1 special arg
       ((and (length? 2 x)
             (memq (car x)

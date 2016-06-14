@@ -90,7 +90,7 @@
          ((list (== comment-symbol) s)
           #:when
           (char-alphabetic? (string-ref s 1))
-          `(,comment-symbol ,(string-append "; " (substring s 1))))
+          (list comment-symbol (string-append "; " (substring s 1))))
          (_
           y))))
 

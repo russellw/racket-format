@@ -25,7 +25,8 @@
 (define (blank-before-comments lst)
  (add-betweenf lst
                (lambda (v w)
-                (and (not (car? comment-symbol v))
+                (and (not (eq? v blank-symbol))
+                     (not (car? comment-symbol v))
                      (car? comment-symbol w)
                      blank-symbol))))
 

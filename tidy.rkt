@@ -49,17 +49,6 @@
   ((list def id b ...)
    id)))
 
-(define (prelude? v)
- (match v
-  ((list (== lang-symbol) s)
-   #t)
-  ((list 'require w)
-   #t)
-  ((list 'provide w)
-   #t)
-  (_
-   #f)))
-
 (define (sort-case v)
  (match v
   ((list (list c ...) b ...)

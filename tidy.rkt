@@ -3,8 +3,8 @@
 
 (provide tidy)
 
-(define (decl? x)
- (match x
+(define (decl? v)
+ (match v
   ((list 'define (list w ...) b ...)
    #t)
   ((list 'define-syntax b ...)
@@ -72,14 +72,14 @@
 (define (tidy m)
  ; space at start of comment
  (set! m
-       (for/sublists ((y m))
-        (match y
+       (for/sublists ((lst m))
+        (match lst
          ((list (== comment-symbol) s)
           #:when
           (char-alphabetic? (string-ref s 1))
           (list comment-symbol (string-append "; " (substring s 1))))
          (_
-          y))))
+          lst))))
 
  ; sort
  (set! m
@@ -93,60 +93,60 @@
           v))))
 
  ; sort
- (for/sublists ((x m))
+ (for/sublists ((lst m))
   (begin
    ; case
-   (set! x
-         (match x
+   (set! lst
+         (match lst
           ((list 'case v lst ...)
            `(case ,v
              (unquote-splicing
               (sort-cases lst))))
           (_
-           x)))
+           lst)))
 
    ; declarations
-   (set! x
-         (append* (for/list ((fragment (fragments decl? x)))
+   (set! lst
+         (append* (for/list ((fragment (fragments decl? lst)))
                    (if (decl? (car fragment))
                     (sort fragment
-                          (lambda (a b)
-                           (symbol<? (name a) (name b))))
+                          (lambda (v w)
+                           (symbol<? (name v) (name w))))
                     fragment))))
 
    ; sorted
-   x)))
+   lst)))
 
-(define (typeof x)
+(define (typeof v)
  (cond
-  ((boolean? x)
+  ((boolean? v)
    'boolean)
-  ((char? x)
+  ((char? v)
    'char)
-  ((null? x)
+  ((null? v)
    'null)
-  ((number? x)
+  ((number? v)
    'number)
-  ((pair? x)
+  ((pair? v)
    'pair)
-  ((string? x)
+  ((string? v)
    'string)
-  ((symbol? x)
+  ((symbol? v)
    'symbol)
-  ((vector? x)
+  ((vector? v)
    'vector)))
 
-(define (value<? x y)
- (if (eq? (typeof x) (typeof y))
+(define (value<? v w)
+ (if (eq? (typeof v) (typeof w))
   (cond
-   ((char? x)
-    (char<? x y))
-   ((number? x)
-    (< x y))
-   ((pair? x)
-    (list<? x y))
-   ((string? x)
-    (string<? x y))
-   ((symbol? x)
-    (symbol<? x y)))
-  (symbol<? (typeof x) (typeof y))))
+   ((char? v)
+    (char<? v w))
+   ((number? v)
+    (< v w))
+   ((pair? v)
+    (list<? v w))
+   ((string? v)
+    (string<? v w))
+   ((symbol? v)
+    (symbol<? v w)))
+  (symbol<? (typeof v) (typeof w))))

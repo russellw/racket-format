@@ -33,128 +33,132 @@
 (define (block x col)
  (string-append*
   (flatten
-   (cond
-    ((eq? blank-symbol x)
-     '())
-    ((atom? x)
-     (~s x))
-    ((car? comment-symbol x)
-     (cadr x))
-    ((car? lang-symbol x)
-     (cadr x))
-    ((car? quote-symbol x)
-     (list "'" (block (cadr x) (+ col 1))))
-    ((car? quasiquote-symbol x)
-     (list "`" (block (cadr x) (+ col 1))))
-    ((car? quasisyntax-symbol x)
-     (list "#`" (block (cadr x) (+ col 2))))
-    ((car? syntax-symbol x)
-     (list "#'" (block (cadr x) (+ col 2))))
-    ((car? unquote-symbol x)
-     (list "," (block (cadr x) (+ col 1))))
-    ((car? unquote-splicing-symbol x)
-     (list ",@" (block (cadr x) (+ col 2))))
-    ((car? unsyntax-symbol x)
-     (list "#," (block (cadr x) (+ col 2))))
-    ((car? unsyntax-splicing-symbol x)
-     (list "#,@" (block (cadr x) (+ col 3))))
+   (match x
+    (_
+     (cond
+      ((eq? blank-symbol x)
+       '())
+      ((atom? x)
+       (~s x))
+      ((car? comment-symbol x)
+       (cadr x))
+      ((car? lang-symbol x)
+       (cadr x))
+      ((car? quote-symbol x)
+       (list "'" (block (cadr x) (+ col 1))))
+      ((car? quasiquote-symbol x)
+       (list "`" (block (cadr x) (+ col 1))))
+      ((car? quasisyntax-symbol x)
+       (list "#`" (block (cadr x) (+ col 2))))
+      ((car? syntax-symbol x)
+       (list "#'" (block (cadr x) (+ col 2))))
+      ((car? unquote-symbol x)
+       (list "," (block (cadr x) (+ col 1))))
+      ((car? unquote-splicing-symbol x)
+       (list ",@" (block (cadr x) (+ col 2))))
+      ((car? unsyntax-symbol x)
+       (list "#," (block (cadr x) (+ col 2))))
+      ((car? unsyntax-splicing-symbol x)
+       (list "#,@" (block (cadr x) (+ col 3))))
 
-    ; 0 special args
-    ((memq (car x)
-           '(begin
-             collect))
-     (list "(" (~a (car x)) (args (cdr x) (add1 col))))
-    ((memq (car x) '(cond))
-     (list "(" (~a (car x)) (clauses (cdr x) (add1 col))))
+      ; 0 special args
+      ((memq (car x)
+             '(begin
+               collect))
+       (list "(" (~a (car x)) (args (cdr x) (add1 col))))
+      ((memq (car x) '(cond))
+       (list "(" (~a (car x)) (clauses (cdr x) (add1 col))))
 
-    ; 1 special arg
-    ((and (length? 2 x)
-          (memq (car x)
-                '(case match
-                  syntax-rules)))
-     (list "("
-           (~a (car x))
-           " "
-           (block (cadr x) (+ col 1 (width (car x)) 1))
-           (clauses (cddr x) (add1 col))))
-    ((and (length? 2 x)
-          (or (defun? x)
-              (memq (car x)
-                    (quote
-                           (define-syntax lambda
-                            receive)))))
-     (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
-    ((and (length? 2 x)
-          (memq (car x)
-                '(if unless
-                  when
-                  while)))
-     (list "("
-           (~a (car x))
-           " "
-           (block (cadr x) (+ col 1 (width (car x)) 1))
-           (args (cddr x) (add1 col))))
+      ; 1 special arg
+      ((and (length? 2 x)
+            (memq (car x)
+                  '(case match
+                    syntax-rules)))
+       (list "("
+             (~a (car x))
+             " "
+             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (clauses (cddr x) (add1 col))))
+      ((and (length? 2 x)
+            (or (defun? x)
+                (memq (car x)
+                      (quote
+                             (define-syntax lambda
+                              receive)))))
+       (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
+      ((and (length? 2 x)
+            (memq (car x)
+                  '(if unless
+                    when
+                    while)))
+       (list "("
+             (~a (car x))
+             " "
+             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (args (cddr x) (add1 col))))
 
-    ; 2 special args
-    ((and (length? 3 x)
-          (memq (car x)
-                '(any-rec? for map-lists
-                  transform)))
-     (list "("
-           (~a (car x))
-           " "
-           (~a (cadr x))
-           " "
-           (inline (caddr x))
-           (args (cdddr x) (add1 col))))
+      ; 2 special args
+      ((and (length? 3 x)
+            (memq (car x)
+                  '(any-rec? for map-lists
+                    transform)))
+       (list "("
+             (~a (car x))
+             " "
+             (~a (cadr x))
+             " "
+             (inline (caddr x))
+             (args (cdddr x) (add1 col))))
 
-    ; let
-    ((and (length? 3 x)
-          (memq (car x) '(let let*))
-          (list? (cadr x)))
-     (list "("
-           (~a (car x))
-           " ("
-           (bindings (cadr x) (+ col 1 (width (car x)) 2))
-           (args (cddr x) (add1 col))))
-    ((and (length? 3 x)
-          (memq (car x) '(let)))
-     (list "("
-           (~a (car x))
-           " "
-           (~a (cadr x))
-           " ("
-           (bindings (caddr x) (+ col 1 (width (car x)) 1 (width (cadr x)) 2))
-           (args (cdddr x) (add1 col))))
+      ; let
+      ((and (length? 3 x)
+            (memq (car x) '(let let*))
+            (list? (cadr x)))
+       (list "("
+             (~a (car x))
+             " ("
+             (bindings (cadr x) (+ col 1 (width (car x)) 2))
+             (args (cddr x) (add1 col))))
+      ((and (length? 3 x)
+            (memq (car x) '(let)))
+       (list
+        "("
+        (~a (car x))
+        " "
+        (~a (cadr x))
+        " ("
+        (bindings (caddr x) (+ col 1 (width (car x)) 1 (width (cadr x)) 2))
+        (args (cdddr x) (add1 col))))
 
-    ; args inline
-    ((and (not (memq (car x) '(and or)))
-          (andmap inline? x)
-          (< (+ col 1 (length x) (apply + (map width x))) 80))
-     (inline x))
+      ; args inline
+      ((and (not (memq (car x) '(and or)))
+            (andmap inline? x)
+            (< (+ col 1 (length x) (apply + (map width x))) 80))
+       (inline x))
 
-    ; args aligned with first
-    ((and (length? 2 x)
-          (inline? (car x))
-          (for/and ((y (cdr x))) (< (+ col 1 (width (car x)) 1 (width y)) 80)))
-     (list "("
-           (inline (car x))
-           " "
-           (block (cadr x) (+ col 1 (width (car x)) 1))
-           (args (cddr x) (+ col 1 (width (car x)) 1))))
+      ; args aligned with first
+      ((and
+        (length? 2 x)
+        (inline? (car x))
+        (for/and ((y (cdr x))) (< (+ col 1 (width (car x)) 1 (width y)) 80)))
+       (list "("
+             (inline (car x))
+             " "
+             (block (cadr x) (+ col 1 (width (car x)) 1))
+             (args (cddr x) (+ col 1 (width (car x)) 1))))
 
-    ; first arg inline anyway
-    ((and (length? 2 x)
-          (memq (car x) '(define set!)))
-     (list "("
-           (inline (car x))
-           " "
-           (inline (cadr x))
-           (args (cddr x) (add1 col))))
+      ; first arg inline anyway
+      ((and (length? 2 x)
+            (memq (car x) '(define set!)))
+       (list "("
+             (inline (car x))
+             " "
+             (inline (cadr x))
+             (args (cddr x) (add1 col))))
 
-    ; args unaligned
-    (else
-     (list "(" (block (car x) (add1 col)) (args (cdr x) (add1 col))))))))
+      ; args unaligned
+      (else
+       (list "(" (block (car x) (add1 col)) (args (cdr x) (add1 col))))))))))
 
 (define (clauses xs col)
  (when (car? blank-symbol xs)

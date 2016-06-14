@@ -94,21 +94,20 @@
      (list "(case " (expr a (+ col 6)) (clauses b (+ col 1))))
     ((list 'cond b ...)
      (list "(cond" (clauses b (+ col 1))))
+    ((list 'define (list a ...) b ...)
+     (list "(define " (inline a) (args b (+ col 1))))
     ((list 'define-syntax a b ...)
      (list "(define-syntax " (inline a) (args b (+ col 1))))
     ((list 'lambda a b ...)
      (list "(lambda " (inline a) (args b (+ col 1))))
     ((list 'match a b ...)
      (list "(match " (expr a (+ col 7)) (clauses b (+ col 1))))
+    ((list 'receive a b ...)
+     (list "(receive " (inline a) (args b (+ col 1))))
     ((list 'syntax-rules a b ...)
      (list "(syntax-rules " (expr a (+ col 12)) (clauses b (+ col 1))))
     (_
      (cond
-      ; 1 special arg
-      ((and (length? 2 x)
-            (or (defun? x)
-                (memq (car x) (quote (receive)))))
-       (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
       ((and (length? 2 x)
             (memq (car x)
                   '(if unless

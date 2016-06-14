@@ -119,7 +119,7 @@
      (cond
       ; 2 special args
       ((and (length? 3 x)
-            (memq (car x) '(any-rec? map-lists)))
+            (memq (car x) '(any-rec? for/sublists)))
        (list "("
              (~a (car x))
              " "

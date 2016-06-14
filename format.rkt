@@ -108,18 +108,14 @@
      (list "(receive " (inline a) (args b (+ col 1))))
     ((list 'syntax-rules a b ...)
      (list "(syntax-rules " (expr a (+ col 14)) (clauses b (+ col 1))))
+    ((list 'unless a b ...)
+     (list "(unless " (expr a (+ col 8)) (args b (+ col 1))))
+    ((list 'when a b ...)
+     (list "(when " (expr a (+ col 6)) (args b (+ col 1))))
+    ((list 'while a b ...)
+     (list "(while " (expr a (+ col 7)) (args b (+ col 1))))
     (_
      (cond
-      ((and (length? 2 x)
-            (memq (car x)
-                  '(unless when
-                    while)))
-       (list "("
-             (~a (car x))
-             " "
-             (expr (cadr x) (+ col 1 (width (car x)) 1))
-             (args (cddr x) (add1 col))))
-
       ; 2 special args
       ((and (length? 3 x)
             (memq (car x)

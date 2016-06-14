@@ -90,14 +90,16 @@
     ; special form
     ((list 'begin b ...)
      (list "(begin" (args b (+ col 1))))
-    ((list 'case c b ...)
-     (list "(case " (expr c (+ col 6)) (clauses b (+ col 1))))
+    ((list 'case a b ...)
+     (list "(case " (expr a (+ col 6)) (clauses b (+ col 1))))
     ((list 'cond b ...)
      (list "(cond" (clauses b (+ col 1))))
-    ((list 'match c b ...)
-     (list "(match " (expr c (+ col 7)) (clauses b (+ col 1))))
-    ((list 'syntax-rules c b ...)
-     (list "(syntax-rules " (expr c (+ col 12)) (clauses b (+ col 1))))
+    ((list 'lambda a b ...)
+     (list "(lambda " (inline a) (args b (+ col 1))))
+    ((list 'match a b ...)
+     (list "(match " (expr a (+ col 7)) (clauses b (+ col 1))))
+    ((list 'syntax-rules a b ...)
+     (list "(syntax-rules " (expr a (+ col 12)) (clauses b (+ col 1))))
     (_
      (cond
       ; 1 special arg
@@ -105,8 +107,7 @@
             (or (defun? x)
                 (memq (car x)
                       (quote
-                             (define-syntax lambda
-                              receive)))))
+                             (define-syntax receive)))))
        (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
       ((and (length? 2 x)
             (memq (car x)

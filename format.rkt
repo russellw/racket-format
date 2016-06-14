@@ -94,9 +94,7 @@
   ; atom
   ((== blank-symbol)
    '())
-  (_
-   #:when
-   (atom? x)
+  ((? atom? _)
    (~s x))
 
   ; text

@@ -55,12 +55,15 @@
  (string-append*
   (flatten
    (match x
+    ; atoms
+    ((== blank-symbol)
+     '())
+    (_
+     #:when
+     (atom? x)
+     (~s x))
     (_
      (cond
-      ((eq? blank-symbol x)
-       '())
-      ((atom? x)
-       (~s x))
       ((car? comment-symbol x)
        (cadr x))
       ((car? lang-symbol x)

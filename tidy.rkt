@@ -4,18 +4,6 @@
 (provide blank-symbol)
 (provide tidy)
 
-(define (add-betweenf lst proc)
- (cond
-  ((null? lst)
-   lst)
-  ((null? (cdr lst))
-   lst)
-  (else
-   (let ((v (proc (car lst) (cadr lst))))
-    (if v
-     (list* (car lst) v (add-betweenf (cdr lst) proc))
-     (list* (car lst) (add-betweenf (cdr lst) proc)))))))
-
 (define-syntax for/sublists
  (syntax-rules ()
   ((_ ((x x1)) b ...)
@@ -85,7 +73,6 @@
  (sort lst value<?))
 
 (define (tidy m)
-
  ; space at start of comment
  (set! m
        (for/sublists ((y m))
@@ -101,7 +88,6 @@
  (set! m
   (for/sublists ((x m))
    (begin
-
     ; case
     (set! x
           (match x
@@ -164,20 +150,6 @@
                          #f)
                         ((or (defun? v)
                              (defun? w))
-                         blank-symbol)
-                        (else
-                         #f))))))
-
- ; blank lines before comments
- (set! m
-       (for/sublists ((x m))
-        (add-betweenf x
-                      (lambda (v w)
-                       (cond
-                        ((eq? v blank-symbol)
-                         #f)
-                        ((and (not (car? comment-symbol v))
-                              (car? comment-symbol w))
                          blank-symbol)
                         (else
                          #f))))))

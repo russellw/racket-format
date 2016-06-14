@@ -5,6 +5,7 @@
 (provide format-module)
 
 (define (args lst col)
+ (set! lst (blank-before-comments lst))
  (string-append*
   (flatten (list (for/list ((v lst))
                   (list* "\n" (make-string col #\space) (expr v col)))
@@ -24,7 +25,20 @@
                       (list "\n" (make-string col #\space)))
          ")"))))
 
+(define (blank-before-comments lst)
+ (add-betweenf lst
+               (lambda (v w)
+                (cond
+                 ((eq? v blank-symbol)
+                  #f)
+                 ((and (not (car? comment-symbol v))
+                       (car? comment-symbol w))
+                  blank-symbol)
+                 (else
+                  #f)))))
+
 (define (clauses lst col)
+ (set! lst (blank-before-comments lst))
  (string-append*
   (flatten (list (for/list ((clause lst))
                   (list "\n"
@@ -46,7 +60,6 @@
  (string-append*
   (flatten
    (match x
-
     ; atom
     ((== blank-symbol)
      '())
@@ -122,7 +135,6 @@
      (list "(while " (expr a (+ col 7)) (args b (+ col 1))))
     (_
      (cond
-
       ; 2 special args
       ((and (length? 3 x)
             (memq (car x) '(any-rec?)))

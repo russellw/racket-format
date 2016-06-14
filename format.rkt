@@ -4,29 +4,29 @@
 
 (provide format-module)
 
-(define (args xs col)
+(define (args lst col)
  (string-append*
-  (flatten (list (for/list ((x xs))
-                  (list* "\n" (make-string col #\space) (expr x col)))
+  (flatten (list (for/list ((v lst))
+                  (list* "\n" (make-string col #\space) (expr v col)))
                  ")"))))
 
-(define (bindings xs col)
+(define (bindings lst col)
  (string-append*
   (flatten
-   (list (add-between (for/list ((x xs))
-                       (if (atom? x)
-                        (~s x)
+   (list (add-between (for/list ((v lst))
+                       (if (atom? v)
+                        (~s v)
                         (list "("
-                              (inline (car x))
+                              (inline (car v))
                               " "
-                              (expr (cadr x) (+ col 1 (width (car x)) 1))
+                              (expr (cadr v) (+ col 1 (width (car v)) 1))
                               ")")))
                       (list "\n" (make-string col #\space)))
          ")"))))
 
-(define (clauses xs col)
+(define (clauses lst col)
  (string-append*
-  (flatten (list (for/list ((clause xs))
+  (flatten (list (for/list ((clause lst))
                   (list "\n"
                         (cond
                          ((eq? blank-symbol clause)

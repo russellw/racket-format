@@ -104,9 +104,9 @@
    s)
 
   ; abbrev prefix
-  ((? abbrev-prefix _)
+  ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix x))
-   (list s (expr (cadr x) (+ col (string-length s)))))
+   (list s (expr w (+ col (string-length s)))))
 
   ; special form
   ((list 'begin b ...)

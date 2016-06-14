@@ -86,11 +86,12 @@
      (list "#,@" (expr w (+ col 3))))
     ((list (== unsyntax-symbol) w)
      (list "#," (expr w (+ col 2))))
+
+    ; special form
+    ((list 'begin b ...)
+     (list "(begin" (args b (+ col 1))))
     (_
      (cond
-      ; 0 special args
-      ((memq (car x) '(begin))
-       (list "(" (~a (car x)) (args (cdr x) (add1 col))))
       ((memq (car x) '(cond))
        (list "(" (~a (car x)) (clauses (cdr x) (add1 col))))
 

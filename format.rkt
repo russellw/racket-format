@@ -105,6 +105,14 @@
      (list "(if " (expr a (+ col 4)) (args b (+ col 1))))
     ((list 'lambda a b ...)
      (list "(lambda " (inline a) (args b (+ col 1))))
+    ((list 'let (list a ...) b ...)
+     (list "(let (" (bindings a (+ col 6)) (args b (+ col 1))))
+    ((list 'let id (list a ...) b ...)
+     (list "(let "
+           (~a id)
+           " ("
+           (bindings a (+ col 5 (width id) 2))
+           (args b (+ col 1))))
     ((list 'match a b ...)
      (list "(match " (expr a (+ col 7)) (clauses b (+ col 1))))
     ((list 'receive a b ...)
@@ -129,26 +137,6 @@
              " "
              (inline (caddr x))
              (args (cdddr x) (add1 col))))
-
-      ; let
-      ((and (length? 3 x)
-            (memq (car x) '(let let*))
-            (list? (cadr x)))
-       (list "("
-             (~a (car x))
-             " ("
-             (bindings (cadr x) (+ col 1 (width (car x)) 2))
-             (args (cddr x) (add1 col))))
-      ((and (length? 3 x)
-            (memq (car x) '(let)))
-       (list
-        "("
-        (~a (car x))
-        " "
-        (~a (cadr x))
-        " ("
-        (bindings (caddr x) (+ col 1 (width (car x)) 1 (width (cadr x)) 2))
-        (args (cdddr x) (add1 col))))
 
       ; args inline
       ((and (not (memq (car x) '(and or)))

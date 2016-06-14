@@ -82,6 +82,17 @@
           y))))
 
  ; sort
+ (set! m
+       (for/list ((v m))
+        (match v
+         ((list 'require b ...)
+          `(require ,@(sort b value<?)))
+         ((list 'provide b ...)
+          `(provide ,@(sort b value<?)))
+         (_
+          v))))
+
+ ; sort
  (for/sublists ((x m))
   (begin
    ; case
@@ -101,20 +112,6 @@
                     (sort fragment
                           (lambda (a b)
                            (symbol<? (name a) (name b))))
-                    fragment))))
-
-   ; provides
-   (set! x
-         (append* (for/list ((fragment (fragments (curry car? 'provide) x)))
-                   (if (car? 'provide (car fragment))
-                    (sort fragment value<?)
-                    fragment))))
-
-   ; requires
-   (set! x
-         (append* (for/list ((fragment (fragments (curry car? 'require) x)))
-                   (if (car? 'require (car fragment))
-                    (sort fragment value<?)
                     fragment))))
 
    ; sorted

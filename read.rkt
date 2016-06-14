@@ -1,17 +1,17 @@
 #lang racket
 (require (planet dyoo/while-loop) "etc.rkt")
 
-(provide read-module
-         comment-symbol
+(provide comment-symbol
          lang-symbol
          quasiquote-symbol
          quasisyntax-symbol
          quote-symbol
+         read-module
          syntax-symbol
-         unquote-symbol
          unquote-splicing-symbol
-         unsyntax-symbol
-         unsyntax-splicing-symbol)
+         unquote-symbol
+         unsyntax-splicing-symbol
+         unsyntax-symbol)
 
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char)) (read-char))))

@@ -28,14 +28,9 @@
 (define (blank-before-comments lst)
  (add-betweenf lst
                (lambda (v w)
-                (cond
-                 ((eq? v blank-symbol)
-                  #f)
-                 ((and (not (car? comment-symbol v))
-                       (car? comment-symbol w))
-                  blank-symbol)
-                 (else
-                  #f)))))
+                (and (not (car? comment-symbol v))
+                     (car? comment-symbol w)
+                     blank-symbol))))
 
 (define (clauses lst col)
  (set! lst (blank-before-comments lst))

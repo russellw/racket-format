@@ -70,22 +70,22 @@
      s)
 
     ; prefix
-    ((list (== quote-symbol) w)
-     (list "'" (expr w (+ col 1))))
     ((list (== quasiquote-symbol) w)
      (list "`" (expr w (+ col 1))))
     ((list (== quasisyntax-symbol) w)
      (list "#`" (expr w (+ col 2))))
+    ((list (== quote-symbol) w)
+     (list "'" (expr w (+ col 1))))
     ((list (== syntax-symbol) w)
      (list "#'" (expr w (+ col 2))))
-    ((list (== unquote-symbol) w)
-     (list "," (expr w (+ col 1))))
     ((list (== unquote-splicing-symbol) w)
      (list ",@" (expr w (+ col 2))))
-    ((list (== unsyntax-symbol) w)
-     (list "#," (expr w (+ col 2))))
+    ((list (== unquote-symbol) w)
+     (list "," (expr w (+ col 1))))
     ((list (== unsyntax-splicing-symbol) w)
      (list "#,@" (expr w (+ col 3))))
+    ((list (== unsyntax-symbol) w)
+     (list "#," (expr w (+ col 2))))
     (_
      (cond
       ; 0 special args

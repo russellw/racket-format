@@ -118,9 +118,7 @@
      (cond
       ; 2 special args
       ((and (length? 3 x)
-            (memq (car x)
-                  '(any-rec? for map-lists
-                    transform)))
+            (memq (car x) '(any-rec? for map-lists)))
        (list "("
              (~a (car x))
              " "

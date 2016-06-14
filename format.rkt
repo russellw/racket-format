@@ -62,12 +62,14 @@
      #:when
      (atom? x)
      (~s x))
+
+    ; syntax sugar
+    ((list (== comment-symbol) s)
+     s)
+    ((list (== lang-symbol) s)
+     s)
     (_
      (cond
-      ((car? comment-symbol x)
-       (cadr x))
-      ((car? lang-symbol x)
-       (cadr x))
       ((car? quote-symbol x)
        (list "'" (expr (cadr x) (+ col 1))))
       ((car? quasiquote-symbol x)

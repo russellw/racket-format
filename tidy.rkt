@@ -3,6 +3,15 @@
 
 (provide tidy)
 
+(define (decl? x)
+ (match x
+  ((list 'define (list w ...) b ...)
+   #t)
+  ((list 'define-syntax b ...)
+   #t)
+  (_
+   #f)))
+
 (define-syntax for/sublists
  (syntax-rules ()
   ((_ ((x x1)) b ...)
@@ -85,10 +94,10 @@
           (_
            x)))
 
-   ; functions
+   ; declarations
    (set! x
-         (append* (for/list ((fragment (fragments defun? x)))
-                   (if (defun? (car fragment))
+         (append* (for/list ((fragment (fragments decl? x)))
+                   (if (decl? (car fragment))
                     (sort fragment
                           (lambda (a b)
                            (symbol<? (name a) (name b))))

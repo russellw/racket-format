@@ -49,15 +49,6 @@
                r)
       r))))
 
-(define (defun? x)
- (match x
-  ((list 'define (list w ...) b ...)
-   #t)
-  ((list 'define-syntax b ...)
-   #t)
-  (_
-   #f)))
-
 (define (length? n x)
  (<= n (length x)))
 

@@ -94,6 +94,8 @@
      (list "(case " (expr a (+ col 6)) (clauses b (+ col 1))))
     ((list 'cond b ...)
      (list "(cond" (clauses b (+ col 1))))
+    ((list 'define-syntax a b ...)
+     (list "(define-syntax " (inline a) (args b (+ col 1))))
     ((list 'lambda a b ...)
      (list "(lambda " (inline a) (args b (+ col 1))))
     ((list 'match a b ...)
@@ -105,9 +107,7 @@
       ; 1 special arg
       ((and (length? 2 x)
             (or (defun? x)
-                (memq (car x)
-                      (quote
-                             (define-syntax receive)))))
+                (memq (car x) (quote (receive)))))
        (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
       ((and (length? 2 x)
             (memq (car x)

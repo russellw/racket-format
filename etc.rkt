@@ -46,15 +46,6 @@
   (_
    #f)))
 
-(define (defvar? x)
- (match x
-  ((list 'define name ...)
-   #:when
-   (atom? name)
-   #t)
-  (_
-   #f)))
-
 (define (length? n x)
  (<= n (length x)))
 

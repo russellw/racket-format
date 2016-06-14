@@ -39,7 +39,8 @@
                 (vector->list (current-command-line-arguments))))
 
 ; format
-(for ((path files)) (define m (with-input-from-file path read-module))
+(for ((path files))
+ (define m (with-input-from-file path read-module))
  (set! m (tidy m))
  (define s (format-module m))
  (if inplace

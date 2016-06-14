@@ -95,6 +95,8 @@
      (list "(define " (inline a) (args b (+ col 1))))
     ((list 'define-syntax a b ...)
      (list "(define-syntax " (inline a) (args b (+ col 1))))
+    ((list 'for a b ...)
+     (list "(for (" (bindings a (+ col 6)) (args b (+ col 1))))
     ((list 'for/list a b ...)
      (list "(for/list (" (bindings a (+ col 11)) (args b (+ col 1))))
     ((list 'if a b ...)
@@ -117,7 +119,7 @@
      (cond
       ; 2 special args
       ((and (length? 3 x)
-            (memq (car x) '(any-rec? for map-lists)))
+            (memq (car x) '(any-rec? map-lists)))
        (list "("
              (~a (car x))
              " "

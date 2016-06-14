@@ -107,7 +107,7 @@
     ((list 'receive a b ...)
      (list "(receive " (inline a) (args b (+ col 1))))
     ((list 'syntax-rules a b ...)
-     (list "(syntax-rules " (expr a (+ col 14)) (clauses b (+ col 1))))
+     (list "(syntax-rules " (inline a) (clauses b (+ col 1))))
     ((list 'unless a b ...)
      (list "(unless " (expr a (+ col 8)) (args b (+ col 1))))
     ((list 'when a b ...)

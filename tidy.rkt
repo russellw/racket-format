@@ -1,7 +1,5 @@
 #lang racket
-(require "etc.rkt")
-
-(require "read.rkt")
+(require "etc.rkt" "read.rkt")
 
 (provide tidy)
 
@@ -86,47 +84,43 @@
           y))))
 
  ; sort
- (set! m
-  (for/sublists ((x m))
-   (begin
-    ; case
-    (set! x
-          (match x
-           ((list 'case v lst ...)
-            `(case ,v
-              (unquote-splicing
-               (sort-cases lst))))
-           (_
-            x)))
+ (for/sublists ((x m))
+  (begin
+   ; case
+   (set! x
+         (match x
+          ((list 'case v lst ...)
+           `(case ,v
+             (unquote-splicing
+              (sort-cases lst))))
+          (_
+           x)))
 
-    ; functions
-    (set! x
-          (append* (for/list ((fragment (fragments defun? x)))
-                    (if (defun? (car fragment))
-                     (sort fragment
-                           (lambda (a b)
-                            (symbol<? (name a) (name b))))
-                     fragment))))
+   ; functions
+   (set! x
+         (append* (for/list ((fragment (fragments defun? x)))
+                   (if (defun? (car fragment))
+                    (sort fragment
+                          (lambda (a b)
+                           (symbol<? (name a) (name b))))
+                    fragment))))
 
-    ; provides
-    (set! x
-          (append* (for/list ((fragment (fragments (curry car? 'provide) x)))
-                    (if (car? 'provide (car fragment))
-                     (sort fragment value<?)
-                     fragment))))
+   ; provides
+   (set! x
+         (append* (for/list ((fragment (fragments (curry car? 'provide) x)))
+                   (if (car? 'provide (car fragment))
+                    (sort fragment value<?)
+                    fragment))))
 
-    ; requires
-    (set! x
-          (append* (for/list ((fragment (fragments (curry car? 'require) x)))
-                    (if (car? 'require (car fragment))
-                     (sort fragment value<?)
-                     fragment))))
+   ; requires
+   (set! x
+         (append* (for/list ((fragment (fragments (curry car? 'require) x)))
+                   (if (car? 'require (car fragment))
+                    (sort fragment value<?)
+                    fragment))))
 
-    ; sorted
-    x)))
-
- ; result
- m)
+   ; sorted
+   x)))
 
 (define (typeof x)
  (cond

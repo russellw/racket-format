@@ -11,8 +11,6 @@
                  ")"))))
 
 (define (bindings xs col)
- (when (car? blank-symbol xs)
-  (set! xs (cdr xs)))
  (string-append*
   (flatten
    (list (add-between (for/list ((x xs))

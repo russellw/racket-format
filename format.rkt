@@ -5,8 +5,6 @@
 (provide format-module)
 
 (define (args xs col)
- (when (car? blank-symbol xs)
-  (set! xs (cdr xs)))
  (string-append*
   (flatten (list (for/list ((x xs))
                   (list* "\n" (make-string col #\space) (expr x col)))

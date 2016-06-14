@@ -85,6 +85,7 @@
  (sort lst value<?))
 
 (define (tidy m)
+
  ; space at start of comment
  (set! m
        (for/sublists ((y m))
@@ -100,6 +101,7 @@
  (set! m
   (for/sublists ((x m))
    (begin
+
     ; case
     (set! x
           (match x

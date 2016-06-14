@@ -1,7 +1,11 @@
 #lang racket
+
 (require "etc.rkt")
+
 (require "read.rkt")
+
 (provide blank-symbol)
+
 (provide tidy)
 
 (define-syntax for/sublists
@@ -123,36 +127,6 @@
 
     ; sorted
     x)))
-
- ; blank lines around prelude
- (set! m
-       (add-betweenf m
-                     (lambda (v w)
-                      (cond
-                       ((eq? v blank-symbol)
-                        #f)
-                       ((eq? w blank-symbol)
-                        #f)
-                       ((xor (prelude? v) (prelude? w))
-                        blank-symbol)
-                       (else
-                        #f)))))
-
- ; blank lines around functions
- (set! m
-       (for/sublists ((x m))
-        (add-betweenf x
-                      (lambda (v w)
-                       (cond
-                        ((eq? v blank-symbol)
-                         #f)
-                        ((eq? w blank-symbol)
-                         #f)
-                        ((or (defun? v)
-                             (defun? w))
-                         blank-symbol)
-                        (else
-                         #f))))))
 
  ; result
  m)

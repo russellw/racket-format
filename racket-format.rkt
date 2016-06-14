@@ -1,7 +1,11 @@
 #lang racket
+
 (require "etc.rkt")
+
 (require "format.rkt")
+
 (require "read.rkt")
+
 (require "tidy.rkt")
 
 ; options
@@ -37,6 +41,7 @@
                    (eprintf "~a: unknown option\n" s)
                    (exit 1))))
                 (vector->list (current-command-line-arguments))))
+
 ; format
 (for ((path files))
  (define m (with-input-from-file path read-module))

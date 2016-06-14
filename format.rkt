@@ -5,6 +5,7 @@
 (provide format-module)
 
 (define (args lst col)
+ (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
  (list (for/list ((v lst))
         (list* "\n" (make-string col #\space) (expr v col)))
@@ -22,11 +23,18 @@
                     (list "\n" (make-string col #\space)))
        ")"))
 
+(define (blank-after-decls lst)
+ (add-betweenf lst
+               (lambda (v w)
+                (and (decl? v)
+                     (not (eq? w blank-symbol))
+                     blank-symbol))))
+
 (define (blank-before-comments lst)
  (add-betweenf lst
                (lambda (v w)
-                (and (not (eq? v blank-symbol))
-                     (not (car? comment-symbol v))
+                (and (not (car? comment-symbol v))
+                     (not (eq? v blank-symbol))
                      (car? comment-symbol w)
                      blank-symbol))))
 
@@ -47,6 +55,21 @@
                       (expr (car clause) (add1 col))
                       (args (cdr clause) (add1 col)))))))
        ")"))
+
+(define (decl? x)
+ (match x
+  ((list 'define (list w ...) b ...)
+   #t)
+  ((list 'define-syntax b ...)
+   #t)
+  ((list 'provide b ...)
+   #t)
+  ((list 'require b ...)
+   #t)
+  ((list (== lang-symbol) b ...)
+   #t)
+  (_
+   #f)))
 
 (define (expr x col)
  (match x
@@ -166,9 +189,7 @@
      (list "(" (expr (car x) (add1 col)) (args (cdr x) (add1 col))))))))
 
 (define (format-module m)
- (trim-lines (string-append* (flatten (map (lambda (x)
-                                            (list (expr x 0) "\n"))
-                                           m)))))
+ (trim-lines (string-append* (flatten (drop-right (args m 0) 1)))))
 
 (define (inline x)
  (cond

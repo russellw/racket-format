@@ -4,29 +4,6 @@
 
 (provide format-module)
 
-(define (abbrev-prefix x)
- (and (list? x)
-      (= (length x) 2)
-      (case (car x)
-       ((quasiquote)
-        "`")
-       ((quasisyntax)
-        "#`")
-       ((quote)
-        "'")
-       ((syntax)
-        "#'")
-       ((unquote)
-        ",")
-       ((unquote-splicing)
-        ",@")
-       ((unsyntax)
-        "#,")
-       ((unsyntax-splicing)
-        "#,@")
-       (else
-        #f))))
-
 (define (args xs col)
  (when (car? blank-symbol xs)
   (set! xs (cdr xs)))
@@ -65,23 +42,36 @@
      (cadr x))
     ((car? lang-symbol x)
      (cadr x))
-    ((and (abbrev-prefix x)
-          (list? (cadr x))
-          (andmap atom? (cadr x)))
-     (inline x))
-    ((abbrev-prefix x)
-     (list (abbrev-prefix x)
-           (block (cadr x) (+ col (string-length (abbrev-prefix x))))))
+    ((car? quote-symbol x)
+     (list "'" (block (cadr x) (+ col 1))))
+    ((car? quasiquote-symbol x)
+     (list "`" (block (cadr x) (+ col 1))))
+    ((car? quasisyntax-symbol x)
+     (list "#`" (block (cadr x) (+ col 2))))
+    ((car? syntax-symbol x)
+     (list "#'" (block (cadr x) (+ col 2))))
+    ((car? unquote-symbol x)
+     (list "," (block (cadr x) (+ col 1))))
+    ((car? unquote-splicing-symbol x)
+     (list ",@" (block (cadr x) (+ col 2))))
+    ((car? unsyntax-symbol x)
+     (list "#," (block (cadr x) (+ col 2))))
+    ((car? unsyntax-splicing-symbol x)
+     (list "#,@" (block (cadr x) (+ col 3))))
 
     ; 0 special args
-    ((memq (car x) '(begin collect))
+    ((memq (car x)
+           '(begin
+             collect))
      (list "(" (~a (car x)) (args (cdr x) (add1 col))))
     ((memq (car x) '(cond))
      (list "(" (~a (car x)) (clauses (cdr x) (add1 col))))
 
     ; 1 special arg
     ((and (length? 2 x)
-          (memq (car x) '(case match syntax-rules)))
+          (memq (car x)
+                '(case match
+                  syntax-rules)))
      (list "("
            (inline (car x))
            " "
@@ -95,7 +85,10 @@
                             receive)))))
      (list "(" (~a (car x)) " " (inline (cadr x)) (args (cddr x) (add1 col))))
     ((and (length? 2 x)
-          (memq (car x) '(if unless when while)))
+          (memq (car x)
+                '(if unless
+                  when
+                  while)))
      (list "("
            (~a (car x))
            " "
@@ -104,7 +97,9 @@
 
     ; 2 special args
     ((and (length? 3 x)
-          (memq (car x) '(any-rec? for map-lists transform)))
+          (memq (car x)
+                '(any-rec? for map-lists
+                  transform)))
      (list "("
            (~a (car x))
            " "
@@ -115,7 +110,7 @@
 
     ; let
     ((and (length? 3 x)
-          (memq (car x) '(let let* letrec))
+          (memq (car x) '(let let*))
           (list? (cadr x)))
      (list "("
            (~a (car x))
@@ -189,8 +184,22 @@
 
 (define (inline x)
  (string-append* (flatten (cond
-                           ((abbrev-prefix x)
-                            (list (abbrev-prefix x) (inline (cadr x))))
+                           ((car? quote-symbol x)
+                            (list "'" (inline (cadr x))))
+                           ((car? quasiquote-symbol x)
+                            (list "`" (inline (cadr x))))
+                           ((car? quasisyntax-symbol x)
+                            (list "#`" (inline (cadr x))))
+                           ((car? syntax-symbol x)
+                            (list "#'" (inline (cadr x))))
+                           ((car? unquote-symbol x)
+                            (list "," (inline (cadr x))))
+                           ((car? unquote-splicing-symbol x)
+                            (list ",@" (inline (cadr x))))
+                           ((car? unsyntax-symbol x)
+                            (list "#," (inline (cadr x))))
+                           ((car? unsyntax-splicing-symbol x)
+                            (list "#,@" (inline (cadr x))))
                            ((list? x)
                             (list "(" (add-between (map inline x) " ") ")"))
                            (else

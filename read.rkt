@@ -3,7 +3,16 @@
 (require "etc.rkt")
 (provide comment-symbol)
 (provide lang-symbol)
-(provide read-module)
+
+(provide read-module
+         quasiquote-symbol
+         quasisyntax-symbol
+         quote-symbol
+         syntax-symbol
+         unquote-symbol
+         unquote-splicing-symbol
+         unsyntax-symbol
+         unsyntax-splicing-symbol)
 
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char)) (read-char))))
@@ -29,19 +38,19 @@
     ((peek? "'" 1)
      (read-char)
      (read-char)
-     (list 'syntax (read*)))
+     (list syntax-symbol (read*)))
     ((peek? "`" 1)
      (read-char)
      (read-char)
-     (list 'quasisyntax (read*)))
+     (list quasisyntax-symbol (read*)))
     ((peek? "," 1)
      (read-char)
      (read-char)
      (if (peek? "@")
       (begin
        (read-char)
-       (list 'unsyntax-splicing (read*)))
-      (list 'unsyntax (read*))))
+       (list unsyntax-splicing-symbol (read*)))
+      (list unsyntax-symbol (read*))))
     ((peek? ":" 1)
      (read))
     ((peek? "\\" 1)
@@ -59,7 +68,7 @@
         (string->symbol s)))))))
   ((peek? "'")
    (read-char)
-   (list 'quote (read*)))
+   (list quote-symbol (read*)))
   ((peek? "(")
    (read-char)
    (let loop ()
@@ -91,13 +100,13 @@
    (if (peek? "@")
     (begin
      (read-char)
-     (list 'unquote-splicing (read*)))
-    (list 'unquote (read*))))
+     (list unquote-splicing-symbol (read*)))
+    (list unquote-symbol (read*))))
   ((peek? ";")
    (list comment-symbol (read-line)))
   ((peek? "`")
    (read-char)
-   (list 'quasiquote (read*)))
+   (list quasiquote-symbol (read*)))
   (else
    (read))))
 
@@ -138,3 +147,11 @@
 
 (define comment-symbol (gensym))
 (define lang-symbol (gensym))
+(define quasiquote-symbol (gensym))
+(define quasisyntax-symbol (gensym))
+(define quote-symbol (gensym))
+(define syntax-symbol (gensym))
+(define unquote-splicing-symbol (gensym))
+(define unquote-symbol (gensym))
+(define unsyntax-splicing-symbol (gensym))
+(define unsyntax-symbol (gensym))

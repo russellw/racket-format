@@ -94,11 +94,13 @@
      (list "(case " (expr c (+ col 6)) (clauses b (+ col 1))))
     ((list 'cond b ...)
      (list "(cond" (clauses b (+ col 1))))
+    ((list 'match c b ...)
+     (list "(match " (expr c (+ col 7)) (clauses b (+ col 1))))
     (_
      (cond
       ; 1 special arg
       ((and (length? 2 x)
-            (memq (car x) '(match syntax-rules)))
+            (memq (car x) '(syntax-rules)))
        (list "("
              (~a (car x))
              " "

@@ -96,16 +96,11 @@
      (list "(cond" (clauses b (+ col 1))))
     ((list 'match c b ...)
      (list "(match " (expr c (+ col 7)) (clauses b (+ col 1))))
+    ((list 'syntax-rules c b ...)
+     (list "(syntax-rules " (expr c (+ col 12)) (clauses b (+ col 1))))
     (_
      (cond
       ; 1 special arg
-      ((and (length? 2 x)
-            (memq (car x) '(syntax-rules)))
-       (list "("
-             (~a (car x))
-             " "
-             (expr (cadr x) (+ col 1 (width (car x)) 1))
-             (clauses (cddr x) (add1 col))))
       ((and (length? 2 x)
             (or (defun? x)
                 (memq (car x)

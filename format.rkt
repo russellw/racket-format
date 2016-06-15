@@ -106,6 +106,10 @@
    (list s (expr w (+ col (string-length s)))))
 
   ; special form
+  ((list 'and b ...)
+   #:when
+   (for/and ((w (cdr x))) (< (+ col 5 (width w)) 80))
+   (list "(and " (exprs b (+ col 5)) ")"))
   ((list 'begin b ...)
    (list "(begin\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'case a b ...)
@@ -189,6 +193,10 @@
          (make-string col1 #\space)
          (clauses b col1)
          ")"))
+  ((list 'or b ...)
+   #:when
+   (for/and ((w (cdr x))) (< (+ col 4 (width w)) 80))
+   (list "(or " (exprs b (+ col 4)) ")"))
   ((list 'provide b ...)
    (list "(provide " (exprs b (+ col 9)) ")"))
   ((list 'receive a b ...)
@@ -245,10 +253,7 @@
            ")"))
 
     ; args inline
-    ((and (not (memq (car x)
-                     '(and or
-                           ))
-               )
+    ((and (not (memq (car x) '(and or)))
           (andmap inline? x)
           (< (+ col 1 (length x) (apply + (map width x))) 80))
      (inline x))
@@ -334,8 +339,7 @@
               "\n"))
 
 (define (width x)
- (or (hash-ref widths x #f)
-     )
+ (or (hash-ref widths x #f))
  (let ((w (max-line-width (string-append* (flatten (expr x 0))))))
   (hash-set! widths x w)
   w))

@@ -1,5 +1,6 @@
 #lang racket
-(require "etc.rkt" "read.rkt")
+(require "etc.rkt"
+         "read.rkt")
 
 (provide tidy)
 

@@ -1,5 +1,6 @@
 #lang racket
-(require (planet dyoo/while-loop) "etc.rkt")
+(require (planet dyoo/while-loop)
+         "etc.rkt")
 
 (provide comment-symbol
          lang-symbol

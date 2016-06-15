@@ -1,5 +1,7 @@
 #lang racket
-(require (planet dyoo/while-loop:1:=1) "etc.rkt" "read.rkt")
+(require (planet dyoo/while-loop:1:=1)
+         "etc.rkt"
+         "read.rkt")
 
 (provide format-module)
 
@@ -194,6 +196,8 @@
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
+  ((list 'require b ...)
+   (list "(require " (exprs b (+ col 9)) ")"))
   ((list 'syntax-rules a b ...)
    (list "(syntax-rules "
          (inline a)

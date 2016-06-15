@@ -76,8 +76,7 @@
        (for/sublists ((lst m))
         (match lst
          ((list (== comment-symbol) s)
-          #:when
-          (char-alphabetic? (string-ref s 1))
+          #:when (char-alphabetic? (string-ref s 1))
           (list comment-symbol (string-append "; " (substring s 1))))
          (_
           lst))))

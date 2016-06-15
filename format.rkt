@@ -110,8 +110,7 @@
 
   ; special form
   ((list 'and b ...)
-   #:when
-   (for/and ((w b)) (< (+ col* (width w)) 80))
+   #:when (for/and ((w b)) (< (+ col* (width w)) 80))
    (list "(and " (exprs b col*) ")"))
   ((list 'begin b ...)
    (list "(begin\n" (make-string col1 #\space) (exprs b col1) ")"))
@@ -197,8 +196,7 @@
          (clauses b col1)
          ")"))
   ((list 'or b ...)
-   #:when
-   (for/and ((w b)) (< (+ col* (width w)) 80))
+   #:when (for/and ((w b)) (< (+ col* (width w)) 80))
    (list "(or " (exprs b col*) ")"))
   ((list 'provide b ...)
    (list "(provide " (exprs b col*) ")"))
@@ -298,8 +296,19 @@
 (define (exprs lst col)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
- (add-between (for/list ((v lst))
-               (expr v col))
+ (add-between (let loop ((lst lst))
+               (cond
+                ((null? lst)
+                 '())
+                ((and (keyword? (car lst))
+                      (pair? (cdr lst)))
+                 (cons
+                  (list (expr (car lst) col)
+                        " "
+                        (expr (cadr lst) (+ col (width (car lst)) 1)))
+                  (loop (cddr lst))))
+                (else
+                 (cons (expr (car lst) col) (loop (cdr lst))))))
               (list "\n" (make-string col #\space))))
 
 (define (format-module m)
@@ -338,8 +347,7 @@
  (string-join (for/list ((s (string-split s "\n")))
                (string-trim s #:left? #f))
               "\n"
-              #:after-last
-              "\n"))
+              #:after-last "\n"))
 
 (define (width v)
  (or (hash-ref widths v #f))

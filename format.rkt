@@ -85,14 +85,14 @@
   (_
    #f)))
 
-(define (expr x col)
+(define (expr v col)
  (define col1 (+ col 1))
- (match x
+ (match v
   ; atom
   ((== blank-symbol)
    '())
   ((? atom? _)
-   (~s x))
+   (~s v))
 
   ; text
   ((list (== comment-symbol) s)
@@ -102,7 +102,7 @@
 
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))
-   (define s (abbrev-prefix x))
+   (define s (abbrev-prefix v))
    (list s (expr w (+ col (string-length s)))))
 
   ; special form
@@ -239,57 +239,57 @@
   (_
    (cond
     ; 2 special args
-    ((and (length? 3 x)
-          (memq (car x) '(any-rec?)))
+    ((and (length? 3 v)
+          (memq (car v) '(any-rec?)))
      (list "("
-           (~a (car x))
+           (~a (car v))
            " "
-           (~a (cadr x))
+           (~a (cadr v))
            " "
-           (inline (caddr x))
+           (inline (caddr v))
            "\n"
            (make-string col1 #\space)
-           (exprs (cdddr x) col1)
+           (exprs (cdddr v) col1)
            ")"))
 
     ; args inline
-    ((and (not (memq (car x) '(and or)))
-          (andmap inline? x)
-          (< (+ col 1 (length x) (apply + (map width x))) 80))
-     (inline x))
+    ((and (not (memq (car v) '(and or)))
+          (andmap inline? v)
+          (< (+ col 1 (length v) (apply + (map width v))) 80))
+     (inline v))
 
     ; args aligned with first
-    ((and (length? 2 x)
-          (inline? (car x))
-          (for/and ((y (cdr x))) (< (+ col 1 (width (car x)) 1 (width y)) 80)))
+    ((and (length? 2 v)
+          (inline? (car v))
+          (for/and ((y (cdr v))) (< (+ col 1 (width (car v)) 1 (width y)) 80)))
      (list "("
-           (inline (car x))
+           (inline (car v))
            " "
-           (expr (cadr x) (+ col 1 (width (car x)) 1))
+           (expr (cadr v) (+ col 1 (width (car v)) 1))
            "\n"
-           (make-string (+ col 1 (width (car x)) 1) #\space)
-           (exprs (cddr x) (+ col 1 (width (car x)) 1))
+           (make-string (+ col 1 (width (car v)) 1) #\space)
+           (exprs (cddr v) (+ col 1 (width (car v)) 1))
            ")"))
 
     ; first arg inline anyway
-    ((and (length? 2 x)
-          (memq (car x) '(define set!)))
+    ((and (length? 2 v)
+          (memq (car v) '(define set!)))
      (list "("
-           (inline (car x))
+           (inline (car v))
            " "
-           (inline (cadr x))
+           (inline (cadr v))
            "\n"
            (make-string col1 #\space)
-           (exprs (cddr x) col1)
+           (exprs (cddr v) col1)
            ")"))
 
     ; args unaligned
     (else
      (list "("
-           (expr (car x) col1)
+           (expr (car v) col1)
            "\n"
            (make-string col1 #\space)
-           (exprs (cdr x) col1)
+           (exprs (cdr v) col1)
            ")"))))))
 
 (define (exprs lst col)
@@ -302,29 +302,29 @@
 (define (format-module m)
  (trim-lines (string-append* (flatten (exprs m 0)))))
 
-(define (inline x)
- (match x
+(define (inline v)
+ (match v
   ; atom
   ((? atom? _)
-   (~s x))
+   (~s v))
 
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))
-   (define s (abbrev-prefix x))
+   (define s (abbrev-prefix v))
    (list s (inline w)))
 
   ; else
   (_
-   (list "(" (add-between (map inline x) " ") ")"))))
+   (list "(" (add-between (map inline v) " ") ")"))))
 
-(define (inline? x)
- (and (not (any-rec? y x
+(define (inline? v)
+ (and (not (any-rec? y v
             (eq? y blank-symbol))
            )
-      (not (any-rec? y x
+      (not (any-rec? y v
             (eq? y comment-symbol))
            )
-      (not (string-contains? (string-append* (flatten (expr x 0))) "\n"))))
+      (not (string-contains? (string-append* (flatten (expr v 0))) "\n"))))
 
 (define (max-line-width s)
  (if (string=? s "")
@@ -338,10 +338,10 @@
               #:after-last
               "\n"))
 
-(define (width x)
- (or (hash-ref widths x #f))
- (let ((w (max-line-width (string-append* (flatten (expr x 0))))))
-  (hash-set! widths x w)
+(define (width v)
+ (or (hash-ref widths v #f))
+ (let ((w (max-line-width (string-append* (flatten (expr v 0))))))
+  (hash-set! widths v w)
   w))
 
 (define blank-symbol (gensym))

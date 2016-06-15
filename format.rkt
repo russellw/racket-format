@@ -24,13 +24,6 @@
   (_
    #f)))
 
-(define (args lst col)
- (set! lst (blank-after-decls lst))
- (set! lst (blank-before-comments lst))
- (list (for/list ((v lst))
-        (list* "\n" (make-string col #\space) (expr v col)))
-       ")"))
-
 (define (bindings lst col)
  (list (add-between (for/list ((v lst))
                      (if (atom? v)
@@ -73,7 +66,7 @@
                 (list (make-string col #\space)
                       "("
                       (expr (car clause) (add1 col))
-                      (args (cdr clause) (add1 col)))))))
+                      (exprs (cdr clause) (add1 col)))))))
        ")"))
 
 (define (decl? x)
@@ -110,45 +103,45 @@
 
   ; special form
   ((list 'begin b ...)
-   (list "(begin" (args b (+ col 1))))
+   (list "(begin" (exprs b (+ col 1))))
   ((list 'case a b ...)
    (list "(case " (expr a (+ col 6)) (clauses b (+ col 1))))
   ((list 'cond b ...)
    (list "(cond" (clauses b (+ col 1))))
   ((list 'define (list a ...) b ...)
-   (list "(define " (inline a) (args b (+ col 1))))
+   (list "(define " (inline a) (exprs b (+ col 1))))
   ((list 'define-syntax a b ...)
-   (list "(define-syntax " (inline a) (args b (+ col 1))))
+   (list "(define-syntax " (inline a) (exprs b (+ col 1))))
   ((list 'for a b ...)
-   (list "(for (" (bindings a (+ col 6)) (args b (+ col 1))))
+   (list "(for (" (bindings a (+ col 6)) (exprs b (+ col 1))))
   ((list 'for/list a b ...)
-   (list "(for/list (" (bindings a (+ col 11)) (args b (+ col 1))))
+   (list "(for/list (" (bindings a (+ col 11)) (exprs b (+ col 1))))
   ((list 'for/sublists a b ...)
-   (list "(for/sublists (" (bindings a (+ col 15)) (args b (+ col 1))))
+   (list "(for/sublists (" (bindings a (+ col 15)) (exprs b (+ col 1))))
   ((list 'if a b ...)
-   (list "(if " (expr a (+ col 4)) (args b (+ col 1))))
+   (list "(if " (expr a (+ col 4)) (exprs b (+ col 1))))
   ((list 'lambda a b ...)
-   (list "(lambda " (inline a) (args b (+ col 1))))
+   (list "(lambda " (inline a) (exprs b (+ col 1))))
   ((list 'let (list a ...) b ...)
-   (list "(let (" (bindings a (+ col 6)) (args b (+ col 1))))
+   (list "(let (" (bindings a (+ col 6)) (exprs b (+ col 1))))
   ((list 'let id (list a ...) b ...)
    (list "(let "
          (~a id)
          " ("
          (bindings a (+ col 5 (width id) 2))
-         (args b (+ col 1))))
+         (exprs b (+ col 1))))
   ((list 'match a b ...)
    (list "(match " (expr a (+ col 7)) (clauses b (+ col 1))))
   ((list 'receive a b ...)
-   (list "(receive " (inline a) (args b (+ col 1))))
+   (list "(receive " (inline a) (exprs b (+ col 1))))
   ((list 'syntax-rules a b ...)
    (list "(syntax-rules " (inline a) (clauses b (+ col 1))))
   ((list 'unless a b ...)
-   (list "(unless " (expr a (+ col 8)) (args b (+ col 1))))
+   (list "(unless " (expr a (+ col 8)) (exprs b (+ col 1))))
   ((list 'when a b ...)
-   (list "(when " (expr a (+ col 6)) (args b (+ col 1))))
+   (list "(when " (expr a (+ col 6)) (exprs b (+ col 1))))
   ((list 'while a b ...)
-   (list "(while " (expr a (+ col 7)) (args b (+ col 1))))
+   (list "(while " (expr a (+ col 7)) (exprs b (+ col 1))))
   (_
    (cond
     ; 2 special args
@@ -160,7 +153,7 @@
            (~a (cadr x))
            " "
            (inline (caddr x))
-           (args (cdddr x) (add1 col))))
+           (exprs (cdddr x) (add1 col))))
 
     ; args inline
     ((and (not (memq (car x) '(and or)))
@@ -176,7 +169,7 @@
            (inline (car x))
            " "
            (expr (cadr x) (+ col 1 (width (car x)) 1))
-           (args (cddr x) (+ col 1 (width (car x)) 1))))
+           (exprs (cddr x) (+ col 1 (width (car x)) 1))))
 
     ; first arg inline anyway
     ((and (length? 2 x)
@@ -185,14 +178,21 @@
            (inline (car x))
            " "
            (inline (cadr x))
-           (args (cddr x) (add1 col))))
+           (exprs (cddr x) (add1 col))))
 
     ; args unaligned
     (else
-     (list "(" (expr (car x) (add1 col)) (args (cdr x) (add1 col))))))))
+     (list "(" (expr (car x) (add1 col)) (exprs (cdr x) (add1 col))))))))
+
+(define (exprs lst col)
+ (set! lst (blank-after-decls lst))
+ (set! lst (blank-before-comments lst))
+ (list (for/list ((v lst))
+        (list* "\n" (make-string col #\space) (expr v col)))
+       ")"))
 
 (define (format-module m)
- (trim-lines (string-append* (flatten (drop-right (args m 0) 1)))))
+ (trim-lines (string-append* (flatten (drop-right (exprs m 0) 1)))))
 
 (define (inline x)
  (match x

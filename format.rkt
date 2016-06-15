@@ -25,16 +25,15 @@
    #f)))
 
 (define (bindings lst col)
- (list (add-between (for/list ((v lst))
-                     (if (atom? v)
-                      (~s v)
-                      (list "("
-                            (inline (car v))
-                            " "
-                            (expr (cadr v) (+ col 1 (width (car v)) 1))
-                            ")")))
-                    (list "\n" (make-string col #\space)))
-       ")"))
+ (add-between (for/list ((v lst))
+               (if (atom? v)
+                (~s v)
+                (list "("
+                      (inline (car v))
+                      " "
+                      (expr (cadr v) (+ col 1 (width (car v)) 1))
+                      ")")))
+              (list "\n" (make-string col #\space))))
 
 (define (blank-after-decls lst)
  (add-betweenf lst
@@ -114,22 +113,23 @@
   ((list 'define-syntax a b ...)
    (list "(define-syntax " (inline a) (exprs b (+ col 1)) ")"))
   ((list 'for a b ...)
-   (list "(for (" (bindings a (+ col 6)) (exprs b (+ col 1)) ")"))
+   (list "(for (" (bindings a (+ col 6)) ")" (exprs b (+ col 1)) ")"))
   ((list 'for/list a b ...)
-   (list "(for/list (" (bindings a (+ col 11)) (exprs b (+ col 1)) ")"))
+   (list "(for/list (" (bindings a (+ col 11)) ")" (exprs b (+ col 1)) ")"))
   ((list 'for/sublists a b ...)
-   (list "(for/sublists (" (bindings a (+ col 15)) (exprs b (+ col 1)) ")"))
+   (list "(for/sublists (" (bindings a (+ col 15)) ")" (exprs b (+ col 1)) ")"))
   ((list 'if a b ...)
    (list "(if " (expr a (+ col 4)) (exprs b (+ col 1)) ")"))
   ((list 'lambda a b ...)
    (list "(lambda " (inline a) (exprs b (+ col 1)) ")"))
   ((list 'let (list a ...) b ...)
-   (list "(let (" (bindings a (+ col 6)) (exprs b (+ col 1)) ")"))
+   (list "(let (" (bindings a (+ col 6)) ")" (exprs b (+ col 1)) ")"))
   ((list 'let id (list a ...) b ...)
    (list "(let "
          (~a id)
          " ("
          (bindings a (+ col 5 (width id) 2))
+         ")"
          (exprs b (+ col 1))
          ")"))
   ((list 'match a b ...)

@@ -108,7 +108,7 @@
   ; special form
   ((list 'and b ...)
    #:when
-   (for/and ((w (cdr x))) (< (+ col 5 (width w)) 80))
+   (for/and ((w b)) (< (+ col 5 (width w)) 80))
    (list "(and " (exprs b (+ col 5)) ")"))
   ((list 'begin b ...)
    (list "(begin\n" (make-string col1 #\space) (exprs b col1) ")"))
@@ -195,7 +195,7 @@
          ")"))
   ((list 'or b ...)
    #:when
-   (for/and ((w (cdr x))) (< (+ col 4 (width w)) 80))
+   (for/and ((w b)) (< (+ col 4 (width w)) 80))
    (list "(or " (exprs b (+ col 4)) ")"))
   ((list 'provide b ...)
    (list "(provide " (exprs b (+ col 9)) ")"))

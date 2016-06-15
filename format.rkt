@@ -297,20 +297,17 @@
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
  (add-between (let loop ((lst lst))
-               (cond
-                ((null? lst)
-                 '())
-                ((and (keyword? (car lst))
-                      (pair? (cdr lst)))
-                 (cons
-                  (list (expr (car lst) col)
-                        " "
-                        (expr (cadr lst) (+ col (width (car lst)) 1)))
-                  (loop (cddr lst))))
-                ((cadr? '... lst)
-                 (cons (list (expr (car lst) col) " ...") (loop (cddr lst))))
-                (else
-                 (cons (expr (car lst) col) (loop (cdr lst))))))
+               (match lst
+                ((list a '... c ...)
+                 (cons (list (expr a col) " ...") (loop c)))
+                ((list a b c ...)
+                 #:when (keyword? a)
+                 (cons (list (expr a col) " " (expr b (+ col (width a) 1)))
+                       (loop (cddr lst))))
+                ((list a b ...)
+                 (cons (expr a col) (loop b)))
+                (_
+                 '())))
               (list "\n" (make-string col #\space))))
 
 (define (format-module m)

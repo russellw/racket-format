@@ -18,8 +18,7 @@
   ((_ x xs b ...)
    (let loop ((x xs))
     (or (begin
-         b
-         ...)
+         b ...)
         (and (pair? x)
              (or (loop (car x))
                  (loop (cdr x)))))))))
@@ -56,10 +55,8 @@
  (syntax-rules ()
   ((receive args
     x
-    b
-    ...)
+    b ...)
    (call-with-values (lambda ()
                       x)
                      (lambda args
-                      b
-                      ...)))))
+                      b ...)))))

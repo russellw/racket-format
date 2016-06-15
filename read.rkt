@@ -134,8 +134,7 @@
    (let loop ()
     (if c
      (cons (let ()
-            b
-            ...)
+            b ...)
            (loop))
      '())))))
 

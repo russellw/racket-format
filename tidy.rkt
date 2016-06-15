@@ -23,8 +23,7 @@
       (set! x
             (for/list ((y x))
              (loop y)))
-      b
-      ...))))))
+      b ...))))))
 
 (define (fragments p xs)
  (cond

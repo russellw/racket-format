@@ -307,6 +307,8 @@
                         " "
                         (expr (cadr lst) (+ col (width (car lst)) 1)))
                   (loop (cddr lst))))
+                ((cadr? '... lst)
+                 (cons (list (expr (car lst) col) " ...") (loop (cddr lst))))
                 (else
                  (cons (expr (car lst) col) (loop (cdr lst))))))
               (list "\n" (make-string col #\space))))

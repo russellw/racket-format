@@ -189,6 +189,8 @@
          (make-string col1 #\space)
          (clauses b col1)
          ")"))
+  ((list 'provide b ...)
+   (list "(provide " (exprs b (+ col 9)) ")"))
   ((list 'receive a b ...)
    (list "(receive "
          (inline a)

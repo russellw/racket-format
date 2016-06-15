@@ -52,21 +52,20 @@
 
 (define (clauses lst col)
  (set! lst (blank-before-comments lst))
- (for/list ((clause lst))
-  (list "\n"
-        (cond
-         ((eq? blank-symbol clause)
-          '())
-         ((car? comment-symbol clause)
-          (list (make-string col #\space) (cadr clause)))
-         ((atom? clause)
-          (list (make-string col #\space) (~s clause)))
-         (else
-          (list (make-string col #\space)
-                "("
-                (expr (car clause) (add1 col))
-                (exprs (cdr clause) (add1 col))
-                ")"))))))
+ (add-between (for/list ((clause lst))
+               (cond
+                ((eq? blank-symbol clause)
+                 '())
+                ((car? comment-symbol clause)
+                 (cadr clause))
+                ((atom? clause)
+                 (~s clause))
+                (else
+                 (list "("
+                       (expr (car clause) (add1 col))
+                       (exprs (cdr clause) (add1 col))
+                       ")"))))
+              (list "\n" (make-string col #\space))))
 
 (define (decl? x)
  (match x
@@ -104,9 +103,14 @@
   ((list 'begin b ...)
    (list "(begin" (exprs b (+ col 1)) ")"))
   ((list 'case a b ...)
-   (list "(case " (expr a (+ col 6)) (clauses b (+ col 1)) ")"))
+   (list "(case "
+         (expr a (+ col 6))
+         "\n"
+         (make-string (+ col 1) #\space)
+         (clauses b (+ col 1))
+         ")"))
   ((list 'cond b ...)
-   (list "(cond" (clauses b (+ col 1)) ")"))
+   (list "(cond\n" (make-string (+ col 1) #\space) (clauses b (+ col 1)) ")"))
   ((list 'define (list a ...) b ...)
    (list "(define " (inline a) (exprs b (+ col 1)) ")"))
   ((list 'define-syntax a b ...)
@@ -132,11 +136,21 @@
          (exprs b (+ col 1))
          ")"))
   ((list 'match a b ...)
-   (list "(match " (expr a (+ col 7)) (clauses b (+ col 1)) ")"))
+   (list "(match "
+         (expr a (+ col 7))
+         "\n"
+         (make-string (+ col 1) #\space)
+         (clauses b (+ col 1))
+         ")"))
   ((list 'receive a b ...)
    (list "(receive " (inline a) (exprs b (+ col 1)) ")"))
   ((list 'syntax-rules a b ...)
-   (list "(syntax-rules " (inline a) (clauses b (+ col 1)) ")"))
+   (list "(syntax-rules "
+         (inline a)
+         "\n"
+         (make-string (+ col 1) #\space)
+         (clauses b (+ col 1))
+         ")"))
   ((list 'unless a b ...)
    (list "(unless " (expr a (+ col 8)) (exprs b (+ col 1)) ")"))
   ((list 'when a b ...)

@@ -88,7 +88,7 @@
 
   ; clause
   ((list a b ...)
-   (list "(" (expr a col1) "\n" (make-string col1 #\space) (exprs b col1) ")"))))
+   (list "(" (expr a col1) "\n" (make-string col1 #\space) (exprs col1 b) ")"))))
 
 (define (clauses col lst)
  (set! lst (blank-before-comments lst))
@@ -139,9 +139,9 @@
          b ...)
    #:when (for/and ((w b))
            (< (+ col* (width w)) 80))
-   (list op2 (exprs b col*) ")"))
+   (list op2 (exprs col* b) ")"))
   ((list 'begin b ...)
-   (list "(" op "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'case
              'match)
          a
@@ -159,9 +159,9 @@
              'define/memo*)
          (list a ...)
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list 'define-syntax a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'for
              'for*
              'for*/and
@@ -192,23 +192,23 @@
          (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs b col1)
+         (exprs col1 b)
          ")"))
   ((list 'if a b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'lambda
              'lambda/memo
              'lambda/memo*)
          a
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list 'let (list a ...) b ...)
    (list op2
          "("
          (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs b col1)
+         (exprs col1 b)
          ")"))
   ((list 'let id (list a ...) b ...)
    (list op2
@@ -217,14 +217,14 @@
          (bindings (+ col* (width id) 2) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs b col1)
+         (exprs col1 b)
          ")"))
   ((list (or 'provide
              'require)
          b ...)
-   (list op2 (exprs b col*) ")"))
+   (list op2 (exprs col* b) ")"))
   ((list 'receive a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list 'syntax-rules a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'unless
@@ -233,7 +233,7 @@
              'while/list)
          a
          b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   (_
    (cond
     ; 2 special args
@@ -247,7 +247,7 @@
            (inline (caddr v))
            "\n"
            (make-string col1 #\space)
-           (exprs (cdddr v) col1)
+           (exprs col1 (cdddr v))
            ")"))
 
     ; args inline
@@ -267,7 +267,7 @@
            (expr (cadr v) (+ col 1 (width (car v)) 1))
            "\n"
            (make-string (+ col 1 (width (car v)) 1) #\space)
-           (exprs (cddr v) (+ col 1 (width (car v)) 1))
+           (exprs (+ col 1 (width (car v)) 1) (cddr v))
            ")"))
 
     ; first arg inline anyway
@@ -279,7 +279,7 @@
            (inline (cadr v))
            "\n"
            (make-string col1 #\space)
-           (exprs (cddr v) col1)
+           (exprs col1 (cddr v))
            ")"))
 
     ; args unaligned
@@ -288,10 +288,10 @@
            (expr (car v) col1)
            "\n"
            (make-string col1 #\space)
-           (exprs (cdr v) col1)
+           (exprs col1 (cdr v))
            ")"))))))
 
-(define (exprs lst col)
+(define (exprs col lst)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
  (add-between (let loop ((lst lst))
@@ -308,7 +308,7 @@
               (list "\n" (make-string col #\space))))
 
 (define (format-module m)
- (trim-lines (string-append* (flatten (exprs m 0)))))
+ (trim-lines (string-append* (flatten (exprs 0 m)))))
 
 (define (inline v)
  (match v

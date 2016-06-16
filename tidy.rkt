@@ -4,19 +4,6 @@
 
 (provide tidy)
 
-(define (decl? v)
- (match v
-  ((list 'define (list w ...) b ...)
-   #t)
-  ((list 'define-syntax b ...)
-   #t)
-  ((list 'define/memo (list w ...) b ...)
-   #t)
-  ((list 'define/memo* (list w ...) b ...)
-   #t)
-  (_
-   #f)))
-
 (define-syntax for/sublists
  (syntax-rules ()
   ((_ ((x x1)) b ...)

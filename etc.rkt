@@ -48,6 +48,19 @@
                r)
       r))))
 
+(define (decl? v)
+ (match v
+  ((list 'define (list w ...) b ...)
+   #t)
+  ((list 'define-syntax b ...)
+   #t)
+  ((list 'define/memo (list w ...) b ...)
+   #t)
+  ((list 'define/memo* (list w ...) b ...)
+   #t)
+  (_
+   #f)))
+
 (define (length? n x)
  (<= n (length x)))
 

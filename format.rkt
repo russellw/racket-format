@@ -41,7 +41,7 @@
 (define (blank-after-decls lst)
  (add-betweenf lst
                (lambda (v w)
-                (and (decl? v)
+                (and (decl*? v)
                      (not (eq? w blank-symbol))
                      blank-symbol))))
 
@@ -73,22 +73,14 @@
                        ")"))))
               (list "\n" (make-string col #\space))))
 
-(define (decl? x)
+(define (decl*? x)
  (match x
-  ((list 'define (list w ...) b ...)
-   #t)
-  ((list 'define-syntax b ...)
-   #t)
-  ((list 'define/memo (list w ...) b ...)
-   #t)
-  ((list 'define/memo* (list w ...) b ...)
-   #t)
   ((list 'provide b ...)
    #t)
   ((list 'require b ...)
    #t)
   (_
-   #f)))
+   (decl? x))))
 
 (define (expr v col)
  (define col1 (+ col 1))

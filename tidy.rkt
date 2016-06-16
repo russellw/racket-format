@@ -98,6 +98,9 @@
           ((list 'case v x ...)
            `(case ,v
              ,@(sort-cases x)))
+          ((list 'or b ...)
+           #:when (andmap quoted-symbol? b)
+           `(or ,@(sort b value<?)))
           (_
            x)))
 
@@ -110,15 +113,6 @@
                            (symbol<? (name v) (name w))))
                     fragment))
                   ))
-
-   ; match or
-   (set! x
-         (match x
-          ((list 'or b ...)
-           #:when (andmap quoted-symbol? b)
-           `(or ,@(sort b value<?)))
-          (_
-           x)))
 
    ; sorted
    x)))

@@ -43,8 +43,7 @@
   (match lst
    ((list a (== blank-symbol) b ...)
     (list* a blank-symbol (loop b)))
-   ((list a b c ...)
-    #:when (decl*? a)
+   ((list (? decl*? a) b c ...)
     (list* a blank-symbol (loop (cons b c))))
    ((list a b ...)
     (cons a (loop b)))
@@ -292,8 +291,7 @@
                (match lst
                 ((list a '... c ...)
                  (cons (list (expr a col) " ...") (loop c)))
-                ((list a b c ...)
-                 #:when (keyword? a)
+                ((list (? keyword? a) b c ...)
                  (cons (list (expr a col) " " (expr b (+ col (width a) 1)))
                        (loop (cddr lst))))
                 ((list a b ...)

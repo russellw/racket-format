@@ -79,20 +79,8 @@
           lst))))
 
  ; sort
- (set! m
-       (for/list ((v m))
-        (match v
-         ((list 'require b ...)
-          `(require ,@(sort b value<?)))
-         ((list 'provide b ...)
-          `(provide ,@(sort b value<?)))
-         (_
-          v))))
-
- ; sort
  (for/sublists ((x m))
   (begin
-   ; case
    (set! x
          (match x
           ((list 'case v x ...)
@@ -101,21 +89,19 @@
           ((list 'or b ...)
            #:when (andmap quoted-symbol? b)
            `(or ,@(sort b value<?)))
+          ((list 'provide b ...)
+           `(provide ,@(sort b value<?)))
+          ((list 'require b ...)
+           `(require ,@(sort b value<?)))
           (_
            x)))
-
-   ; declarations
-   (set! x
-         (append* (for/list ((fragment (fragments decl? x)))
-                   (if (decl? (car fragment))
-                    (sort fragment
-                          (lambda (v w)
-                           (symbol<? (name v) (name w))))
-                    fragment))
-                  ))
-
-   ; sorted
-   x)))
+   (append* (for/list ((fragment (fragments decl? x)))
+             (if (decl? (car fragment))
+              (sort fragment
+                    (lambda (v w)
+                     (symbol<? (name v) (name w))))
+              fragment))
+            ))))
 
 (define (typeof v)
  (cond

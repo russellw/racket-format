@@ -90,7 +90,7 @@
   ((list a b ...)
    (list "(" (expr a col1) "\n" (make-string col1 #\space) (exprs b col1) ")"))))
 
-(define (clauses lst col)
+(define (clauses col lst)
  (set! lst (blank-before-comments lst))
  (add-between (map (curry clause col) lst)
               (list "\n" (make-string col #\space))))
@@ -150,10 +150,10 @@
          (expr a col*)
          "\n"
          (make-string col1 #\space)
-         (clauses b col1)
+         (clauses col1 b)
          ")"))
   ((list 'cond b ...)
-   (list "(" op "\n" (make-string col1 #\space) (clauses b col1) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'define
              'define/memo
              'define/memo*)
@@ -226,7 +226,7 @@
   ((list 'receive a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'syntax-rules a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (clauses b col1) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'unless
              'when
              'while

@@ -68,24 +68,33 @@
  (and (pair? w)
       (eq? v (car w))))
 
-(define (clauses lst col)
+(define (clause v col)
  (define col1 (+ col 1))
+ (match v
+  ; atom
+  ((== blank-symbol)
+   '())
+  ((? atom? _)
+   (~s v))
+
+  ; text
+  ((list (== comment-symbol) s)
+   s)
+
+  ; abbrev prefix
+  ((? abbrev-prefix (list _ w))
+   (define s (abbrev-prefix v))
+   (list s (expr w (+ col (string-length s)))))
+
+  ; clause
+  ((list a b ...)
+   (list "(" (expr a col1) "\n" (make-string col1 #\space) (exprs b col1) ")"))))
+
+(define (clauses lst col)
  (set! lst (blank-before-comments lst))
- (add-between (for/list ((clause lst))
-               (cond
-                ((eq? blank-symbol clause)
-                 '())
-                ((car? comment-symbol clause)
-                 (cadr clause))
-                ((atom? clause)
-                 (~s clause))
-                (else
-                 (list "("
-                       (expr (car clause) col1)
-                       "\n"
-                       (make-string col1 #\space)
-                       (exprs (cdr clause) col1)
-                       ")"))))
+ (add-between (map (lambda (v)
+                    (clause v col))
+                   lst)
               (list "\n" (make-string col #\space))))
 
 (define (decl*? x)

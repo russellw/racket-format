@@ -4,9 +4,11 @@ Features:
 
 - Stand-alone command-line program.
 
-- Decides line breaks as well as indentation
+- Decides line breaks as well as indentation.
 
-- Sorts definitions where this will not change the meaning of the program
+- Sorts definitions where this will not change the meaning of the program.
+
+- Optimized for simplicity and clarity, making it easy to extend and customize.
 
 If no arguments are specified, it formats the code from standard input and writes the result to standard output.
 

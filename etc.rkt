@@ -50,9 +50,9 @@
 
 (define (decl? v)
  (match v
-  ((list (or 'define/memo
-             'define/memo*
-             'define)
+  ((list (or 'define
+             'define/memo
+             'define/memo*)
          (list w ...)
          b ...)
    #t)

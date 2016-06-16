@@ -51,7 +51,7 @@
 
 (define (quoted-symbol? v)
  (match v
-  ((list 'quote w)
+  ((list (== quote-symbol) w)
    (symbol? w))
   (_
    #f)))
@@ -117,7 +117,7 @@
          (match x
           ((list 'or b ...)
            #:when (andmap quoted-symbol? b)
-           `(or ,(sort b value<?)))
+           `(or ,@(sort b value<?)))
           (_
            x)))
 

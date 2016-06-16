@@ -2,7 +2,7 @@
 (require "etc.rkt"
          "format.rkt"
          "read.rkt"
-         "tidy.rkt")
+         "sort.rkt")
 
 ; options
 (define end-options #f)
@@ -41,7 +41,7 @@
 ; format
 (for ((path files))
  (define m (with-input-from-file path read-module))
- (set! m (tidy m))
+ (set! m (sort-module m))
  (define s (format-module m))
  (if inplace
   (display-to-file s path #:exists 'replace)

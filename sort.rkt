@@ -2,7 +2,7 @@
 (require "etc.rkt"
          "read.rkt")
 
-(provide tidy)
+(provide sort-module)
 
 (define-syntax for/sublists
  (syntax-rules ()
@@ -67,8 +67,7 @@
  (set! lst (map sort-case lst))
  (sort lst value<?))
 
-(define (tidy m)
- ; sort
+(define (sort-module m)
  (for/sublists ((x m))
   (begin
    (set! x

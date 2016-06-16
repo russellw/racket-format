@@ -90,6 +90,9 @@
  (define op
          (when (pair? v)
           (~a (car v))))
+ (define op2
+         (when (pair? v)
+          (format "(~a " (car v))))
  (match v
   ; atom
   ((== blank-symbol)
@@ -112,109 +115,71 @@
   ((list 'and b ...)
    #:when (for/and ((w b))
            (< (+ col* (width w)) 80))
-   (list "(and " (exprs b col*) ")"))
+   (list op2 (exprs b col*) ")"))
   ((list 'begin b ...)
-   (list "(begin\n" (make-string col1 #\space) (exprs b col1) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'case a b ...)
-   (list "(case "
+   (list op2
          (expr a col*)
          "\n"
          (make-string col1 #\space)
          (clauses b col1)
          ")"))
   ((list 'cond b ...)
-   (list "(cond\n" (make-string col1 #\space) (clauses b col1) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (clauses b col1) ")"))
   ((list 'define (list a ...) b ...)
-   (list "(define "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'define-syntax a b ...)
-   (list "(define-syntax "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'define/memo (list a ...) b ...)
-   (list "(define/memo "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'define/memo* (list a ...) b ...)
-   (list "(define/memo* "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list (or 'for
              'for/and)
          a
          b ...)
-   (list "("
-         op
-         " ("
+   (list op2
+         "("
          (bindings a (+ col* 1))
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
   ((list 'for/list a b ...)
-   (list "(for/list ("
+   (list op2
+         "("
          (bindings a (+ col* 1))
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
   ((list 'for/sublists a b ...)
-   (list "(for/sublists ("
+   (list op2
+         "("
          (bindings a (+ col* 1))
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
   ((list 'if a b ...)
-   (list "(if "
-         (expr a col*)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'lambda a b ...)
-   (list "(lambda "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'lambda/memo a b ...)
-   (list "(lambda/memo "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'lambda/memo* a b ...)
-   (list "(lambda/memo* "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'let (list a ...) b ...)
-   (list "(let ("
+   (list op2
+         "("
          (bindings a (+ col* 1))
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
   ((list 'let id (list a ...) b ...)
-   (list "(let "
+   (list op2
          (~a id)
          " ("
          (bindings a (+ col* (width id) 2))
@@ -223,7 +188,7 @@
          (exprs b col1)
          ")"))
   ((list 'match a b ...)
-   (list "(match "
+   (list op2
          (expr a col*)
          "\n"
          (make-string col1 #\space)
@@ -232,46 +197,21 @@
   ((list 'or b ...)
    #:when (for/and ((w b))
            (< (+ col* (width w)) 80))
-   (list "(or " (exprs b col*) ")"))
+   (list op2 (exprs b col*) ")"))
   ((list 'provide b ...)
-   (list "(provide " (exprs b col*) ")"))
+   (list op2 (exprs b col*) ")"))
   ((list 'receive a b ...)
-   (list "(receive "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'require b ...)
-   (list "(require " (exprs b col*) ")"))
+   (list op2 (exprs b col*) ")"))
   ((list 'syntax-rules a b ...)
-   (list "(syntax-rules "
-         (inline a)
-         "\n"
-         (make-string col1 #\space)
-         (clauses b col1)
-         ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (clauses b col1) ")"))
   ((list 'unless a b ...)
-   (list "(unless "
-         (expr a col*)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'when a b ...)
-   (list "(when "
-         (expr a col*)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'while a b ...)
-   (list "(while "
-         (expr a col*)
-         "\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
+   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   (_
    (cond
     ; 2 special args

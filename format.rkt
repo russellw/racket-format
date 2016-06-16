@@ -141,9 +141,28 @@
   ((list 'define-syntax a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list (or 'for
+             'for*
+             'for*/and
+             'for*/first
+             'for*/hash
+             'for*/hasheq
+             'for*/hasheqv
+             'for*/last
+             'for*/list
+             'for*/or
+             'for*/product
+             'for*/sum
              'for/and
+             'for/first
+             'for/hash
+             'for/hasheq
+             'for/hasheqv
+             'for/last
              'for/list
-             'for/sublists)
+             'for/or
+             'for/product
+             'for/sublists
+             'for/sum)
          a
          b ...)
    (list op2

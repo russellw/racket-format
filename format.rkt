@@ -1,7 +1,8 @@
 #lang racket
 (require (planet dyoo/while-loop:1:=1)
          "etc.rkt"
-         "read.rkt")
+         "read.rkt"
+         memoize)
 
 (provide format-module)
 
@@ -78,6 +79,10 @@
    #t)
   ((list 'define-syntax b ...)
    #t)
+  ((list 'define/memo (list w ...) b ...)
+   #t)
+  ((list 'define/memo* (list w ...) b ...)
+   #t)
   ((list 'provide b ...)
    #t)
   ((list 'require b ...)
@@ -132,6 +137,20 @@
          ")"))
   ((list 'define-syntax a b ...)
    (list "(define-syntax "
+         (inline a)
+         "\n"
+         (make-string col1 #\space)
+         (exprs b col1)
+         ")"))
+  ((list 'define/memo (list a ...) b ...)
+   (list "(define/memo "
+         (inline a)
+         "\n"
+         (make-string col1 #\space)
+         (exprs b col1)
+         ")"))
+  ((list 'define/memo* (list a ...) b ...)
+   (list "(define/memo* "
          (inline a)
          "\n"
          (make-string col1 #\space)
@@ -348,11 +367,7 @@
               "\n"
               #:after-last "\n"))
 
-(define (width v)
- (or (hash-ref widths v #f)
-     (let ((w (max-line-width (string-append* (flatten (expr v 0))))))
-      (hash-set! widths v w)
-      w)))
+(define/memo* (width v)
+ (max-line-width (string-append* (flatten (expr v 0)))))
 
 (define blank-symbol (gensym))
-(define widths (make-hash))

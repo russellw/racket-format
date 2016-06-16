@@ -10,6 +10,10 @@
    #t)
   ((list 'define-syntax b ...)
    #t)
+  ((list 'define/memo (list w ...) b ...)
+   #t)
+  ((list 'define/memo* (list w ...) b ...)
+   #t)
   (_
    #f)))
 

@@ -349,10 +349,10 @@
               #:after-last "\n"))
 
 (define (width v)
- (or (hash-ref widths v #f))
- (let ((w (max-line-width (string-append* (flatten (expr v 0))))))
-  (hash-set! widths v w)
-  w))
+ (or (hash-ref widths v #f)
+     (let ((w (max-line-width (string-append* (flatten (expr v 0))))))
+      (hash-set! widths v w)
+      w)))
 
 (define blank-symbol (gensym))
 (define widths (make-hash))

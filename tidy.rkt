@@ -49,6 +49,13 @@
   ((list def id b ...)
    id)))
 
+(define (quoted-symbol? v)
+ (match v
+  ((list 'quote w)
+   (symbol? w))
+  (_
+   #f)))
+
 (define (sort-case v)
  (match v
   ((list (list c ...) b ...)
@@ -104,6 +111,15 @@
                            (symbol<? (name v) (name w))))
                     fragment))
                   ))
+
+   ; match or
+   (set! x
+         (match x
+          ((list 'or b ...)
+           #:when (andmap quoted-symbol? b)
+           `(or ,(sort b value<?)))
+          (_
+           x)))
 
    ; sorted
    x)))

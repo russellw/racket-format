@@ -96,21 +96,21 @@
           v))))
 
  ; sort
- (for/sublists ((lst m))
+ (for/sublists ((x m))
   (begin
    ; case
-   (set! lst
-         (match lst
-          ((list 'case v lst ...)
+   (set! x
+         (match x
+          ((list 'case v x ...)
            `(case ,v
              (unquote-splicing
-              (sort-cases lst))))
+              (sort-cases x))))
           (_
-           lst)))
+           x)))
 
    ; declarations
-   (set! lst
-         (append* (for/list ((fragment (fragments decl? lst)))
+   (set! x
+         (append* (for/list ((fragment (fragments decl? x)))
                    (if (decl? (car fragment))
                     (sort fragment
                           (lambda (v w)
@@ -119,7 +119,7 @@
                   ))
 
    ; sorted
-   lst)))
+   x)))
 
 (define (typeof v)
  (cond

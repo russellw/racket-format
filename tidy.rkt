@@ -97,8 +97,7 @@
          (match x
           ((list 'case v x ...)
            `(case ,v
-             (unquote-splicing
-              (sort-cases x))))
+             ,@(sort-cases x)))
           (_
            x)))
 

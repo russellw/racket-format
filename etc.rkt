@@ -26,11 +26,6 @@
 (define (atom? x)
  (not (pair? x)))
 
-(define (cadr? x y)
- (and (pair? y)
-      (pair? (cdr y))
-      (equal? x (cadr y))))
-
 (define (car? x y)
  (and (pair? y)
       (equal? x (car y))))

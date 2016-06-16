@@ -191,6 +191,20 @@
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
+  ((list 'lambda/memo a b ...)
+   (list "(lambda/memo "
+         (inline a)
+         "\n"
+         (make-string col1 #\space)
+         (exprs b col1)
+         ")"))
+  ((list 'lambda/memo* a b ...)
+   (list "(lambda/memo* "
+         (inline a)
+         "\n"
+         (make-string col1 #\space)
+         (exprs b col1)
+         ")"))
   ((list 'let (list a ...) b ...)
    (list "(let ("
          (bindings a (+ col* 1))

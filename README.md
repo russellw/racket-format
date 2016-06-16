@@ -6,7 +6,7 @@ Features:
 
 - Decides line breaks as well as indentation.
 
-- Sorts definitions where this will not change the meaning of the program.
+- Sorts definitions where this will not change the meaning of the code.
 
 - Optimized for simplicity and clarity, making it easy to extend and customize.
 

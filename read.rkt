@@ -105,7 +105,13 @@
      (list unquote-splicing-symbol (read*)))
     (list unquote-symbol (read*))))
   ((peek? ";")
-   (list comment-symbol (read-line)))
+   (read-char)
+   (list comment-symbol
+         (string-append (if (and (not (eof-object? (peek-char)))
+                                 (char-alphabetic? (peek-char)))
+                         "; "
+                         ";")
+                        (read-line))))
   ((peek? "`")
    (read-char)
    (list quasiquote-symbol (read*)))

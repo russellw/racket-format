@@ -68,16 +68,6 @@
  (sort lst value<?))
 
 (define (tidy m)
- ; space at start of comment
- (set! m
-       (for/sublists ((lst m))
-        (match lst
-         ((list (== comment-symbol) s)
-          #:when (char-alphabetic? (string-ref s 1))
-          (list comment-symbol (string-append "; " (substring s 1))))
-         (_
-          lst))))
-
  ; sort
  (for/sublists ((x m))
   (begin

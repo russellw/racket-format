@@ -120,7 +120,10 @@
    (list op2 (exprs b col*) ")"))
   ((list 'begin b ...)
    (list "(" op "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'case a b ...)
+  ((list (or 'case
+             'match)
+         a
+         b ...)
    (list op2
          (expr a col*)
          "\n"
@@ -174,13 +177,6 @@
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
-         ")"))
-  ((list 'match a b ...)
-   (list op2
-         (expr a col*)
-         "\n"
-         (make-string col1 #\space)
-         (clauses b col1)
          ")"))
   ((list (or 'provide
              'require)

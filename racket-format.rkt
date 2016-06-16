@@ -1,8 +1,8 @@
 #lang racket
 (require "etc.rkt"
-         "format.rkt"
          "read.rkt"
-         "sort.rkt")
+         "sort.rkt"
+         "write.rkt")
 
 ; options
 (define end-options #f)
@@ -42,7 +42,9 @@
 (for ((path files))
  (define m (with-input-from-file path read-module))
  (set! m (sort-module m))
- (define s (format-module m))
  (if inplace
-  (display-to-file s path #:exists 'replace)
-  (display s)))
+  (with-output-to-file path
+                       (lambda ()
+                        (write-module m))
+                       #:exists 'replace)
+  (write-module m)))

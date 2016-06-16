@@ -4,7 +4,7 @@
          "read.rkt"
          memoize)
 
-(provide format-module)
+(provide write-module)
 
 (define (abbrev-prefix v)
  (match v
@@ -303,9 +303,6 @@
                  '())))
               (list "\n" (make-string col #\space))))
 
-(define (format-module m)
- (trim-lines (string-append* (flatten (exprs 0 m)))))
-
 (define (inline v)
  (match v
   ; atom
@@ -343,5 +340,10 @@
 
 (define/memo* (width v)
  (max-line-width (string-append* (flatten (expr 0 v)))))
+
+(define (write-module m)
+ (define lines (string-split (string-append* (flatten (exprs 0 m))) "\n"))
+ (for ((s lines))
+  (displayln (string-trim s #:left? #f))))
 
 (define blank-symbol (gensym))

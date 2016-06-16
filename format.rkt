@@ -129,16 +129,18 @@
          ")"))
   ((list 'cond b ...)
    (list "(" op "\n" (make-string col1 #\space) (clauses b col1) ")"))
-  ((list 'define (list a ...) b ...)
+  ((list (or 'define
+             'define/memo
+             'define/memo*)
+         (list a ...)
+         b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'define-syntax a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'define/memo (list a ...) b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'define/memo* (list a ...) b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list (or 'for
-             'for/and)
+             'for/and
+             'for/list
+             'for/sublists)
          a
          b ...)
    (list op2
@@ -148,29 +150,13 @@
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
-  ((list 'for/list a b ...)
-   (list op2
-         "("
-         (bindings a (+ col* 1))
-         ")\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
-  ((list 'for/sublists a b ...)
-   (list op2
-         "("
-         (bindings a (+ col* 1))
-         ")\n"
-         (make-string col1 #\space)
-         (exprs b col1)
-         ")"))
   ((list 'if a b ...)
    (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'lambda a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'lambda/memo a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'lambda/memo* a b ...)
+  ((list (or 'lambda
+             'lambda/memo
+             'lambda/memo*)
+         a
+         b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   ((list 'let (list a ...) b ...)
    (list op2
@@ -196,19 +182,20 @@
          (make-string col1 #\space)
          (clauses b col1)
          ")"))
-  ((list 'provide b ...)
+  ((list (or 'provide
+             'require)
+         b ...)
    (list op2 (exprs b col*) ")"))
   ((list 'receive a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'require b ...)
-   (list op2 (exprs b col*) ")"))
   ((list 'syntax-rules a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (clauses b col1) ")"))
-  ((list 'unless a b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'when a b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
-  ((list 'while a b ...)
+  ((list (or 'unless
+             'when
+             'while
+             'while/list)
+         a
+         b ...)
    (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs b col1) ")"))
   (_
    (cond

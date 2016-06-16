@@ -15,7 +15,9 @@
          unsyntax-symbol)
 
 (define (identifier)
- (list->string (while/list (subsequent? (peek-char)) (read-char))))
+ (list->string (while/list (subsequent? (peek-char))
+                (read-char))
+               ))
 
 (define (initial? c)
  (or (char-alphabetic? c)

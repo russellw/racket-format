@@ -68,7 +68,7 @@
  (and (pair? w)
       (eq? v (car w))))
 
-(define (clause v col)
+(define (clause col v)
  (define col1 (+ col 1))
  (match v
   ; atom
@@ -92,9 +92,7 @@
 
 (define (clauses lst col)
  (set! lst (blank-before-comments lst))
- (add-between (map (lambda (v)
-                    (clause v col))
-                   lst)
+ (add-between (map (curry clause col) lst)
               (list "\n" (make-string col #\space))))
 
 (define (decl*? x)

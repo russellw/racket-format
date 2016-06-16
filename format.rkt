@@ -64,10 +64,6 @@
    (_
     '()))))
 
-(define (car? v w)
- (and (pair? w)
-      (eq? v (car w))))
-
 (define (clause col v)
  (define col1 (+ col 1))
  (match v

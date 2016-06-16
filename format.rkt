@@ -27,7 +27,7 @@
   (_
    #f)))
 
-(define (bindings lst col)
+(define (bindings col lst)
  (add-between (for/list ((v lst))
                (if (atom? v)
                 (~s v)
@@ -189,7 +189,7 @@
          b ...)
    (list op2
          "("
-         (bindings a (+ col* 1))
+         (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
@@ -205,7 +205,7 @@
   ((list 'let (list a ...) b ...)
    (list op2
          "("
-         (bindings a (+ col* 1))
+         (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)
@@ -214,7 +214,7 @@
    (list op2
          (~a id)
          " ("
-         (bindings a (+ col* (width id) 2))
+         (bindings (+ col* (width id) 2) a)
          ")\n"
          (make-string col1 #\space)
          (exprs b col1)

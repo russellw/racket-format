@@ -1,6 +1,5 @@
 #lang racket
-(require "etc.rkt"
-         "read.rkt"
+(require "read.rkt"
          "sort.rkt"
          "write.rkt")
 

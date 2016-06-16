@@ -16,31 +16,31 @@
              (loop y)))
       b ...))))))
 
-(define (fragments p xs)
+(define (fragments pred lst)
  (cond
-  ((null? xs)
-   xs)
-  ((p (car xs))
+  ((null? lst)
+   lst)
+  ((pred (car lst))
    (receive (a b)
-    (splitf-at xs p)
-    (cons a (fragments p b))))
+    (splitf-at lst pred)
+    (cons a (fragments pred b))))
   (else
    (receive (a b)
-    (splitf-at xs (negate p))
-    (cons a (fragments p b))))))
+    (splitf-at lst (negate pred))
+    (cons a (fragments pred b))))))
 
-(define (list<? xs ys)
+(define (list<? lst1 lst2)
  (cond
-  ((eq? xs ys)
+  ((eq? lst1 lst2)
    #f)
-  ((null? xs)
+  ((null? lst1)
    #t)
-  ((value<? (car xs) (car ys))
+  ((value<? (car lst1) (car lst2))
    #t)
-  ((value<? (car ys) (car xs))
+  ((value<? (car lst2) (car lst1))
    #f)
   (else
-   (list<? (cdr xs) (cdr ys)))))
+   (list<? (cdr lst1) (cdr lst2)))))
 
 (define (name x)
  (match x
@@ -72,9 +72,9 @@
   (begin
    (set! x
          (match x
-          ((list 'case v x ...)
-           `(case ,v
-             ,@(sort-cases x)))
+          ((list 'case a b ...)
+           `(case ,a
+             ,@(sort-cases b)))
           ((list 'or b ...)
            #:when (andmap quoted-symbol? b)
            `(or ,@(sort b value<?)))

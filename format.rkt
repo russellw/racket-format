@@ -34,7 +34,7 @@
                 (list "("
                       (inline (car v))
                       " "
-                      (expr (cadr v) (+ col 1 (width (car v)) 1))
+                      (expr (+ col 1 (width (car v)) 1) (cadr v))
                       ")")))
               (list "\n" (make-string col #\space))))
 
@@ -84,11 +84,11 @@
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
-   (list s (expr w (+ col (string-length s)))))
+   (list s (expr (+ col (string-length s)) w)))
 
   ; clause
   ((list a b ...)
-   (list "(" (expr a col1) "\n" (make-string col1 #\space) (exprs col1 b) ")"))))
+   (list "(" (expr col1 a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))))
 
 (define (clauses col lst)
  (set! lst (blank-before-comments lst))
@@ -104,7 +104,7 @@
   (_
    (decl? x))))
 
-(define (expr v col)
+(define (expr col v)
  (define col1 (+ col 1))
  (define col*
          (when (pair? v)
@@ -131,7 +131,7 @@
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
-   (list s (expr w (+ col (string-length s)))))
+   (list s (expr (+ col (string-length s)) w)))
 
   ; special form
   ((list (or 'and
@@ -147,7 +147,7 @@
          a
          b ...)
    (list op2
-         (expr a col*)
+         (expr col* a)
          "\n"
          (make-string col1 #\space)
          (clauses col1 b)
@@ -195,7 +195,7 @@
          (exprs col1 b)
          ")"))
   ((list 'if a b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (expr col* a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'lambda
              'lambda/memo
              'lambda/memo*)
@@ -233,7 +233,7 @@
              'while/list)
          a
          b ...)
-   (list op2 (expr a col*) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (expr col* a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   (_
    (cond
     ; 2 special args
@@ -264,7 +264,7 @@
      (list "("
            (inline (car v))
            " "
-           (expr (cadr v) (+ col 1 (width (car v)) 1))
+           (expr (+ col 1 (width (car v)) 1) (cadr v))
            "\n"
            (make-string (+ col 1 (width (car v)) 1) #\space)
            (exprs (+ col 1 (width (car v)) 1) (cddr v))
@@ -285,7 +285,7 @@
     ; args unaligned
     (else
      (list "("
-           (expr (car v) col1)
+           (expr col1 (car v))
            "\n"
            (make-string col1 #\space)
            (exprs col1 (cdr v))
@@ -297,12 +297,12 @@
  (add-between (let loop ((lst lst))
                (match lst
                 ((list a '... c ...)
-                 (cons (list (expr a col) " ...") (loop c)))
+                 (cons (list (expr col a) " ...") (loop c)))
                 ((list (? keyword? a) b c ...)
-                 (cons (list (expr a col) " " (expr b (+ col (width a) 1)))
+                 (cons (list (expr col a) " " (expr (+ col (width a) 1) b))
                        (loop (cddr lst))))
                 ((list a b ...)
-                 (cons (expr a col) (loop b)))
+                 (cons (expr col a) (loop b)))
                 (_
                  '())))
               (list "\n" (make-string col #\space))))
@@ -332,7 +332,7 @@
       (not (any-rec? y v
             (eq? y comment-symbol))
            )
-      (not (string-contains? (string-append* (flatten (expr v 0))) "\n"))))
+      (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
 
 (define (max-line-width s)
  (if (string=? s "")
@@ -346,6 +346,6 @@
               #:after-last "\n"))
 
 (define/memo* (width v)
- (max-line-width (string-append* (flatten (expr v 0)))))
+ (max-line-width (string-append* (flatten (expr 0 v)))))
 
 (define blank-symbol (gensym))

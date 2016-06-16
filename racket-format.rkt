@@ -16,10 +16,16 @@
 (when (show-version)
  (displayln "racket-format version 0")
  (exit 0))
+(when (null? files)
+ (set! files '("-")))
 (for ((path files))
- (define m (with-input-from-file path read-module))
+ (define m
+         (if (string=? path "-")
+          (read-module)
+          (with-input-from-file path read-module)))
  (set! m (sort-module m))
- (if (inplace)
+ (if (and (inplace)
+          (not (string=? path "-")))
   (with-output-to-file path
                        (lambda ()
                         (write-module m))

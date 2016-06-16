@@ -8,7 +8,7 @@ Features:
 
 - Sorts definitions where this will not change the meaning of the code.
 
-- Optimized for simplicity and clarity, making it easy to extend and customize.
+- Optimized for simplicity and clarity; easy to extend and customize.
 
 If no arguments are specified, it formats the code from standard input and writes the result to standard output.
 

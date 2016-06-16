@@ -332,12 +332,6 @@
   0
   (apply max (map string-length (string-split s "\n")))))
 
-(define (trim-lines s)
- (string-join (for/list ((s (string-split s "\n")))
-               (string-trim s #:left? #f))
-              "\n"
-              #:after-last "\n"))
-
 (define/memo* (width v)
  (max-line-width (string-append* (flatten (expr 0 v)))))
 

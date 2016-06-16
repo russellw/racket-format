@@ -87,6 +87,9 @@
  (define col*
          (when (pair? v)
           (+ col 2 (width (car v)))))
+ (define op
+         (when (pair? v)
+          (~a (car v))))
  (match v
   ; atom
   ((== blank-symbol)
@@ -107,7 +110,8 @@
 
   ; special form
   ((list 'and b ...)
-   #:when (for/and ((w b)) (< (+ col* (width w)) 80))
+   #:when (for/and ((w b))
+           (< (+ col* (width w)) 80))
    (list "(and " (exprs b col*) ")"))
   ((list 'begin b ...)
    (list "(begin\n" (make-string col1 #\space) (exprs b col1) ")"))
@@ -148,8 +152,13 @@
          (make-string col1 #\space)
          (exprs b col1)
          ")"))
-  ((list 'for a b ...)
-   (list "(for ("
+  ((list (or 'for
+             'for/and)
+         a
+         b ...)
+   (list "("
+         op
+         " ("
          (bindings a (+ col* 1))
          ")\n"
          (make-string col1 #\space)
@@ -221,7 +230,8 @@
          (clauses b col1)
          ")"))
   ((list 'or b ...)
-   #:when (for/and ((w b)) (< (+ col* (width w)) 80))
+   #:when (for/and ((w b))
+           (< (+ col* (width w)) 80))
    (list "(or " (exprs b col*) ")"))
   ((list 'provide b ...)
    (list "(provide " (exprs b col*) ")"))
@@ -287,7 +297,8 @@
     ; args aligned with first
     ((and (length? 2 v)
           (inline? (car v))
-          (for/and ((y (cdr v))) (< (+ col 1 (width (car v)) 1 (width y)) 80)))
+          (for/and ((y (cdr v)))
+           (< (+ col 1 (width (car v)) 1 (width y)) 80)))
      (list "("
            (inline (car v))
            " "

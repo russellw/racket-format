@@ -121,8 +121,6 @@
   ; text
   ((list (== comment-symbol) s)
    s)
-  ((list (== lang-symbol) s)
-   s)
 
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))

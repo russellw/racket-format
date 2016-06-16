@@ -3,7 +3,6 @@
          "etc.rkt")
 
 (provide comment-symbol
-         lang-symbol
          quasiquote-symbol
          quasisyntax-symbol
          quote-symbol
@@ -36,7 +35,7 @@
   ((peek? "#")
    (cond
     ((equal? (peek-string 5 0) "#lang")
-     `(,lang-symbol ,(read-line)))
+     `(,comment-symbol ,(read-line)))
     ((peek? "'" 1)
      (read-char)
      (read-char)
@@ -153,7 +152,6 @@
   (whitespace)))
 
 (define comment-symbol (gensym))
-(define lang-symbol (gensym))
 (define quasiquote-symbol (gensym))
 (define quasisyntax-symbol (gensym))
 (define quote-symbol (gensym))

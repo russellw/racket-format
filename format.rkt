@@ -75,9 +75,9 @@
 
 (define (decl*? x)
  (match x
-  ((list 'provide b ...)
-   #t)
-  ((list 'require b ...)
+  ((list (or 'provide
+             'require)
+         b ...)
    #t)
   (_
    (decl? x))))
@@ -112,7 +112,9 @@
    (list s (expr w (+ col (string-length s)))))
 
   ; special form
-  ((list 'and b ...)
+  ((list (or 'and
+             'or)
+         b ...)
    #:when (for/and ((w b))
            (< (+ col* (width w)) 80))
    (list op2 (exprs b col*) ")"))
@@ -194,10 +196,6 @@
          (make-string col1 #\space)
          (clauses b col1)
          ")"))
-  ((list 'or b ...)
-   #:when (for/and ((w b))
-           (< (+ col* (width w)) 80))
-   (list op2 (exprs b col*) ")"))
   ((list 'provide b ...)
    (list op2 (exprs b col*) ")"))
   ((list 'receive a b ...)

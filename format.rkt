@@ -39,19 +39,35 @@
               (list "\n" (make-string col #\space))))
 
 (define (blank-after-decls lst)
- (add-betweenf lst
-               (lambda (v w)
-                (and (decl*? v)
-                     (not (eq? w blank-symbol))
-                     blank-symbol))))
+ (let loop ((lst lst))
+  (match lst
+   ((list a (== blank-symbol) b ...)
+    (list* a blank-symbol (loop b)))
+   ((list a b c ...)
+    #:when (decl*? a)
+    (list* a blank-symbol (loop (cons b c))))
+   ((list a b ...)
+    (cons a (loop b)))
+   (_
+    '()))))
 
 (define (blank-before-comments lst)
- (add-betweenf lst
-               (lambda (v w)
-                (and (not (car? comment-symbol v))
-                     (not (eq? v blank-symbol))
-                     (car? comment-symbol w)
-                     blank-symbol))))
+ (let loop ((lst lst))
+  (match lst
+   ((list (== blank-symbol) a ...)
+    (cons blank-symbol (loop a)))
+   ((list (list (== comment-symbol) a) b ...)
+    (list* (list comment-symbol a) (loop b)))
+   ((list a (list (== comment-symbol) b) c ...)
+    (list* a blank-symbol (list comment-symbol b) (loop c)))
+   ((list a b ...)
+    (cons a (loop b)))
+   (_
+    '()))))
+
+(define (car? v w)
+ (and (pair? w)
+      (eq? v (car w))))
 
 (define (clauses lst col)
  (define col1 (+ col 1))

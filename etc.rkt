@@ -1,18 +1,6 @@
 #lang racket
 (provide (all-defined-out))
 
-(define (add-betweenf lst proc)
- (cond
-  ((null? lst)
-   lst)
-  ((null? (cdr lst))
-   lst)
-  (else
-   (let ((v (proc (car lst) (cadr lst))))
-    (if v
-     (list* (car lst) v (add-betweenf (cdr lst) proc))
-     (list* (car lst) (add-betweenf (cdr lst) proc)))))))
-
 (define-syntax any-rec?
  (syntax-rules ()
   ((_ x xs b ...)
@@ -25,10 +13,6 @@
 
 (define (atom? x)
  (not (pair? x)))
-
-(define (car? x y)
- (and (pair? y)
-      (equal? x (car y))))
 
 (define-syntax (debug stx)
  (syntax-case

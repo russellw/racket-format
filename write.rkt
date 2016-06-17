@@ -272,18 +272,20 @@
 
 (define (inline v)
  (match v
-  ; atom
+  ; simple form
+  ((== blank-symbol)
+   (error "blank inline"))
   ((? atom? _)
    (~s v))
-
-  ; abbrev prefix
+  ((list (== comment-symbol) _)
+   (error "line comment inline"))
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
    (list s (inline w)))
 
-  ; else
+  ; compound form
   (_
-   (list "(" (add-between (map inline v) " ") ")"))))
+   (list "(" (inlines v) ")"))))
 
 (define (inline? v)
  (define lst (flatten v))
@@ -291,6 +293,9 @@
  ; todo - member check necessary?
  (and (not (member comment-symbol lst))
       (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
+
+(define (inlines lst)
+ (add-between (map inline lst) " "))
 
 (define (inlines? col lst)
  (and (andmap inline? lst)

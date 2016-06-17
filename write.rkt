@@ -231,8 +231,7 @@
   (_
    (cond
     ; args inline
-    ((and (not (memq (car v) '(and or)))
-          (andmap inline? v)
+    ((and (andmap inline? v)
           (< (+ col 1 (length v) (apply + (map width v))) 80))
      (inline v))
 

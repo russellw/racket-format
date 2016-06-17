@@ -140,12 +140,7 @@
              'match)
          a
          b ...)
-   (list op2
-         (expr col* a)
-         "\n"
-         (make-string col1 #\space)
-         (clauses col1 b)
-         ")"))
+   (list op2 (expr col* a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list 'cond b ...)
    (list "(" op "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'define
@@ -231,8 +226,7 @@
   (_
    (cond
     ; args inline
-    ((and (andmap inline? v)
-          (< (+ col 1 (length v) (apply + (map width v))) 80))
+    ((inlines? col v)
      (inline v))
 
     ; args aligned with first
@@ -273,18 +267,19 @@
 (define (exprs col lst)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
- (add-between (let loop ((lst lst))
-               (match lst
-                ((list a '... c ...)
-                 (cons (list (expr col a) " ...") (loop c)))
-                ((list (? keyword? a) b c ...)
-                 (cons (list (expr col a) " " (expr (+ col (width a) 1) b))
-                       (loop (cddr lst))))
-                ((list a b ...)
-                 (cons (expr col a) (loop b)))
-                (_
-                 '())))
-              (list "\n" (make-string col #\space))))
+ (add-between
+  (let loop ((lst lst))
+   (match lst
+    ((list a '... c ...)
+     (cons (list (expr col a) " ...") (loop c)))
+    ((list (? keyword? a) b c ...)
+     (cons (list (expr col a) " " (expr (+ col (width a) 1) b))
+           (loop (cddr lst))))
+    ((list a b ...)
+     (cons (expr col a) (loop b)))
+    (_
+     '())))
+  (list "\n" (make-string col #\space))))
 
 (define (inline v)
  (match v
@@ -303,8 +298,14 @@
 
 (define (inline? v)
  (define lst (flatten v))
+
+ ; todo - member check necessary?
  (and (not (member comment-symbol lst))
       (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
+
+(define (inlines? col lst)
+ (and (andmap inline? lst)
+      (< (+ col (length lst) (apply + (map width lst))) 80)))
 
 (define (max-line-length s)
  (if (string=? s "")

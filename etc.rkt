@@ -1,16 +1,6 @@
 #lang racket
 (provide (all-defined-out))
 
-(define-syntax any-rec?
- (syntax-rules ()
-  ((_ x xs b ...)
-   (let loop ((x xs))
-    (or (begin
-         b ...)
-        (and (pair? x)
-             (or (loop (car x))
-                 (loop (cdr x)))))))))
-
 (define (atom? x)
  (not (pair? x)))
 

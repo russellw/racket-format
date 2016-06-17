@@ -230,20 +230,6 @@
    (list op2 (expr col* a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   (_
    (cond
-    ; 2 special args
-    ((and (length? 3 v)
-          (memq (car v) '(any-rec?)))
-     (list "("
-           (~a (car v))
-           " "
-           (~a (cadr v))
-           " "
-           (inline (caddr v))
-           "\n"
-           (make-string col1 #\space)
-           (exprs col1 (cdddr v))
-           ")"))
-
     ; args inline
     ((and (not (memq (car v) '(and or)))
           (andmap inline? v)
@@ -317,12 +303,8 @@
    (list "(" (add-between (map inline v) " ") ")"))))
 
 (define (inline? v)
- (and (not (any-rec? y v
-            (eq? y blank-symbol))
-           )
-      (not (any-rec? y v
-            (eq? y comment-symbol))
-           )
+ (define lst (flatten v))
+ (and (not (member comment-symbol lst))
       (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
 
 (define (max-line-width s)

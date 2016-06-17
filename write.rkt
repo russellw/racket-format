@@ -154,7 +154,12 @@
          (multilines col1 b)
          ")"))
   ((list 'define-syntax a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
+   (list op2
+         (expr col* a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list (or 'for
              'for*
              'for*/and

@@ -237,12 +237,14 @@
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
+
+  ; args inline
+  (_
+   #:when
+   (inlines? col v)
+   (inline v))
   (_
    (cond
-    ; args inline
-    ((inlines? col v)
-     (inline v))
-
     ; args aligned with first
     ((and (length? 2 v)
           (inline? (car v))

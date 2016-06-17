@@ -146,7 +146,13 @@
              'define/memo*)
          (list a ...)
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
+   (list op2
+         "("
+         (exprs (+ col* 1) a)
+         ")\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list 'define-syntax a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'for
@@ -271,6 +277,11 @@
            (make-string col1 #\space)
            (multilines col1 (cdr v))
            ")"))))))
+
+(define (exprs col lst)
+ (if (inlines? col lst)
+  (inlines lst)
+  (multilines col lst)))
 
 (define (inline v)
  (match v

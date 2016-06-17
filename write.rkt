@@ -131,8 +131,9 @@
   ((list (or 'and
              'or)
          b ...)
-   #:when (for/and ((w b))
-           (< (+ col* (width w)) 80))
+   #:when
+   (for/and ((w b))
+    (< (+ col* (width w)) 80))
    (list op2 (exprs col* b) ")"))
   ((list 'begin b ...)
    (list "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
@@ -267,18 +268,15 @@
 (define (exprs col lst)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
- (add-between
-  (let loop ((lst lst))
-   (match lst
-    ((list a '... c ...)
-     (cons (list (expr col a) " ...") (loop c)))
-    ((list (? keyword? a) b c ...)
-     (cons (list (expr col a) " " (expr (+ col (width a) 1) b)) (loop c)))
-    ((list a b ...)
-     (cons (expr col a) (loop b)))
-    (_
-     '())))
-  (list "\n" (make-string col #\space))))
+ (add-between (let loop ((lst lst))
+               (match lst
+                ((list a '... c ...)
+                 (cons (list (expr col a) " ...") (loop c)))
+                ((list a b ...)
+                 (cons (expr col a) (loop b)))
+                (_
+                 '())))
+              (list "\n" (make-string col #\space))))
 
 (define (inline v)
  (match v

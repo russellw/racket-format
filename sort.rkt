@@ -76,7 +76,8 @@
            `(case ,a
              ,@(sort-cases b)))
           ((list 'or b ...)
-           #:when (andmap quoted-symbol? b)
+           #:when
+           (andmap quoted-symbol? b)
            `(or ,@(sort b value<?)))
           ((list 'provide b ...)
            `(provide ,@(sort b value<?)))

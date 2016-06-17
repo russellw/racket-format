@@ -8,9 +8,11 @@
 (define files
         (command-line #:program
                       "racket-format"
-                      #:once-each (("-i") "Inplace edit" (inplace #t))
+                      #:once-each
+                      (("-i") "Inplace edit" (inplace #t))
                       (("-v" "--version") "Show version" (show-version #t))
-                      #:args files
+                      #:args
+                      files
                       files))
 (when (show-version)
  (displayln "racket-format version 0")
@@ -28,5 +30,6 @@
   (with-output-to-file path
                        (lambda ()
                         (write-module m))
-                       #:exists 'replace)
+                       #:exists
+                       'replace)
   (write-module m)))

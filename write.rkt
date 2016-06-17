@@ -287,10 +287,7 @@
    (list "(" (inlines v) ")"))))
 
 (define (inline? v)
- (define lst (flatten v))
-
- ; todo - member check necessary?
- (and (not (member comment-symbol lst))
+ (and (not (member comment-symbol (flatten v)))
       (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
 
 (define (inlines lst)

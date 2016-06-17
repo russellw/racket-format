@@ -307,13 +307,13 @@
  (and (not (member comment-symbol lst))
       (not (string-contains? (string-append* (flatten (expr 0 v))) "\n"))))
 
-(define (max-line-width s)
+(define (max-line-length s)
  (if (string=? s "")
   0
   (apply max (map string-length (string-split s "\n")))))
 
 (define/memo* (width v)
- (max-line-width (string-append* (flatten (expr 0 v)))))
+ (max-line-length (string-append* (flatten (expr 0 v)))))
 
 (define (write-module m)
  (define lines (string-split (string-append* (flatten (exprs 0 m))) "\n"))

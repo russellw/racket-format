@@ -15,8 +15,7 @@
 
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char))
-                (read-char))
-               ))
+                (read-char))))
 
 (define (initial? c)
  (or (char-alphabetic? c)

@@ -238,27 +238,24 @@
          (multilines col1 b)
          ")"))
 
+  ; no args
+  ((list f)
+   (list "(" (expr col1 f) ")"))
+
   ; args inline
   (_
    #:when
    (inlines? col v)
    (inline v))
+
+  ; args aligned
+  ((list (? symbol? f) a ...)
+   #:when
+   (for/and ((w a))
+    (< (+ col* (width w)) 80))
+   (list op2 (multilines col* a) ")"))
   (_
    (cond
-    ; args aligned with first
-    ((and (length? 2 v)
-          (inline? (car v))
-          (for/and ((y (cdr v)))
-           (< (+ col 1 (width (car v)) 1 (width y)) 80)))
-     (list "("
-           (inline (car v))
-           " "
-           (expr (+ col 1 (width (car v)) 1) (cadr v))
-           "\n"
-           (make-string (+ col 1 (width (car v)) 1) #\space)
-           (multilines (+ col 1 (width (car v)) 1) (cddr v))
-           ")"))
-
     ; args unaligned
     (else
      (list "("

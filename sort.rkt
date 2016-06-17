@@ -90,8 +90,7 @@
               (sort fragment
                     (lambda (v w)
                      (symbol<? (name v) (name w))))
-              fragment))
-            ))))
+              fragment))))))
 
 (define (typeof v)
  (cond

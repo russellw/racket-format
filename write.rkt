@@ -80,7 +80,12 @@
 
   ; clause
   ((list a b ...)
-   (list "(" (expr col1 a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))))
+   (list "("
+         (expr col1 a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))))
 
 (define (clauses col lst)
  (set! lst (blank-before-comments lst))
@@ -126,9 +131,9 @@
    #:when
    (for/and ((w b))
     (< (+ col* (width w)) 80))
-   (list op2 (exprs col* b) ")"))
+   (list op2 (multilines col* b) ")"))
   ((list 'begin b ...)
-   (list "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'case
              'match)
          a
@@ -141,9 +146,9 @@
              'define/memo*)
          (list a ...)
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list 'define-syntax a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'for
              'for*
              'for*/and
@@ -174,23 +179,28 @@
          (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs col1 b)
+         (multilines col1 b)
          ")"))
   ((list 'if a b ...)
-   (list op2 (expr col* a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2
+         (expr col* a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list (or 'lambda
              'lambda/memo
              'lambda/memo*)
          a
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list 'let (list a ...) b ...)
    (list op2
          "("
          (bindings (+ col* 1) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs col1 b)
+         (multilines col1 b)
          ")"))
   ((list 'let id (list a ...) b ...)
    (list op2
@@ -199,14 +209,14 @@
          (bindings (+ col* (width id) 2) a)
          ")\n"
          (make-string col1 #\space)
-         (exprs col1 b)
+         (multilines col1 b)
          ")"))
   ((list (or 'provide
              'require)
          b ...)
-   (list op2 (exprs col* b) ")"))
+   (list op2 (multilines col* b) ")"))
   ((list 'receive a b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list 'syntax-rules a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'unless
@@ -215,7 +225,12 @@
              'while/list)
          a
          b ...)
-   (list op2 (expr col* a) "\n" (make-string col1 #\space) (exprs col1 b) ")"))
+   (list op2
+         (expr col* a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   (_
    (cond
     ; args inline
@@ -233,7 +248,7 @@
            (expr (+ col 1 (width (car v)) 1) (cadr v))
            "\n"
            (make-string (+ col 1 (width (car v)) 1) #\space)
-           (exprs (+ col 1 (width (car v)) 1) (cddr v))
+           (multilines (+ col 1 (width (car v)) 1) (cddr v))
            ")"))
 
     ; first arg inline anyway
@@ -245,7 +260,7 @@
            (inline (cadr v))
            "\n"
            (make-string col1 #\space)
-           (exprs col1 (cddr v))
+           (multilines col1 (cddr v))
            ")"))
 
     ; args unaligned
@@ -254,21 +269,8 @@
            (expr col1 (car v))
            "\n"
            (make-string col1 #\space)
-           (exprs col1 (cdr v))
+           (multilines col1 (cdr v))
            ")"))))))
-
-(define (exprs col lst)
- (set! lst (blank-after-decls lst))
- (set! lst (blank-before-comments lst))
- (add-between (let loop ((lst lst))
-               (match lst
-                ((list a '... c ...)
-                 (cons (list (expr col a) " ...") (loop c)))
-                ((list a b ...)
-                 (cons (expr col a) (loop b)))
-                (_
-                 '())))
-              (list "\n" (make-string col #\space))))
 
 (define (inline v)
  (match v
@@ -306,11 +308,24 @@
   0
   (apply max (map string-length (string-split s "\n")))))
 
+(define (multilines col lst)
+ (set! lst (blank-after-decls lst))
+ (set! lst (blank-before-comments lst))
+ (add-between (let loop ((lst lst))
+               (match lst
+                ((list a '... c ...)
+                 (cons (list (expr col a) " ...") (loop c)))
+                ((list a b ...)
+                 (cons (expr col a) (loop b)))
+                (_
+                 '())))
+              (list "\n" (make-string col #\space))))
+
 (define/memo* (width v)
  (max-line-length (string-append* (flatten (expr 0 v)))))
 
 (define (write-module m)
- (define lines (string-split (string-append* (flatten (exprs 0 m))) "\n"))
+ (define lines (string-split (string-append* (flatten (multilines 0 m))) "\n"))
  (for ((s lines))
   (displayln (string-trim s #:left? #f))))
 

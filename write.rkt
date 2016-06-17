@@ -259,18 +259,6 @@
            (multilines (+ col 1 (width (car v)) 1) (cddr v))
            ")"))
 
-    ; first arg inline anyway
-    ((and (length? 2 v)
-          (memq (car v) '(define set!)))
-     (list "("
-           (inline (car v))
-           " "
-           (inline (cadr v))
-           "\n"
-           (make-string col1 #\space)
-           (multilines col1 (cddr v))
-           ")"))
-
     ; args unaligned
     (else
      (list "("

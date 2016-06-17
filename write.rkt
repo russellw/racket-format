@@ -67,17 +67,13 @@
 (define (clause col v)
  (define col1 (+ col 1))
  (match v
-  ; atom
+  ; simple form
   ((== blank-symbol)
    '())
   ((? atom? _)
    (~s v))
-
-  ; text
   ((list (== comment-symbol) s)
    s)
-
-  ; abbrev prefix
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
    (list s (expr (+ col (string-length s)) w)))
@@ -112,17 +108,13 @@
          (when (pair? v)
           (format "(~a " (car v))))
  (match v
-  ; atom
+  ; simple form
   ((== blank-symbol)
    '())
   ((? atom? _)
    (~s v))
-
-  ; text
   ((list (== comment-symbol) s)
    s)
-
-  ; abbrev prefix
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
    (list s (expr (+ col (string-length s)) w)))

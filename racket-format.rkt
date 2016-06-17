@@ -6,12 +6,12 @@
 (define inplace (make-parameter #f))
 (define show-version (make-parameter #f))
 (define files
- (command-line #:program
-               "racket-format"
-               #:once-each (("-i") "Inplace edit" (inplace #t))
-               #:once-each (("-v" "--version") "Show version" (show-version #t))
-               #:args files
-               files))
+        (command-line #:program
+                      "racket-format"
+                      #:once-each (("-i") "Inplace edit" (inplace #t))
+                      (("-v" "--version") "Show version" (show-version #t))
+                      #:args files
+                      files))
 (when (show-version)
  (displayln "racket-format version 0")
  (exit 0))

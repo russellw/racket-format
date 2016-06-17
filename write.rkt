@@ -273,8 +273,7 @@
     ((list a '... c ...)
      (cons (list (expr col a) " ...") (loop c)))
     ((list (? keyword? a) b c ...)
-     (cons (list (expr col a) " " (expr (+ col (width a) 1) b))
-           (loop (cddr lst))))
+     (cons (list (expr col a) " " (expr (+ col (width a) 1) b)) (loop c)))
     ((list a b ...)
      (cons (expr col a) (loop b)))
     (_

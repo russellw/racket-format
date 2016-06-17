@@ -254,16 +254,15 @@
    (for/and ((w a))
     (< (+ col* (width w)) 80))
    (list op2 (multilines col* a) ")"))
-  (_
-   (cond
-    ; args unaligned
-    (else
-     (list "("
-           (expr col1 (car v))
-           "\n"
-           (make-string col1 #\space)
-           (multilines col1 (cdr v))
-           ")"))))))
+
+  ; args unaligned
+  ((list f a ...)
+   (list "("
+         (expr col1 f)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 a)
+         ")"))))
 
 (define (exprs col lst)
  (if (inlines? col lst)

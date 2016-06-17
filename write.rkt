@@ -303,9 +303,10 @@
       (< (+ col (length lst) (apply + (map width lst))) 80)))
 
 (define (max-line-length s)
- (if (string=? s "")
+ (define lines (string-split s "\n"))
+ (if (null? lines)
   0
-  (apply max (map string-length (string-split s "\n")))))
+  (apply max (map string-length lines))))
 
 (define (multilines col lst)
  (set! lst (blank-after-decls lst))

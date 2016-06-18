@@ -34,7 +34,8 @@
   ((peek? "#")
    (cond
     ((equal? (peek-string 5 0) "#lang")
-     `(,comment-symbol ,(read-line)))
+     `(,comment-symbol
+       ,(read-line)))
     ((peek? "'" 1)
      (read-char)
      (read-char)
@@ -55,17 +56,17 @@
      (read))
     ((peek? "\\" 1)
      (read))
-    (else
-     (let ((s (identifier)))
-      (case s
-       (("#")
-        (list->vector (read)))
-       (("#F" "#f")
-        #f)
-       (("#T" "#t")
-        #t)
-       (else
-        (string->symbol s)))))))
+    (else (let ((s (identifier)))
+           (case s
+            (("#")
+             (list->vector (read)))
+            (("#F"
+              "#f")
+             #f)
+            (("#T"
+              "#t")
+             #t)
+            (else (string->symbol s)))))))
   ((peek? "'")
    (read-char)
    (list quote-symbol (read*)))
@@ -93,8 +94,7 @@
          (read-char)
          x)
         (cons (string->symbol s) (loop)))))
-     (else
-      (cons (read*) (loop))))))
+     (else (cons (read*) (loop))))))
   ((peek? ",")
    (read-char)
    (if (peek? "@")
@@ -113,8 +113,7 @@
   ((peek? "`")
    (read-char)
    (list quasiquote-symbol (read*)))
-  (else
-   (read))))
+  (else (read))))
 
 (define (read-module)
  (let loop ()

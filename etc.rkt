@@ -23,8 +23,7 @@
    #t)
   ((list 'define-syntax b ...)
    #t)
-  (_
-   #f)))
+  (_ #f)))
 
 (define-syntax receive
  (syntax-rules ()

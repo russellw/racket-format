@@ -24,8 +24,7 @@
    "#,@")
   ((list (== unsyntax-symbol) _)
    "#,")
-  (_
-   #f)))
+  (_ #f)))
 
 (define (blank-after-decls lst)
  (let loop ((lst lst))
@@ -36,8 +35,7 @@
     (list* a blank-symbol (loop (cons b c))))
    ((list a b ...)
     (cons a (loop b)))
-   (_
-    '()))))
+   (_ '()))))
 
 (define (blank-before-comments lst)
  (let loop ((lst lst))
@@ -50,36 +48,7 @@
     (list* a blank-symbol (list comment-symbol b) (loop c)))
    ((list a b ...)
     (cons a (loop b)))
-   (_
-    '()))))
-
-(define (clause col v)
- (define col1 (+ col 1))
- (match v
-  ; simple form
-  ((== blank-symbol)
-   '())
-  ((? atom? _)
-   (~s v))
-  ((list (== comment-symbol) s)
-   s)
-  ((? abbrev-prefix (list _ w))
-   (define s (abbrev-prefix v))
-   (list s (expr (+ col (string-length s)) w)))
-
-  ; clause
-  ((list a b ...)
-   (list "("
-         (expr col1 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))))
-
-(define (clauses col lst)
- (set! lst (blank-before-comments lst))
- (add-between (map (curry clause col) lst)
-              (list "\n" (make-string col #\space))))
+   (_ '()))))
 
 (define (decl*? x)
  (match x
@@ -87,8 +56,7 @@
              'require)
          b ...)
    #t)
-  (_
-   (decl? x))))
+  (_ (decl? x))))
 
 (define (expr col v)
  (define col1 (+ col 1))
@@ -127,9 +95,14 @@
              'match)
          a
          b ...)
-   (list op2 (expr col2 a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
+   (list op2
+         (expr col2 a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list 'cond b ...)
-   (list "(" op "\n" (make-string col1 #\space) (clauses col1 b) ")"))
+   (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'define
              'define/memo
              'define/memo*)
@@ -227,7 +200,12 @@
          (multilines col1 b)
          ")"))
   ((list 'syntax-rules a b ...)
-   (list op2 (expr col2 a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
+   (list op2
+         (expr col2 a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list (or 'unless
              'when
              'while
@@ -246,7 +224,7 @@
    (list "(" (expr col1 f) ")"))
 
   ; args inline
-  (_
+  ((list (? symbol? f) a ...)
    #:when
    (inlines? col v)
    (inline v))
@@ -289,8 +267,7 @@
    (list s (inline w)))
 
   ; compound form
-  (_
-   (list "(" (inlines v) ")"))))
+  (_ (list "(" (inlines v) ")"))))
 
 (define (inline? v)
  (and (not (member comment-symbol (flatten v)))
@@ -318,8 +295,7 @@
                  (cons (list (expr col a) " ...") (loop c)))
                 ((list a b ...)
                  (cons (expr col a) (loop b)))
-                (_
-                 '())))
+                (_ '())))
               (list "\n" (make-string col #\space))))
 
 (define (trim-lines s)

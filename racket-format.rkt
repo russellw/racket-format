@@ -9,8 +9,13 @@
         (command-line #:program
                       "racket-format"
                       #:once-each
-                      (("-i") "Inplace edit" (inplace #t))
-                      (("-v" "--version") "Show version" (show-version #t))
+                      (("-i")
+                       "Inplace edit"
+                       (inplace #t))
+                      (("-v"
+                        "--version")
+                       "Show version"
+                       (show-version #t))
                       #:args
                       files
                       files))

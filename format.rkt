@@ -95,27 +95,7 @@
    (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'case
              'define-syntax
-             'match)
-         a
-         b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list (or 'define
-             'define/memo
-             'define/memo*)
-         (list a ...)
-         b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list (or 'for
+             'for
              'for*
              'for*/and
              'for*/first
@@ -137,13 +117,24 @@
              'for/or
              'for/product
              'for/sublists
-             'for/sum)
+             'for/sum
+             'match)
          a
          b ...)
    (list op2
-         "("
-         (multilines (+ col2 1) a)
-         ")\n"
+         (expr col2 a)
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
+  ((list (or 'define
+             'define/memo
+             'define/memo*)
+         (list a ...)
+         b ...)
+   (list op2
+         (expr col2 a)
+         "\n"
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))

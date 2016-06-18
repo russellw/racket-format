@@ -82,13 +82,6 @@
    (list s (expr (+ col (string-length s)) w)))
 
   ; special form
-  ((list (or 'and
-             'or)
-         b ...)
-   #:when
-   (for/and ((w b))
-    (< (+ col2 (width w)) 80))
-   (list op2 (multilines col2 b) ")"))
   ((list (or 'begin
              'cond)
          b ...)
@@ -171,7 +164,9 @@
    (list "(" (expr col1 f) ")"))
 
   ; args inline
-  ((list (not (or 'provide
+  ((list (not (or 'and
+                  'or
+                  'provide
                   'require))
          a ...)
    #:when

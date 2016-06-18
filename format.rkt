@@ -147,14 +147,14 @@
          (list a ...)
          b ...)
    (list op2
-         (params col2 a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
   ((list 'define-syntax a b ...)
    (list op2
-         (params col2 a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -204,7 +204,7 @@
          a
          b ...)
    (list op2
-         (params col2 a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -327,11 +327,6 @@
                 (_
                  '())))
               (list "\n" (make-string col #\space))))
-
-(define (params col v)
- (if (atom? v)
-  (~a v)
-  (list "(" (exprs (+ col 1) v) ")")))
 
 (define (trim-lines s)
  (define lines (string-split s "\n"))

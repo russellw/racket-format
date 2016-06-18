@@ -1,7 +1,7 @@
 #lang racket
-(require "read.rkt"
-         "sort.rkt"
-         "write.rkt")
+(require "format.rkt"
+         "read.rkt"
+         "sort.rkt")
 
 (define inplace (make-parameter #f))
 (define show-version (make-parameter #f))

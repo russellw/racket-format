@@ -25,11 +25,8 @@
           (read-module)
           (with-input-from-file path read-module)))
  (set! m (sort-module m))
+ (define s (format-module m))
  (if (and (inplace)
           (not (string=? path "-")))
-  (with-output-to-file path
-                       (lambda ()
-                        (write-module m))
-                       #:exists
-                       'replace)
-  (write-module m)))
+  (display-to-file s path #:exists 'replace)
+  (display s)))

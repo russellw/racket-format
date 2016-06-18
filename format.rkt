@@ -165,19 +165,18 @@
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
-  ((list (or 'provide
-             'require)
-         b ...)
-   (list op2 (multilines col2 b) ")"))
 
   ; no args
   ((list f)
    (list "(" (expr col1 f) ")"))
 
   ; args inline
-  ((list (? symbol? f) a ...)
+  ((list (not (or 'provide
+                  'require))
+         a ...)
    #:when
-   (inlines? col v)
+   (and (symbol? (car v))
+        (inlines? col v))
    (inline v))
 
   ; args aligned

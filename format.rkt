@@ -122,7 +122,8 @@
              'lambda
              'lambda/memo
              'lambda/memo*
-             'match)
+             'match
+             'syntax-rules)
          a
          b ...)
    (list op2
@@ -164,13 +165,6 @@
          b ...)
    (list op2 (multilines col2 b) ")"))
   ((list 'receive a b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list 'syntax-rules a b ...)
    (list op2
          (expr col2 a)
          "\n"

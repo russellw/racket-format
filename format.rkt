@@ -103,7 +103,7 @@
 
 (define (expr col v)
  (define col1 (+ col 1))
- (define col*
+ (define col2
          (when (pair? v)
           (+ col 2 (width (car v)))))
  (define op
@@ -130,15 +130,15 @@
          b ...)
    #:when
    (for/and ((w b))
-    (< (+ col* (width w)) 80))
-   (list op2 (multilines col* b) ")"))
+    (< (+ col2 (width w)) 80))
+   (list op2 (multilines col2 b) ")"))
   ((list 'begin b ...)
    (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'case
              'match)
          a
          b ...)
-   (list op2 (expr col* a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
+   (list op2 (expr col2 a) "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list 'cond b ...)
    (list "(" op "\n" (make-string col1 #\space) (clauses col1 b) ")"))
   ((list (or 'define
@@ -148,14 +148,14 @@
          b ...)
    (list op2
          "("
-         (exprs (+ col* 1) a)
+         (exprs (+ col2 1) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
   ((list 'define-syntax a b ...)
    (list op2
-         (expr col* a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -187,14 +187,14 @@
          b ...)
    (list op2
          "("
-         (bindings (+ col* 1) a)
+         (bindings (+ col2 1) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
   ((list 'if a b ...)
    (list op2
-         (expr col* a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -207,7 +207,7 @@
    (list op2
          (if (atom? a)
           (~a a)
-          (list "(" (exprs (+ col* 1) a) ")"))
+          (list "(" (exprs (+ col2 1) a) ")"))
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -215,7 +215,7 @@
   ((list 'let (list a ...) b ...)
    (list op2
          "("
-         (bindings (+ col* 1) a)
+         (bindings (+ col2 1) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -224,7 +224,7 @@
    (list op2
          (~a id)
          " ("
-         (bindings (+ col* (width id) 2) a)
+         (bindings (+ col2 (width id) 2) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -232,7 +232,7 @@
   ((list (or 'provide
              'require)
          b ...)
-   (list op2 (multilines col* b) ")"))
+   (list op2 (multilines col2 b) ")"))
   ((list 'receive a b ...)
    (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list 'syntax-rules a b ...)
@@ -244,7 +244,7 @@
          a
          b ...)
    (list op2
-         (expr col* a)
+         (expr col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -264,8 +264,8 @@
   ((list (? symbol? f) a ...)
    #:when
    (for/and ((w a))
-    (< (+ col* (width w)) 80))
-   (list op2 (multilines col* a) ")"))
+    (< (+ col2 (width w)) 80))
+   (list op2 (multilines col2 a) ")"))
 
   ; args unaligned
   ((list f a ...)

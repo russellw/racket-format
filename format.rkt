@@ -118,6 +118,7 @@
              'for/product
              'for/sublists
              'for/sum
+             'if
              'match)
          a
          b ...)
@@ -132,13 +133,6 @@
              'define/memo*)
          (list a ...)
          b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list 'if a b ...)
    (list op2
          (expr col2 a)
          "\n"

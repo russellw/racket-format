@@ -119,6 +119,9 @@
              'for/sublists
              'for/sum
              'if
+             'lambda
+             'lambda/memo
+             'lambda/memo*
              'match)
          a
          b ...)
@@ -132,17 +135,6 @@
              'define/memo
              'define/memo*)
          (list a ...)
-         b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list (or 'lambda
-             'lambda/memo
-             'lambda/memo*)
-         a
          b ...)
    (list op2
          (expr col2 a)

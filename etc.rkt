@@ -26,9 +26,6 @@
   (_
    #f)))
 
-(define (length? n x)
- (<= n (length x)))
-
 (define-syntax receive
  (syntax-rules ()
   ((receive args

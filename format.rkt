@@ -29,13 +29,7 @@
 
 (define (bindings col lst)
  (add-between (for/list ((v lst))
-               (if (atom? v)
-                (~s v)
-                (list "("
-                      (inline (car v))
-                      " "
-                      (expr (+ col 1 (width (car v)) 1) (cadr v))
-                      ")")))
+               (expr col v))
               (list "\n" (make-string col #\space))))
 
 (define (blank-after-decls lst)

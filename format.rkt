@@ -94,6 +94,7 @@
          b ...)
    (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'case
+             'define-syntax
              'match)
          a
          b ...)
@@ -108,13 +109,6 @@
              'define/memo*)
          (list a ...)
          b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list 'define-syntax a b ...)
    (list op2
          (expr col2 a)
          "\n"

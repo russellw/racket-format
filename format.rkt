@@ -27,11 +27,6 @@
   (_
    #f)))
 
-(define (bindings col lst)
- (add-between (for/list ((v lst))
-               (expr col v))
-              (list "\n" (make-string col #\space))))
-
 (define (blank-after-decls lst)
  (let loop ((lst lst))
   (match lst
@@ -180,7 +175,7 @@
          b ...)
    (list op2
          "("
-         (bindings (+ col2 1) a)
+         (multilines (+ col2 1) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -206,7 +201,7 @@
   ((list 'let (list a ...) b ...)
    (list op2
          "("
-         (bindings (+ col2 1) a)
+         (multilines (+ col2 1) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)
@@ -215,7 +210,7 @@
    (list op2
          (~a id)
          " ("
-         (bindings (+ col2 (width id) 2) a)
+         (multilines (+ col2 (width id) 2) a)
          ")\n"
          (make-string col1 #\space)
          (multilines col1 b)

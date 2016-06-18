@@ -123,7 +123,11 @@
              'lambda/memo
              'lambda/memo*
              'match
-             'syntax-rules)
+             'syntax-rules
+             'unless
+             'when
+             'while
+             'while/list)
          a
          b ...)
    (list op2
@@ -165,18 +169,6 @@
          b ...)
    (list op2 (multilines col2 b) ")"))
   ((list 'receive a b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
-  ((list (or 'unless
-             'when
-             'while
-             'while/list)
-         a
-         b ...)
    (list op2
          (expr col2 a)
          "\n"

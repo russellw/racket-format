@@ -154,7 +154,7 @@
          ")"))
   ((list 'define-syntax a b ...)
    (list op2
-         (expr col2 a)
+         (params col2 a)
          "\n"
          (make-string col1 #\space)
          (multilines col1 b)

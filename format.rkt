@@ -204,7 +204,14 @@
              'lambda/memo*)
          a
          b ...)
-   (list op2 (inline a) "\n" (make-string col1 #\space) (multilines col1 b) ")"))
+   (list op2
+         (if (atom? a)
+          (~a a)
+          (list "(" (exprs (+ col* 1) a) ")"))
+         "\n"
+         (make-string col1 #\space)
+         (multilines col1 b)
+         ")"))
   ((list 'let (list a ...) b ...)
    (list op2
          "("

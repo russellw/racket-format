@@ -89,7 +89,9 @@
    (for/and ((w b))
     (< (+ col2 (width w)) 80))
    (list op2 (multilines col2 b) ")"))
-  ((list 'begin b ...)
+  ((list (or 'begin
+             'cond)
+         b ...)
    (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'case
              'match)
@@ -101,8 +103,6 @@
          (make-string col1 #\space)
          (multilines col1 b)
          ")"))
-  ((list 'cond b ...)
-   (list "(" op "\n" (make-string col1 #\space) (multilines col1 b) ")"))
   ((list (or 'define
              'define/memo
              'define/memo*)

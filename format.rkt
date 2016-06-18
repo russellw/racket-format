@@ -123,6 +123,7 @@
              'lambda/memo
              'lambda/memo*
              'match
+             'receive
              'syntax-rules
              'unless
              'when
@@ -168,13 +169,6 @@
              'require)
          b ...)
    (list op2 (multilines col2 b) ")"))
-  ((list 'receive a b ...)
-   (list op2
-         (expr col2 a)
-         "\n"
-         (make-string col1 #\space)
-         (multilines col1 b)
-         ")"))
 
   ; no args
   ((list f)

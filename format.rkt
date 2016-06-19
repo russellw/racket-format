@@ -168,7 +168,7 @@
    #:when
    (and (symbol? (car v))
         (inlines? col v))
-   (inline v))
+   (inline col v))
 
   ; args aligned
   ((list (? symbol? f) a ...)
@@ -189,28 +189,30 @@
 (define (format-module m)
  (trim-lines (multilines 0 m)))
 
-(define (inline v)
+(define (inline col v)
  (match v
   ; simple form
-  ((== blank-symbol)
-   (error "blank inline"))
   ((? atom? _)
    (~s v))
-  ((list (== comment-symbol) _)
-   (error "line comment inline"))
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
-   (string-append s (inline w)))
+   (string-append s (inline col w)))
 
   ; compound form
-  (_ (string-append "(" (inlines v) ")"))))
+  (_ (define lst
+             (let loop ((col (+ col 1))
+                        (lst v))
+              (match lst
+               ((list a b ...)
+                (cons (expr col a) (loop (+ col (width a) 1) b)))
+               (_ '()))))
+     (define s (string-join lst " "))
+     (and (not (string-contains? s "\n"))
+          (string-append "(" s ")")))))
 
 (define (inline? v)
  (and (not (member comment-symbol (flatten v)))
       (not (string-contains? (expr 0 v) "\n"))))
-
-(define (inlines lst)
- (string-join (map inline lst) " "))
 
 (define (inlines? col lst)
  (and (andmap inline? lst)

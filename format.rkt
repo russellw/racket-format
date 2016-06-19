@@ -83,12 +83,7 @@
   ((list (or 'begin
              'cond)
          b ...)
-   (string-append "("
-                  op
-                  "\n"
-                  (make-string col1 #\space)
-                  (multilines col1 b)
-                  ")"))
+   (string-append "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'case
              'define-syntax
              'for
@@ -131,7 +126,7 @@
                   (expr col2 a)
                   "\n"
                   (make-string col1 #\space)
-                  (multilines col1 b)
+                  (exprs col1 b)
                   ")"))
   ((list (or 'define
              'define/memo
@@ -143,16 +138,16 @@
                   (expr col2 a)
                   "\n"
                   (make-string col1 #\space)
-                  (multilines col1 b)
+                  (exprs col1 b)
                   ")"))
   ((list 'let id (list a ...) b ...)
    (string-append op2
                   (~a id)
                   " ("
-                  (multilines (+ col2 (width id) 2) a)
+                  (exprs (+ col2 (width id) 2) a)
                   ")\n"
                   (make-string col1 #\space)
-                  (multilines col1 b)
+                  (exprs col1 b)
                   ")"))
 
   ; no args
@@ -175,7 +170,7 @@
    #:when
    (for/and ((w a))
     (< (+ col2 (width w)) 80))
-   (string-append op2 (multilines col2 a) ")"))
+   (string-append op2 (exprs col2 a) ")"))
 
   ; args unaligned
   ((list f a ...)
@@ -183,11 +178,23 @@
                   (expr col1 f)
                   "\n"
                   (make-string col1 #\space)
-                  (multilines col1 a)
+                  (exprs col1 a)
                   ")"))))
 
+(define (exprs col lst)
+ (set! lst (blank-after-decls lst))
+ (set! lst (blank-before-comments lst))
+ (string-join (let loop ((lst lst))
+               (match lst
+                ((list a '... c ...)
+                 (cons (string-append (expr col a) " ...") (loop c)))
+                ((list a b ...)
+                 (cons (expr col a) (loop b)))
+                (_ '())))
+              (string-append "\n" (make-string col #\space))))
+
 (define (format-module m)
- (trim-lines (multilines 0 m)))
+ (trim-lines (exprs 0 m)))
 
 (define (inline col v)
  (define lst
@@ -214,18 +221,6 @@
  (if (null? lines)
   0
   (apply max (map string-length lines))))
-
-(define (multilines col lst)
- (set! lst (blank-after-decls lst))
- (set! lst (blank-before-comments lst))
- (string-join (let loop ((lst lst))
-               (match lst
-                ((list a '... c ...)
-                 (cons (string-append (expr col a) " ...") (loop c)))
-                ((list a b ...)
-                 (cons (expr col a) (loop b)))
-                (_ '())))
-              (string-append "\n" (make-string col #\space))))
 
 (define (trim-lines s)
  (define lines (string-split s "\n"))

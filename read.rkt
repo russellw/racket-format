@@ -177,9 +177,9 @@
   (read-char)
   (whitespace)))
 
-(define line-comment-symbol (gensym))
-(define expr-comment-symbol (gensym))
 (define block-comment-symbol (gensym))
+(define expr-comment-symbol (gensym))
+(define line-comment-symbol (gensym))
 (define quasiquote-symbol (gensym))
 (define quasisyntax-symbol (gensym))
 (define quote-symbol (gensym))

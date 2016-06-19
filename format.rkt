@@ -162,7 +162,7 @@
          a ...)
    #:when
    (and (symbol? (car v))
-        (inlines? col v))
+        (inline col v))
    (inline col v))
 
   ; args aligned
@@ -206,15 +206,8 @@
            (_ '()))))
  (define s (string-join lst " "))
  (and (not (string-contains? s "\n"))
+      (< (+ col 1 (string-length s)) 80)
       (string-append "(" s ")")))
-
-(define (inline? v)
- (and (not (member comment-symbol (flatten v)))
-      (not (string-contains? (expr 0 v) "\n"))))
-
-(define (inlines? col lst)
- (and (andmap inline? lst)
-      (< (+ col (length lst) (apply + (map width lst))) 80)))
 
 (define (max-line-length s)
  (define lines (string-split s "\n"))

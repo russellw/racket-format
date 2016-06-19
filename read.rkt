@@ -2,7 +2,9 @@
 (require (planet dyoo/while-loop)
          "etc.rkt")
 
-(provide comment-symbol
+(provide block-comment-symbol
+         expr-comment-symbol
+         line-comment-symbol
          quasiquote-symbol
          quasisyntax-symbol
          quote-symbol
@@ -12,6 +14,19 @@
          unquote-symbol
          unsyntax-splicing-symbol
          unsyntax-symbol)
+
+(define (block-comment)
+ (list* (read-char)
+        (read-char)
+        (let loop ()
+         (cond
+          ((eof-object? (peek-char))
+           (error "unterminated block comment"))
+          ((equal? (peek-string 2 0) "#|")
+           (cons (block-comment) (loop)))
+          ((equal? (peek-string 2 0) "|#")
+           (list (read-char) (read-char)))
+          (else (cons (read-char) (loop)))))))
 
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char))
@@ -34,8 +49,10 @@
   ((peek? "#")
    (cond
     ((equal? (peek-string 5 0) "#lang")
-     `(,comment-symbol
+     `(,line-comment-symbol
        ,(read-line)))
+    ((peek? "|" 1)
+     (list block-comment-symbol (list->string (flatten (block-comment)))))
     ((peek? "'" 1)
      (read-char)
      (read-char)
@@ -104,7 +121,7 @@
     (list unquote-symbol (read*))))
   ((peek? ";")
    (read-char)
-   (list comment-symbol
+   (list line-comment-symbol
          (string-append (if (and (not (eof-object? (peek-char)))
                                  (char-alphabetic? (peek-char)))
                          "; "
@@ -148,7 +165,9 @@
   (read-char)
   (whitespace)))
 
-(define comment-symbol (gensym))
+(define line-comment-symbol (gensym))
+(define expr-comment-symbol (gensym))
+(define block-comment-symbol (gensym))
 (define quasiquote-symbol (gensym))
 (define quasisyntax-symbol (gensym))
 (define quote-symbol (gensym))

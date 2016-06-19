@@ -163,8 +163,8 @@
    #:when
    (and (symbol? (car v))
         (not (memq comment-symbol (flatten v)))
-        (inline col v))
-   (inline col v))
+        (inline col1 v))
+   (string-append "(" (inline col1 v) ")"))
 
   ; args aligned
   ((list (? symbol? f) a ...)
@@ -198,18 +198,18 @@
 (define (format-module m)
  (trim-lines (exprs 0 m)))
 
-(define (inline col v)
- (define lst
-         (let loop ((col (+ col 1))
-                    (lst v))
-          (match lst
-           ((list a b ...)
-            (cons (expr col a) (loop (+ col (width a) 1) b)))
-           (_ '()))))
+(define (inline col lst)
+ (set! lst
+       (let loop ((col col)
+                  (lst lst))
+        (match lst
+         ((list a b ...)
+          (cons (expr col a) (loop (+ col (width a) 1) b)))
+         (_ '()))))
  (define s (string-join lst " "))
  (and (not (string-contains? s "\n"))
-      (< (+ col 1 (string-length s)) 80)
-      (string-append "(" s ")")))
+      (< (+ col (string-length s)) 80)
+      s))
 
 (define (max-line-length s)
  (define lines (string-split s "\n"))

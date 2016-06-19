@@ -162,6 +162,7 @@
          a ...)
    #:when
    (and (symbol? (car v))
+        (not (memq comment-symbol (flatten v)))
         (inline col v))
    (inline col v))
 
@@ -197,19 +198,17 @@
  (trim-lines (exprs 0 m)))
 
 (define (inline col v)
- (match v
-  (_ #:when (memq comment-symbol (flatten v)) #f)
-  (_ (define lst
-             (let loop ((col (+ col 1))
-                        (lst v))
-              (match lst
-               ((list a b ...)
-                (cons (expr col a) (loop (+ col (width a) 1) b)))
-               (_ '()))))
-     (define s (string-join lst " "))
-     (and (not (string-contains? s "\n"))
-          (< (+ col 1 (string-length s)) 80)
-          (string-append "(" s ")")))))
+ (define lst
+         (let loop ((col (+ col 1))
+                    (lst v))
+          (match lst
+           ((list a b ...)
+            (cons (expr col a) (loop (+ col (width a) 1) b)))
+           (_ '()))))
+ (define s (string-join lst " "))
+ (and (not (string-contains? s "\n"))
+      (< (+ col 1 (string-length s)) 80)
+      (string-append "(" s ")")))
 
 (define (max-line-length s)
  (define lines (string-split s "\n"))

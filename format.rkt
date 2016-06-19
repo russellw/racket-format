@@ -68,15 +68,21 @@
          (when (pair? v)
           (format "(~a " (car v))))
  (match v
-  ; simple form
+  ; atom
   ((== blank-symbol)
    "")
   ((? atom? _)
    (~s v))
+
+  ; comment
   ((list (== block-comment-symbol) s)
    s)
+  ((list (== expr-comment-symbol) a)
+   (string-append "#;" (expr (+ col 2) a)))
   ((list (== line-comment-symbol) s)
    s)
+
+  ; abbrev prefix
   ((? abbrev-prefix (list _ w))
    (define s (abbrev-prefix v))
    (string-append s (expr (+ col (string-length s)) w)))

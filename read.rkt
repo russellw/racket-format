@@ -51,6 +51,14 @@
     ((equal? (peek-string 5 0) "#lang")
      `(,line-comment-symbol
        ,(read-line)))
+    ((or (equal? (peek-string 3 0) "#! ")
+         (equal? (peek-string 3 0) "#!/"))
+     (list line-comment-symbol
+           (string-append* (let loop ()
+                            (define s (read-line))
+                            (if (string-suffix? s "\\")
+                             (cons (string-append s "\n") (loop))
+                             (list s))))))
     ((peek? "|" 1)
      (list block-comment-symbol (list->string (flatten (block-comment)))))
     ((peek? "'" 1)

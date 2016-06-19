@@ -131,10 +131,10 @@
   (else (read))))
 
 (define (read-module)
- (define x (read*))
- (if (eof-object? x)
+ (define v (read*))
+ (if (eof-object? v)
   '()
-  (cons x (read-module))))
+  (cons v (read-module))))
 
 (define (special-initial? c)
  (string-contains? "!#$%&*/:<=>?^_~" (make-string 1 c)))
@@ -149,9 +149,9 @@
 
 (define-syntax while/list
  (syntax-rules ()
-  ((_ c b ...)
+  ((_ a b ...)
    (let loop ()
-    (if c
+    (if a
      (cons (let ()
             b ...)
            (loop))

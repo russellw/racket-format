@@ -188,11 +188,6 @@
                   (multilines col1 a)
                   ")"))))
 
-(define (exprs col lst)
- (if (inlines? col lst)
-  (inlines lst)
-  (multilines col lst)))
-
 (define (format-module m)
  (trim-lines (multilines 0 m)))
 

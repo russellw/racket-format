@@ -238,11 +238,10 @@
 
 (define (trim-lines s)
  (define lines (string-split s "\n"))
- (string-join (for/list ((line lines))
-               (string-trim line #:left? #f))
-              "\n"
-              #:after-last
-              "\n"))
+ (set! lines
+       (for/list ((line lines))
+        (string-trim line #:left? #f)))
+ (string-join lines "\n" #:after-last "\n"))
 
 (define/memo* (width v)
  (max-line-length (expr 0 v)))

@@ -81,21 +81,7 @@
        (read-char)
        (list unsyntax-splicing-symbol (read*)))
       (list unsyntax-symbol (read*))))
-    ((peek? ":" 1)
-     (read))
-    ((peek? "\\" 1)
-     (read))
-    (else (let ((s (identifier)))
-           (case s
-            (("#")
-             (list->vector (read)))
-            (("#F"
-              "#f")
-             #f)
-            (("#T"
-              "#t")
-             #t)
-            (else (string->symbol s)))))))
+    (else (read))))
   ((peek? "'")
    (read-char)
    (list quote-symbol (read*)))

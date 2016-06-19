@@ -27,28 +27,26 @@
   (_ #f)))
 
 (define (blank-after-decls lst)
- (let loop ((lst lst))
-  (match lst
-   ((list a (== blank-symbol) b ...)
-    (list* a blank-symbol (loop b)))
-   ((list (? decl*? a) b c ...)
-    (list* a blank-symbol (loop (cons b c))))
-   ((list a b ...)
-    (cons a (loop b)))
-   (_ '()))))
+ (match lst
+  ((list a (== blank-symbol) b ...)
+   (list* a blank-symbol (blank-after-decls b)))
+  ((list (? decl*? a) b c ...)
+   (list* a blank-symbol (blank-after-decls (cons b c))))
+  ((list a b ...)
+   (cons a (blank-after-decls b)))
+  (_ '())))
 
 (define (blank-before-comments lst)
- (let loop ((lst lst))
-  (match lst
-   ((list (== blank-symbol) a ...)
-    (cons blank-symbol (loop a)))
-   ((list (list (== comment-symbol) a) b ...)
-    (list* (list comment-symbol a) (loop b)))
-   ((list a (list (== comment-symbol) b) c ...)
-    (list* a blank-symbol (list comment-symbol b) (loop c)))
-   ((list a b ...)
-    (cons a (loop b)))
-   (_ '()))))
+ (match lst
+  ((list (== blank-symbol) a ...)
+   (cons blank-symbol (blank-before-comments a)))
+  ((list (list (== comment-symbol) a) b ...)
+   (list* (list comment-symbol a) (blank-before-comments b)))
+  ((list a (list (== comment-symbol) b) c ...)
+   (list* a blank-symbol (list comment-symbol b) (blank-before-comments c)))
+  ((list a b ...)
+   (cons a (blank-before-comments b)))
+  (_ '())))
 
 (define (decl*? x)
  (match x

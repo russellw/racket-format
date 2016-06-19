@@ -185,14 +185,15 @@
 (define (exprs col lst)
  (set! lst (blank-after-decls lst))
  (set! lst (blank-before-comments lst))
- (string-join (let loop ((lst lst))
-               (match lst
-                ((list a '... c ...)
-                 (cons (string-append (expr col a) " ...") (loop c)))
-                ((list a b ...)
-                 (cons (expr col a) (loop b)))
-                (_ '())))
-              (string-append "\n" (make-string col #\space))))
+ (set! lst
+       (let loop ((lst lst))
+        (match lst
+         ((list a '... c ...)
+          (cons (string-append (expr col a) " ...") (loop c)))
+         ((list a b ...)
+          (cons (expr col a) (loop b)))
+         (_ '()))))
+ (string-join lst (string-append "\n" (make-string col #\space))))
 
 (define (format-module m)
  (trim-lines (exprs 0 m)))

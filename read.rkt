@@ -116,11 +116,10 @@
   (else (read))))
 
 (define (read-module)
- (let loop ()
-  (define x (read*))
-  (if (eof-object? x)
-   '()
-   (cons x (loop)))))
+ (define x (read*))
+ (if (eof-object? x)
+  '()
+  (cons x (read-module))))
 
 (define (special-initial? c)
  (string-contains? "!#$%&*/:<=>?^_~" (make-string 1 c)))

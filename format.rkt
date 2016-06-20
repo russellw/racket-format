@@ -123,6 +123,7 @@
              'lambda/memo*
              'match
              'receive
+             'syntax-case
              'syntax-rules
              'unless
              'when

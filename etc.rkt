@@ -5,8 +5,7 @@
  (not (pair? x)))
 
 (define-syntax (debug stx)
- (syntax-case
-  stx
+ (syntax-case stx
   ()
   ((_ x)
    #`(let ((r x))

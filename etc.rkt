@@ -5,8 +5,7 @@
  (not (pair? x)))
 
 (define-syntax (debug stx)
- (syntax-case stx
-  ()
+ (syntax-case stx ()
   ((_ x)
    #`(let ((r x))
       (eprintf "~a:~a: ~s: ~s\n" #,(syntax-source stx) #,(syntax-line stx) 'x r)

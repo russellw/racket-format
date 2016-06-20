@@ -123,7 +123,6 @@
              'lambda/memo*
              'match
              'receive
-             'syntax-case
              'syntax-rules
              'unless
              'when
@@ -157,6 +156,15 @@
                   ")\n"
                   (make-string col1 #\space)
                   (exprs col1 b)
+                  ")"))
+  ((list 'syntax-case a b c ...)
+   (string-append op2
+                  (~a a)
+                  " ("
+                  (exprs (+ col2 (width a) 2) b)
+                  ")\n"
+                  (make-string col1 #\space)
+                  (exprs col1 c)
                   ")"))
 
   ; no args

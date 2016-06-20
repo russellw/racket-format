@@ -158,10 +158,9 @@
      '())))))
 
 (define (whitespace)
- (when (and (not (eof-object? (peek-char)))
-            (char-whitespace? (peek-char)))
-  (read-char)
-  (whitespace)))
+ (while (and (not (eof-object? (peek-char)))
+             (char-whitespace? (peek-char)))
+  (read-char)))
 
 (define block-comment-symbol (gensym))
 (define expr-comment-symbol (gensym))

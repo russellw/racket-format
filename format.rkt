@@ -89,7 +89,8 @@
 
   ; special form
   ((list (or 'begin
-             'cond)
+             'cond
+             'else)
          b ...)
    (string-append "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'case

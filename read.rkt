@@ -26,7 +26,8 @@
            (cons (block-comment) (loop)))
           ((equal? (peek-string 2 0) "|#")
            (list (read-char) (read-char)))
-          (else (cons (read-char) (loop)))))))
+          (else
+           (cons (read-char) (loop)))))))
 
 (define (identifier)
  (list->string (while/list (subsequent? (peek-char))
@@ -81,7 +82,8 @@
      (list quasisyntax-symbol (read*)))
     ((peek? "|" 1)
      (list block-comment-symbol (list->string (flatten (block-comment)))))
-    (else (read))))
+    (else
+     (read))))
   ((peek? "'")
    (read-char)
    (list quote-symbol (read*)))
@@ -109,7 +111,8 @@
          (read-char)
          x)
         (cons (string->symbol s) (loop)))))
-     (else (cons (read*) (loop))))))
+     (else
+      (cons (read*) (loop))))))
   ((peek? ",")
    (read-char)
    (if (peek? "@")
@@ -128,7 +131,8 @@
   ((peek? "`")
    (read-char)
    (list quasiquote-symbol (read*)))
-  (else (read))))
+  (else
+   (read))))
 
 (define (read-module)
  (define v (read*))

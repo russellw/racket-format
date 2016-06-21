@@ -24,9 +24,10 @@
    (receive (a b)
     (splitf-at lst pred)
     (cons a (fragments pred b))))
-  (else (receive (a b)
-         (splitf-at lst (negate pred))
-         (cons a (fragments pred b))))))
+  (else
+   (receive (a b)
+    (splitf-at lst (negate pred))
+    (cons a (fragments pred b))))))
 
 (define (list<? lst1 lst2)
  (cond
@@ -38,7 +39,8 @@
    #t)
   ((value<? (car lst2) (car lst1))
    #f)
-  (else (list<? (cdr lst1) (cdr lst2)))))
+  (else
+   (list<? (cdr lst1) (cdr lst2)))))
 
 (define (name x)
  (match x

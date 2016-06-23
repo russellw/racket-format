@@ -123,6 +123,7 @@
              'lambda/memo
              'lambda/memo*
              'match
+             'parameterize
              'receive
              'syntax-rules
              'unless

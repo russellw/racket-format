@@ -88,7 +88,10 @@
    (string-append s (expr (+ col (string-length s)) w)))
 
   ; special form
-  ((list (or 'define) a b)
+  ((list (or 'define
+             'set!)
+         a
+         b)
    #:when
    (and (symbol? a)
         (inline col1 v))

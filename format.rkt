@@ -129,7 +129,9 @@
              'unless
              'when
              'while
-             'while/list)
+             'while/list
+             'with-handlers
+             'with-output-to-file)
          a
          b ...)
    (string-append op2

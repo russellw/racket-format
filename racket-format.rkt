@@ -3,10 +3,8 @@
          "read.rkt"
          "sort.rkt")
 
-(define inplace
- (make-parameter #f))
-(define show-version
- (make-parameter #f))
+(define inplace (make-parameter #f))
+(define show-version (make-parameter #f))
 (define files
  (command-line #:program
                "racket-format"
@@ -32,8 +30,7 @@
    (read-module)
    (with-input-from-file path read-module)))
  (set! m (sort-module m))
- (define s
-  (format-module m))
+ (define s (format-module m))
  (if (and (inplace)
           (not (string=? path "-")))
   (display-to-file s path #:exists 'replace)

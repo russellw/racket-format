@@ -57,16 +57,17 @@
   (_ (decl? x))))
 
 (define (expr col v)
- (define col1 (+ col 1))
+ (define col1
+  (+ col 1))
  (define col2
-         (when (pair? v)
-          (+ col 2 (width (car v)))))
+  (when (pair? v)
+   (+ col 2 (width (car v)))))
  (define op
-         (when (pair? v)
-          (~a (car v))))
+  (when (pair? v)
+   (~a (car v))))
  (define op2
-         (when (pair? v)
-          (format "(~a " (car v))))
+  (when (pair? v)
+   (format "(~a " (car v))))
  (match v
   ; atom
   ((== blank-symbol)
@@ -84,7 +85,8 @@
 
   ; abbrev prefix
   ((? abbrev-prefix (list _ w))
-   (define s (abbrev-prefix v))
+   (define s
+    (abbrev-prefix v))
    (string-append s (expr (+ col (string-length s)) w)))
 
   ; special form
@@ -94,7 +96,10 @@
          b ...)
    (string-append "(" op "\n" (make-string col1 #\space) (exprs col1 b) ")"))
   ((list (or 'case
+             'define
              'define-syntax
+             'define/memo
+             'define/memo*
              'for
              'for*
              'for*/and
@@ -140,12 +145,7 @@
                   (make-string col1 #\space)
                   (exprs col1 b)
                   ")"))
-  ((list (or 'define
-             'define/memo
-             'define/memo*
-             'let)
-         (list a ...)
-         b ...)
+  ((list 'let (list a ...) b ...)
    (string-append op2
                   (expr col2 a)
                   "\n"
@@ -222,19 +222,22 @@
          ((list a b ...)
           (cons (expr col a) (loop (+ col (width a) 1) b)))
          (_ '()))))
- (define s (string-join lst " "))
+ (define s
+  (string-join lst " "))
  (and (not (string-contains? s "\n"))
       (< (+ col (string-length s)) 80)
       s))
 
 (define (max-line-length s)
- (define lines (string-split s "\n"))
+ (define lines
+  (string-split s "\n"))
  (if (null? lines)
   0
   (apply max (map string-length lines))))
 
 (define (trim-lines s)
- (define lines (string-split s "\n"))
+ (define lines
+  (string-split s "\n"))
  (set! lines
        (for/list ((line lines))
         (string-trim line #:left? #f)))
@@ -243,4 +246,5 @@
 (define/memo* (width v)
  (max-line-length (expr 0 v)))
 
-(define blank-symbol (gensym))
+(define blank-symbol
+ (gensym))

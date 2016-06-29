@@ -38,7 +38,8 @@
      (special-initial? c)))
 
 (define (peek? s (skip 0))
- (define c (peek-char (current-input-port) skip))
+ (define c
+  (peek-char (current-input-port) skip))
  (and (not (eof-object? c))
       (char=? c (string-ref s 0))))
 
@@ -56,7 +57,8 @@
          (equal? (peek-string 3 0) "#!/"))
      (list line-comment-symbol
            (string-append* (let loop ()
-                            (define s (read-line))
+                            (define s
+                             (read-line))
                             (if (string-suffix? s "\\")
                              (cons (string-append s "\n") (loop))
                              (list s))))))
@@ -135,7 +137,8 @@
    (read))))
 
 (define (read-module)
- (define v (read*))
+ (define v
+  (read*))
  (if (eof-object? v)
   '()
   (cons v (read-module))))
@@ -166,14 +169,25 @@
              (char-whitespace? (peek-char)))
   (read-char)))
 
-(define block-comment-symbol (gensym))
-(define expr-comment-symbol (gensym))
-(define line-comment-symbol (gensym))
-(define quasiquote-symbol (gensym))
-(define quasisyntax-symbol (gensym))
-(define quote-symbol (gensym))
-(define syntax-symbol (gensym))
-(define unquote-splicing-symbol (gensym))
-(define unquote-symbol (gensym))
-(define unsyntax-splicing-symbol (gensym))
-(define unsyntax-symbol (gensym))
+(define block-comment-symbol
+ (gensym))
+(define expr-comment-symbol
+ (gensym))
+(define line-comment-symbol
+ (gensym))
+(define quasiquote-symbol
+ (gensym))
+(define quasisyntax-symbol
+ (gensym))
+(define quote-symbol
+ (gensym))
+(define syntax-symbol
+ (gensym))
+(define unquote-splicing-symbol
+ (gensym))
+(define unquote-symbol
+ (gensym))
+(define unsyntax-splicing-symbol
+ (gensym))
+(define unsyntax-symbol
+ (gensym))

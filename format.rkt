@@ -66,7 +66,8 @@
    (~a (car v))))
  (define op2
   (when (pair? v)
-   (format "(~a " (car v))))
+   (format "(~a "
+    (car v))))
  (match v
   ; atom
   ((== blank-symbol)
@@ -106,6 +107,7 @@
              'define-syntax
              'define/memo
              'define/memo*
+             'eprintf
              'for
              'for*
              'for*/and
@@ -129,12 +131,14 @@
              'for/product
              'for/sublists
              'for/sum
+             'format
              'if
              'lambda
              'lambda/memo
              'lambda/memo*
              'match
              'parameterize
+             'printf
              'receive
              'syntax-rules
              'unless

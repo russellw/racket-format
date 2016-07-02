@@ -8,7 +8,11 @@
  (syntax-case stx ()
   ((_ x)
    #`(let ((r x))
-      (eprintf "~a:~a: ~s: ~s\n" #,(syntax-source stx) #,(syntax-line stx) 'x r)
+      (eprintf "~a:~a: ~s: ~s\n"
+       #,(syntax-source stx)
+       #,(syntax-line stx)
+       'x
+       r)
       r))))
 
 (define (decl? v)

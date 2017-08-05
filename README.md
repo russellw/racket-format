@@ -25,5 +25,5 @@ Usage: racket-format [options] files
 Setup:
 
 ```
-rack pkg install memoize
+raco pkg install memoize
 ```

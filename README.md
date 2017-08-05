@@ -21,3 +21,9 @@ Usage: racket-format [options] files
 -i  Inplace edit
 -v  Show version
 ```
+
+Setup:
+
+```
+rack pkg install memoize
+```

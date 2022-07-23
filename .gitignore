@@ -1,3 +1,5 @@
+compiled/
+
 # Object files
 *.o
 *.ko

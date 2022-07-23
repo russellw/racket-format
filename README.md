@@ -12,18 +12,18 @@ Features:
 
 If no arguments are specified, it formats the code from standard input and writes the result to standard output.
 
-If files are given, it formats the files. If -i is specified together with files, the files are edited in place. Otherwise, the result is written to standard output.
+If files are given, it formats the files. If `-i` is specified together with files, the files are edited in place. Otherwise, the result is written to standard output.
 
 ```
 Usage: racket-format [options] files
 
 -h  Show help
+-V  Show version
 -i  Inplace edit
--v  Show version
 ```
 
-Setup:
+To build:
 
 ```
-raco pkg install memoize
+raco exe racket-format.rkt
 ```

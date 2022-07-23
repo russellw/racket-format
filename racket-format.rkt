@@ -12,8 +12,8 @@
                (("-i")
                 "Inplace edit"
                 (inplace #t))
-               (("-v"
-                 "--version")
+               (("--version"
+                 "-V")
                 "Show version"
                 (show-version #t))
                #:args
